@@ -4,548 +4,217 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bat Yam 100</title>
-    
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
     
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0077b6">
-    <link id="manifest-link" rel="manifest" href="">
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary: #0077b6; 
-            --accent: #ffb703;
-            --bg-grad-start: #f8fafc;
-            --bg-grad-end: #e2e8f0;
-            --text-main: #0f172a;
-        }
-
-        body { 
-            background: var(--bg-grad-start);
-            color: var(--text-main); 
-            font-family: 'Heebo', sans-serif; 
-            min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
-            padding-bottom: 80px;
-        }
-
-        /* --- Baner --- */
-        .hero-wrapper {
-            position: relative;
-            height: 180px;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 10px 40px -10px rgba(0, 119, 182, 0.4);
-            overflow: hidden;
-            margin-bottom: 20px;
-            background-image: linear-gradient(to bottom, rgba(0, 50, 100, 0.6), rgba(0, 119, 182, 0.2)), url('baner.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.2s ease;
-            height: 32px;
-        }
-        .glass-btn:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.3); }
-
-        /* --- Tabs --- */
-        .nav-container {
-            background: white;
-            border-radius: 16px;
-            padding: 5px;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
-            display: flex;
-            gap: 5px;
-            margin: 0 16px 20px 16px;
-        }
-        .nav-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #64748b;
-            background: transparent;
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .nav-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.2);
-        }
-
-        /* --- General --- */
-        .muni-card { 
-            background: #ffffff; border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
-            border: 1px solid #f1f5f9;
-            transition: all 0.2s ease; position: relative; overflow: hidden; 
-        }
-        .muni-card:active { transform: scale(0.98); }
-
-        input, textarea, select { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; width: 100%; outline: none; font-size: 16px; } 
-        input:focus { border-color: var(--primary); background: #fff; }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .pulse-logo { animation: pulse-logo 2s infinite; }
-        @keyframes pulse-logo { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
-
-        @media screen and (orientation: landscape) and (max-height: 500px) {
-            .hero-wrapper { height: auto !important; padding-bottom: 10px; min-height: 70px; }
-            .hero-content h1 { font-size: 1.4rem !important; }
-            .hero-subtitle { display: none; }
-            #listView { grid-template-columns: repeat(2, 1fr) !important; }
-            #eventModal .muni-card { flex-direction: row !important; height: 95vh !important; max-width: 90vw !important;}
-        }
+        body { background: #f8fafc; font-family: 'Heebo', sans-serif; padding-bottom: 30px; }
+        .hero { background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%); height: 160px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .card { background: white; border-radius: 18px; border: 1px solid #f1f5f9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .card:active { transform: scale(0.98); }
+        .loader-spin { border: 3px solid #f3f3f3; border-top: 3px solid #0077b6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="loader-screen" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500">
-    <div class="relative w-24 h-24 flex items-center justify-center mb-4">
-        <div class="absolute inset-0 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
-        <img src="loader.png" class="w-16 h-16 object-contain pulse-logo p-2"> 
-    </div>
-    <p class="text-slate-500 text-xs font-bold tracking-widest">טוען נתונים...</p>
+<div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-300">
+    <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+    <p class="text-slate-400 font-bold text-sm tracking-widest">טוען נתונים מהאקסל...</p>
 </div>
 
-<div class="max-w-4xl mx-auto">
-
-    <div class="hero-wrapper">
-        <div class="relative z-10 px-6 pt-6 pb-4 h-full flex flex-col justify-between">
-            
-            <div class="flex justify-between items-center mb-6">
-                <button onclick="openSettings()" class="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10 hover:bg-black/30 transition">
-                    <i data-lucide="user" class="w-3 h-3 text-white"></i>
-                    <span id="currentUserDisplay" class="text-[10px] font-bold text-white tracking-wider">אורח</span>
-                </button>
-                
-                <div class="flex gap-2">
-                    <button onclick="loadFromLinkedSheet()" class="glass-btn hover:bg-white/30">
-                        <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
-                        <span class="hidden sm:inline">סנכרון</span>
-                    </button>
-                    <button onclick="openAddModal()" class="glass-btn bg-white/30 hover:bg-white/40">
-                        <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
-                        <span class="hidden sm:inline">חדש</span>
-                    </button>
-                </div>
+<div class="max-w-md mx-auto min-h-screen">
+    <div class="hero p-6 text-white flex flex-col justify-between shadow-xl">
+        <div class="flex justify-between items-center">
+            <div class="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold border border-white/10 uppercase tracking-wider">Bat Yam Municipality</div>
+            <div class="flex gap-2">
+                <button onclick="loadData()" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-white/40 p-2 rounded-full hover:bg-white/50 transition"><i data-lucide="plus" class="w-5 h-5"></i></button>
             </div>
-
-            <div class="text-white mb-2">
-                <h1 class="text-3xl font-black tracking-tight leading-none drop-shadow-md">BAT YAM <span class="text-yellow-400">100</span></h1>
-                <p class="hero-subtitle text-blue-50 text-sm font-medium mt-1 opacity-90 drop-shadow-sm">ניהול אירועים ומשימות 2026</p>
-            </div>
+        </div>
+        <div>
+            <h1 class="text-3xl font-black tracking-tighter leading-none">BAT YAM <span class="text-yellow-400">100</span></h1>
+            <p class="text-blue-50 text-xs font-medium mt-1 opacity-90">ניהול פרויקטים ואירועים 2026</p>
         </div>
     </div>
 
-    <div class="nav-container">
-        <button onclick="switchView('list')" id="btn-list" class="nav-btn active">
-            <i data-lucide="layout-list" class="w-4 h-4"></i> רשימה
-        </button>
-        <button onclick="switchView('calendar')" id="btn-calendar" class="nav-btn">
-            <i data-lucide="calendar" class="w-4 h-4"></i> לוח שנה
-        </button>
-        <button onclick="switchView('tasks')" id="btn-tasks" class="nav-btn">
-            <i data-lucide="check-square" class="w-4 h-4"></i> משימות
-        </button>
+    <div class="grid grid-cols-2 gap-4 px-6 -mt-6 relative z-10">
+        <div class="card p-4 text-center">
+            <span class="text-[10px] text-slate-400 font-black uppercase block mb-1">פרויקטים</span>
+            <span id="stat-total" class="text-2xl font-black text-blue-600">0</span>
+        </div>
+        <div class="card p-4 text-center">
+            <span class="text-[10px] text-slate-400 font-black uppercase block mb-1">סנכרון</span>
+            <span class="text-xs font-bold text-green-500 flex items-center justify-center gap-1 mt-2">
+                <i data-lucide="check-circle" class="w-3 h-3"></i> פעיל
+            </span>
+        </div>
     </div>
 
-    <div id="contentArea" class="px-4 min-h-[500px]">
-        <div id="listView" class="view-section grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-        
-        <div id="calendarView" class="view-section hidden muni-card p-4">
-            <div class="flex justify-between items-center mb-4 bg-slate-50 p-2 rounded-xl">
-                <button onclick="changeMonth(-1)" class="p-2 hover:bg-white rounded-full transition shadow-sm"><i data-lucide="chevron-right" class="text-blue-700 w-5 h-5"></i></button>
-                <h2 id="calendarTitle" class="text-lg font-black text-slate-800"></h2>
-                <button onclick="changeMonth(1)" class="p-2 hover:bg-white rounded-full transition shadow-sm"><i data-lucide="chevron-left" class="text-blue-700 w-5 h-5"></i></button>
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-black text-slate-800 text-lg">אירועים קרובים</h2>
+        </div>
+        <div id="listView" class="space-y-3">
             </div>
-            <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
+    </div>
+</div>
+
+<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4 transition-all">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-8 shadow-2xl animate-slide-up">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-slate-800">אירוע חדש</h2>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
         </div>
         
-        <div id="tasksView" class="view-section hidden">
-            <div class="muni-card p-5">
-                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <div class="bg-blue-100 p-1.5 rounded-lg"><i data-lucide="list-todo" class="text-primary w-5 h-5"></i></div>
-                    משימות פתוחות
-                </h2>
-                <div class="mb-4 bg-yellow-50 border border-yellow-100 p-2 rounded-lg text-xs text-yellow-800 flex items-center gap-2">
-                    <i data-lucide="info" class="w-4 h-4"></i>
-                    מציג משימות עבור: <span id="tasksUserFilter" class="font-bold">כולם</span>
-                </div>
-                <div id="globalTaskList" class="space-y-3"></div>
-                <div id="noTasksMessage" class="hidden text-center py-10 text-slate-400">
-                    <i data-lucide="check-circle-2" class="w-12 h-12 mb-2 mx-auto opacity-30"></i> אין משימות
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="eventModal" class="fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm sm:p-4" onclick="closeModals()">
-    <div class="bg-white w-full md:max-w-4xl rounded-t-3xl md:rounded-3xl shadow-2xl relative flex flex-col md:flex-row overflow-hidden h-[90vh] md:h-auto md:max-h-[85vh] transition-transform duration-300 transform translate-y-0" onclick="event.stopPropagation()">
-        
-        <div class="absolute top-3 right-1/2 translate-x-1/2 w-12 h-1.5 bg-slate-200 rounded-full md:hidden z-20"></div>
-
-        <div class="w-full md:w-1/3 bg-slate-50 p-6 border-l border-slate-100 flex flex-col relative shrink-0">
-            <div class="flex justify-between items-start mb-3 mt-4 md:mt-0">
-                <span id="emDate" class="inline-block bg-white shadow-sm px-2.5 py-1 rounded-md text-xs font-bold text-blue-600"></span>
-                <span id="emStatus" class="inline-block px-2.5 py-1 rounded-md text-xs font-bold shadow-sm"></span>
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">שם האירוע / פרויקט</label>
+                <input id="inTitle" type="text" placeholder="למשל: שיפוץ הטיילת" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 font-bold transition">
             </div>
             
-            <h2 id="emTitle" class="text-2xl font-black text-slate-800 leading-tight mb-4"></h2>
-            
-            <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-primary rounded-2xl aspect-video flex items-center justify-center bg-white overflow-hidden transition-all shadow-sm" id="imagePreviewContainer">
-                <img id="emImage" class="absolute inset-0 w-full h-full object-cover hidden">
-                <div class="text-center p-4 opacity-60 group-hover:opacity-100 transition" id="uploadPlaceholder">
-                    <i data-lucide="camera" class="w-8 h-8 mx-auto mb-1 text-slate-300"></i><span class="text-[10px] text-slate-500 font-bold">הוסף תמונה</span>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">תאריך</label>
+                    <input id="inDate" type="text" placeholder="DD/MM/YYYY" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 transition">
                 </div>
-                <input type="file" id="emImageInput" class="hidden" accept="image/*" onchange="uploadImage(this)">
-            </div>
-            
-            <div class="mt-4 space-y-2">
-                <div class="flex items-center gap-2 text-sm text-slate-600 bg-white p-2.5 rounded-xl shadow-sm border border-slate-50">
-                    <i data-lucide="user-circle" class="w-4 h-4 text-blue-400"></i>
-                    <span id="emOwner" class="font-bold"></span>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">אחראי</label>
+                    <input id="inOwner" type="text" placeholder="שם" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 transition">
                 </div>
-                <div class="flex items-center gap-2 text-sm text-slate-600 bg-white p-2.5 rounded-xl shadow-sm border border-slate-50">
-                    <i data-lucide="users" class="w-4 h-4 text-blue-400"></i>
-                    <span id="emAudience" class="font-bold"></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-full md:w-2/3 p-6 flex flex-col bg-white overflow-y-auto modal-scroll-area relative">
-            <button onclick="closeModals()" class="hidden md:block absolute top-4 left-4 p-2 rounded-full hover:bg-slate-100 transition z-20"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
-            
-            <div class="mb-6">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-wider">תיאור האירוע</h3>
-                <div class="bg-slate-50 p-4 rounded-xl text-slate-700 text-sm leading-relaxed whitespace-pre-wrap" id="emDesc"></div>
             </div>
 
-            <div class="flex-1 flex flex-col min-h-0 bg-white rounded-xl border border-slate-100">
-                <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2"><i data-lucide="check-square" class="w-3 h-3"></i> משימות</h3>
-                    <span id="taskCount" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100"></span>
-                </div>
-                <div id="taskList" class="flex-1 overflow-y-auto p-2 space-y-2 mb-2 scrollbar-thin max-h-40"></div>
-                <div class="p-2 border-t border-slate-100 flex gap-2">
-                    <input type="text" id="newTaskInput" placeholder="משימה חדשה..." class="flex-1 bg-slate-50 border-transparent focus:bg-white text-sm rounded-lg">
-                    <button onclick="addNewTask()" class="bg-primary hover:bg-sky-600 text-white p-2.5 rounded-xl shadow-md transition active:scale-95"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="addModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm p-4" onclick="closeModals()">
-    <div class="bg-white w-full max-w-md p-6 rounded-3xl shadow-2xl transform transition-all" onclick="event.stopPropagation()">
-        <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <div class="bg-blue-100 p-2 rounded-full"><i data-lucide="sparkles" class="w-5 h-5 text-primary"></i></div>
-            יצירת אירוע חדש
-        </h2>
-        <div class="space-y-3">
-            <div><label class="text-xs font-bold text-slate-500 mb-1 block">שם האירוע</label><input type="text" id="addTitle" placeholder="למשל: פסטיבל נוער"></div>
-            <div><label class="text-xs font-bold text-slate-500 mb-1 block">תאריך (14/06/2026 או טווח)</label><input type="text" id="addDate" placeholder="DD/MM/YYYY"></div>
-            <div><label class="text-xs font-bold text-slate-500 mb-1 block">פרטים נוספים</label><textarea id="addDesc" rows="2" placeholder="תיאור קצר"></textarea></div>
-            <div class="grid grid-cols-2 gap-3"><input type="text" id="addAudience" placeholder="קהל יעד"><input type="text" id="addOwner" placeholder="אחראי"></div>
-            <button onclick="saveManualEvent()" class="w-full bg-primary hover:bg-sky-600 text-white py-3.5 rounded-xl font-bold mt-2 shadow-lg active:scale-95 transition">שמור וסנכרן</button>
-        </div>
-    </div>
-</div>
-
-<div id="settingsModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm p-4" onclick="closeModals()">
-    <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-2xl" onclick="event.stopPropagation()">
-        <h2 class="text-xl font-bold text-slate-800 mb-4 text-center">מי משתמש באפליקציה?</h2>
-        <p class="text-sm text-gray-500 text-center mb-4">בחר את שמך כדי לקבל התראות על משימות חדשות</p>
-        <div class="space-y-2 max-h-60 overflow-y-auto" id="userList">
-            </div>
-        <div class="mt-4 pt-4 border-t border-gray-100 text-center">
-            <button onclick="enableNotifications()" class="text-blue-600 text-xs font-bold bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100">
-                <i data-lucide="bell" class="inline w-3 h-3 ml-1"></i> אפשר התראות
+            <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition flex justify-center items-center gap-3 mt-4">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                <span>שמור וסנכרן לאקסל</span>
             </button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- Config ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwR4ob1pJZ0jlNCU9NVQwyagRoDkriXkul4OJOI_Cq2N09qdUS1VGMABeuFuclx-UH2/exec";
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
+    // --- הגדרות ---
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
     
-    const firebaseConfig = {
-      apiKey: "AIzaSyBUXyx1kxTaEzhrwLjmgp-4-BszrDUgch4",
-      authDomain: "bat-yam100.firebaseapp.com",
-      databaseURL: "https://bat-yam100-default-rtdb.firebaseio.com",
-      projectId: "bat-yam100",
-      appId: "1:767374849866:web:812999710dca298c64b3b3"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const eventsRef = db.ref('events');
+    // הקישור שלך מוטמע כאן:
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 
     let events = [];
-    let currentUser = localStorage.getItem('batyam_user') || 'כללי';
-    let currentDate = new Date(2026, 6, 1);
-    let activeEventId = null;
-    let isFirstLoad = true;
-    const colors = ['#0077b6', '#023e8a', '#0096c7', '#48cae4', '#ffb703', '#fb8500']; 
 
-    // --- PWA Manifest ---
-    const manifest = {
-        "name": "Bat Yam 100", "short_name": "BatYam100", "start_url": ".", "display": "standalone", "background_color": "#f8fafc", "theme_color": "#0077b6",
-        "icons": [{ "src": "favicon.png", "sizes": "192x192", "type": "image/png" }]
-    };
-    document.querySelector('#manifest-link').setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'})));
-
-    // --- Logic ---
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('currentUserDisplay').innerText = currentUser;
-        loadFromLinkedSheet(true);
-        if(!localStorage.getItem('batyam_user')) openSettings(); 
-    });
-
-    eventsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        const newEvents = data ? Object.values(data).map(e => ({
-            ...e, 
-            dateObj: new Date(e.dateObj || new Date()), 
-            endDateObj: e.endDateObj ? new Date(e.endDateObj) : new Date(e.dateObj || new Date()),
-            tasks: e.tasks || []
-        })) : [];
-        
-        if (!isFirstLoad) checkNewAssignments(newEvents);
-        
-        events = newEvents;
-        isFirstLoad = false;
-        renderUserList(); // Update dynamic list
-        refreshView();
-        
-        const loader = document.getElementById('loader-screen');
-        if(loader) { loader.style.opacity = '0'; setTimeout(()=>loader.style.display='none', 500); }
-    });
-
-    // --- Dynamic User List Logic (New) ---
-    function renderUserList() {
-        const uniqueOwners = new Set(['כללי', 'אורח']);
-        events.forEach(e => {
-            if(e.owner) {
-                // לוגיקה חכמה: מחליף + בפסיקים, ואז מפצל לפי פסיקים
-                const parts = e.owner.replace(/\+/g, ',').split(',');
-                parts.forEach(part => {
-                    // ניקוי רווחים ולקיחת המילה הראשונה בלבד
-                    const cleanName = part.trim().split(' ')[0];
-                    if(cleanName && cleanName.length > 1) uniqueOwners.add(cleanName);
-                });
-            }
-        });
-        
-        const sortedOwners = Array.from(uniqueOwners).sort();
-
-        const container = document.getElementById('userList');
-        container.innerHTML = sortedOwners.map(name => `
-            <button onclick="selectUser('${name}')" class="w-full text-right px-4 py-3 rounded-xl border ${currentUser===name ? 'border-blue-500 bg-blue-50 text-blue-700 font-bold' : 'border-gray-100 hover:bg-gray-50'} transition">
-                ${name}
-            </button>
-        `).join('');
-    }
-
-    // --- Notification Logic ---
-    function checkNewAssignments(newEventsList) {
-        if(currentUser === 'כללי' || currentUser === 'אורח') return;
-        const myOldCount = events.filter(e => e.owner && e.owner.includes(currentUser)).length;
-        const myNewCount = newEventsList.filter(e => e.owner && e.owner.includes(currentUser)).length;
-        if (myNewCount > myOldCount) sendNotification("משימה חדשה!", `הוקצה לך אירוע חדש במערכת`);
-    }
-
-    function sendNotification(title, body) {
-        if (Notification.permission === "granted") new Notification(title, { body: body, icon: 'favicon.png' });
-    }
-
-    function enableNotifications() {
-        Notification.requestPermission().then(permission => { if (permission === "granted") alert("התראות הופעלו בהצלחה!"); });
-    }
-
-    function setTaskReminder(taskText) {
-        const min = prompt("בעוד כמה דקות להזכיר לך?", "60");
-        if(min) { setTimeout(() => { sendNotification("תזכורת למשימה", taskText); }, min * 60 * 1000); alert(`תזכורת נקבעה לעוד ${min} דקות`); }
-    }
-
-    // --- Settings ---
-    function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('settingsModal').classList.add('flex'); renderUserList(); }
-    function selectUser(name) {
-        currentUser = name;
-        localStorage.setItem('batyam_user', name);
-        document.getElementById('currentUserDisplay').innerText = name;
-        closeModals();
-        refreshView();
-    }
-
-    // --- Standard Logic ---
-    function parseDateStringWithRange(dateStr) {
-        if (!dateStr) return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
-        const rangeMatch = dateStr.match(/^(\d{1,2})[-](\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
-        if (rangeMatch) {
-            const startDay = parseInt(rangeMatch[1]), endDay = parseInt(rangeMatch[2]), month = parseInt(rangeMatch[3]) - 1;
-            let year = parseInt(rangeMatch[4]); if (year < 100) year += 2000;
-            return { start: new Date(year, month, startDay), end: new Date(year, month, endDay) };
-        }
-        const parts = dateStr.split(/[\/\.]/);
-        if (parts.length >= 2) {
-            const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1;
-            let year = parts.length === 3 ? parseInt(parts[2]) : new Date().getFullYear(); if (year < 100) year += 2000;
-            const d = new Date(year, month, day);
-            return { start: d, end: d };
-        }
-        return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
-    }
-
-    async function syncToSheet(eventData) { try { await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(eventData) }); } catch (e) { console.error("Sync failed", e); } }
-    function saveEvent(e) { db.ref('events/' + e.id).set({ ...e, dateObj: e.dateObj.toISOString(), endDateObj: e.endDateObj ? e.endDateObj.toISOString() : null }); syncToSheet(e); refreshView(); }
-
-    function refreshView() {
-        if (!document.getElementById('listView').classList.contains('hidden')) renderList();
-        if (!document.getElementById('calendarView').classList.contains('hidden')) renderCalendar();
-        if (!document.getElementById('tasksView').classList.contains('hidden')) renderGlobalTasks();
-        if(activeEventId && !document.getElementById('eventModal').classList.contains('hidden')) {
-            const e = events.find(ev => ev.id == activeEventId);
-            if(e) updateModalContent(e);
-        }
-        lucide.createIcons();
-    }
-
-    function renderList() {
-        const list = document.getElementById('listView'); list.innerHTML = '';
-        const allEvents = [...events].sort((a,b) => a.dateObj - b.dateObj);
-        allEvents.forEach((e, i) => {
-            const pending = (e.tasks||[]).filter(t=>!t.done).length;
-            const dateNum = e.dateStr ? e.dateStr.split(/[\/\.-]/)[0] : '?';
-            const dateMonth = e.dateObj.toLocaleString('en-us',{month:'short'});
-            // הדגשת כרטיסיות שלי
-            const isMine = e.owner && e.owner.includes(currentUser);
-            const borderClass = isMine ? 'ring-2 ring-blue-400' : '';
-
-            list.innerHTML += `<div onclick="openEventModal('${e.id}')" class="muni-card p-4 cursor-pointer group relative ${borderClass} hover:border-blue-300"><div class="flex justify-between items-start mb-3"><div class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl shadow-sm border border-white/50" style="background: linear-gradient(135deg, ${colors[i%colors.length]}, var(--primary));"><span class="text-lg font-black leading-none text-white">${dateNum}</span><span class="text-[9px] uppercase font-bold leading-none mt-0.5 text-white/80">${dateMonth}</span></div>${pending ? `<span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg text-[10px] font-bold border border-red-100 flex items-center gap-1 shadow-sm"><i data-lucide="alert-circle" class="w-3 h-3"></i> ${pending}</span>`:''}</div><h3 class="text-base font-bold text-slate-800 mb-1 leading-tight group-hover:text-primary transition">${e.title}</h3><div class="flex flex-col gap-1.5 mt-3"><div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium bg-slate-50 w-fit px-2 py-0.5 rounded-md"><i data-lucide="calendar" class="w-3 h-3 text-blue-400"></i> ${e.dateStr || 'TBA'}</div></div></div>`;
-        });
-    }
-
-    function renderCalendar() {
-        document.getElementById('calendarTitle').innerText = currentDate.toLocaleString('he-IL', {month:'long', year:'numeric'});
-        const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
-        const year=currentDate.getFullYear(), month=currentDate.getMonth();
-        const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month+1, 0).getDate();
-        ['א','ב','ג','ד','ה','ו','ש'].forEach(d=>grid.innerHTML+=`<div class="text-center text-slate-400 text-xs font-bold py-2">${d}</div>`);
-        for(let i=0; i<firstDay; i++) grid.innerHTML+=`<div class="h-24 bg-slate-50/50 rounded-xl"></div>`;
-        for(let d=1; d<=daysInMonth; d++) {
-            const currentDay = new Date(year, month, d); currentDay.setHours(0,0,0,0);
-            const dayEv = events.filter(e => {
-                if(!e.dateObj) return false;
-                const start = new Date(e.dateObj); start.setHours(0,0,0,0);
-                const end = e.endDateObj ? new Date(e.endDateObj) : new Date(start); end.setHours(0,0,0,0);
-                return currentDay.getTime() >= start.getTime() && currentDay.getTime() <= end.getTime();
+    // פונקציית טעינה
+    async function loadData() {
+        document.getElementById('loader').classList.remove('hidden');
+        try {
+            const response = await fetch(CSV_URL + '&t=' + Date.now());
+            const csvText = await response.text();
+            
+            Papa.parse(csvText, {
+                header: true, skipEmptyLines: true,
+                complete: (results) => {
+                    events = results.data;
+                    renderList();
+                    document.getElementById('stat-total').innerText = events.length;
+                    document.getElementById('loader').classList.add('hidden');
+                }
             });
-            let html = dayEv.map((e, idx)=>`<div onclick="openEventModal('${e.id}'); event.stopPropagation()" class="text-[9px] px-1.5 py-0.5 rounded-md text-white mb-0.5 truncate cursor-pointer hover:opacity-90 font-bold shadow-sm" style="background:${colors[idx%colors.length]}">${e.title}</div>`).join('');
-            grid.innerHTML += `<div class="h-28 bg-white rounded-xl p-1 border border-slate-100 hover:border-blue-300 transition overflow-hidden shadow-sm flex flex-col"><span class="text-slate-400 text-xs font-bold mb-1 text-center bg-slate-50 rounded py-0.5">${d}</span><div class="flex flex-col gap-0.5 overflow-y-auto scrollbar-hide flex-1">${html}</div></div>`;
+        } catch (e) {
+            console.error("Error loading data:", e);
+            document.getElementById('loader').classList.add('hidden');
         }
     }
 
-    function renderGlobalTasks() {
-        const cont = document.getElementById('globalTaskList'); cont.innerHTML='';
-        document.getElementById('tasksUserFilter').innerText = currentUser;
+    // פונקציית רינדור רשימה
+    function renderList() {
+        const container = document.getElementById('listView');
+        container.innerHTML = '';
         
-        let relevantEvents = events;
-        if (currentUser !== 'כללי' && currentUser !== 'אורח') {
-            relevantEvents = events.filter(e => e.owner && e.owner.includes(currentUser));
+        if (events.length === 0) {
+            container.innerHTML = '<div class="text-center py-10 text-slate-400 font-medium">אין אירועים להצגה</div>';
+            return;
         }
 
-        let count=0;
-        relevantEvents.sort((a,b)=>a.dateObj-b.dateObj).forEach((e, idx) => {
-            const open = (e.tasks||[]).filter(t=>!t.done);
-            if(open.length) {
-                count += open.length;
-                cont.innerHTML += `<div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 border-r-4" style="border-right-color:${colors[idx%colors.length]}"><div class="flex items-center gap-2 mb-3 border-b border-slate-50 pb-2"><h4 class="font-bold text-slate-800 text-sm cursor-pointer hover:text-primary transition" onclick="openEventModal('${e.id}')">${e.title}</h4><span class="mr-auto text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded">${e.dateStr}</span></div><div class="space-y-2">${open.map(t=>`<div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg"><div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></div><span class="text-sm text-slate-600">${t.text}</span></div><button onclick="setTaskReminder('${t.text}')" class="text-slate-300 hover:text-blue-500 px-2"><i data-lucide="bell" class="w-4 h-4"></i></button></div>`).join('')}</div></div>`;
-            }
+        // מיון הפוך - החדשים למעלה
+        [...events].reverse().forEach(e => {
+            const title = e.Title || e['שם האירוע'] || 'ללא שם';
+            const date = e.Date || e['תאריך'] || '--/--';
+            const owner = e.Owner || e['אחראי'] || '-';
+            
+            container.innerHTML += `
+                <div class="card p-5 flex items-center gap-5 border-r-4 border-r-blue-500">
+                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 text-blue-600 font-black shrink-0">
+                        <span class="text-lg leading-none">${date.split('/')[0] || '?'}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-slate-800 truncate text-base">${title}</h3>
+                        <p class="text-xs text-slate-400 font-bold mt-0.5">👤 ${owner}</p>
+                    </div>
+                    <i data-lucide="chevron-left" class="w-4 h-4 text-slate-300"></i>
+                </div>
+            `;
         });
-        document.getElementById('noTasksMessage').classList.toggle('hidden', count>0);
-    }
-
-    function openEventModal(id) { activeEventId = id; const e = events.find(ev => ev.id == id); updateModalContent(e); const m = document.getElementById('eventModal'); m.classList.remove('hidden'); m.classList.add('flex'); }
-    function updateModalContent(e) {
-        if(!e) return;
-        document.getElementById('emTitle').innerText = e.title; document.getElementById('emDate').innerText = e.dateStr || '—';
-        document.getElementById('emDesc').innerText = e.desc || ''; document.getElementById('emAudience').innerText = e.audience || '—'; document.getElementById('emOwner').innerText = e.owner || '—';
-        const img = document.getElementById('emImage'), ph = document.getElementById('uploadPlaceholder');
-        if(e.image) { img.src = e.image; img.classList.remove('hidden'); ph.classList.add('hidden'); } else { img.classList.add('hidden'); ph.classList.remove('hidden'); }
-        const st = document.getElementById('emStatus'); st.innerText = e.status || 'חדש'; st.className = `inline-block px-2 py-1 rounded text-xs font-bold text-white shadow-sm ${e.status === 'בוצע' ? 'bg-green-500' : 'bg-blue-500'}`;
-        const list = document.getElementById('taskList'); list.innerHTML='';
-        (e.tasks||[]).forEach((t,i) => {
-            list.innerHTML += `<div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition group"><input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary cursor-pointer" ${t.done?'checked':''} onchange="toggleTask(${i})"><span class="flex-1 text-sm font-medium text-slate-700 ${t.done?'line-through text-slate-400':''}">${t.text}</span><button onclick="setTaskReminder('${t.text}')" class="text-slate-300 hover:text-blue-500 px-2"><i data-lucide="bell" class="w-4 h-4"></i></button><button onclick="delTask(${i})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`;
-        });
-        document.getElementById('taskCount').innerText = `${(e.tasks||[]).filter(t=>!t.done).length} לביצוע`;
         lucide.createIcons();
     }
 
-    function toggleTask(i) { const e=events.find(x=>x.id==activeEventId); e.tasks[i].done=!e.tasks[i].done; saveEvent(e); updateModalContent(e); }
-    function delTask(i) { if(confirm('למחוק?')) { const e=events.find(x=>x.id==activeEventId); e.tasks.splice(i,1); saveEvent(e); updateModalContent(e); } }
-    function addNewTask() { const inp=document.getElementById('newTaskInput'); const val=inp.value.trim(); if(!val) return; const e=events.find(x=>x.id==activeEventId); if(!e.tasks) e.tasks=[]; e.tasks.push({text:val, done:false}); inp.value=''; saveEvent(e); updateModalContent(e); }
-    function uploadImage(inp) { if(inp.files[0]) { const r = new FileReader(); r.onload = function(res) { const e=events.find(x=>x.id==activeEventId); e.image = res.target.result; saveEvent(e); updateModalContent(e); }; r.readAsDataURL(inp.files[0]); } }
-    function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
-    function saveManualEvent() {
-        const title = document.getElementById('addTitle').value; if(!title) return alert("חובה שם");
-        const dStr = document.getElementById('addDate').value; const dates = parseDateStringWithRange(dStr);
-        const ev = { id: 'evt_'+Date.now(), title: title, dateObj: dates.start.toISOString(), endDateObj: dates.end.toISOString(), dateStr: dStr || 'טרם נקבע', desc: document.getElementById('addDesc').value, audience: document.getElementById('addAudience').value, owner: document.getElementById('addOwner').value, status: 'חדש', tasks: [] };
-        saveEvent(ev); closeModals(); document.getElementById('addTitle').value = ''; document.getElementById('addDate').value = '';
-    }
-    function loadFromLinkedSheet(silent=false) {
-        fetch(SHEET_CSV_URL).then(r=>r.text()).then(csv=>{
-            Papa.parse(csv, {header:true, skipEmptyLines:true, complete: res => {
-                const updates = {};
-                res.data.forEach(row => {
-                    if(!row.Title) return;
-                    const id = 'evt_' + row.Title.replace(/[^a-zA-Z0-9א-ת]/g, '');
-                    const dates = parseDateStringWithRange(row.Date);
-                    let tasks = []; if(row.Tasks) { tasks = row.Tasks.split(',').map(t=>({ text: t.replace('(V)','').trim(), done: t.includes('(V)') })).filter(t=>t.text); }
-                    updates[id] = { id: id, title: row.Title, dateStr: row.Date || 'טרם נקבע', dateObj: dates.start.toISOString(), endDateObj: dates.end.toISOString(), desc: row.Description, status: row.Status, owner: row.Owner, audience: row.Audience, tasks: tasks };
-                });
-                db.ref('events').update(updates);
-                if(!silent) alert("סנכרון הושלם");
-            }});
-        });
+    // פונקציית שמירה לאקסל (עם no-cors)
+    async function saveToExcel() {
+        const title = document.getElementById('inTitle').value;
+        const date = document.getElementById('inDate').value;
+        const owner = document.getElementById('inOwner').value;
+
+        if(!title) return alert("אנא הזן שם לאירוע");
+
+        const btn = document.getElementById('saveBtn');
+        btn.innerHTML = '<div class="loader-spin"></div> <span>שומר...</span>';
+        btn.disabled = true;
+
+        const payload = {
+            title: title,
+            dateStr: date,
+            owner: owner
+        };
+
+        try {
+            // שליחה בשיטת no-cors לעקיפת חסימות גוגל
+            await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // "עדכון אופטימי" - מוסיף לרשימה מיד
+            events.unshift({ "Title": title, "Date": date, "Owner": owner });
+            renderList();
+            
+            alert("הנתונים נשלחו בהצלחה!");
+            document.getElementById('addModal').classList.add('hidden');
+            
+            // ניקוי שדות
+            document.getElementById('inTitle').value = '';
+            document.getElementById('inDate').value = '';
+            document.getElementById('inOwner').value = '';
+
+            // טעינה מחדש אחרי השהייה קלה
+            setTimeout(loadData, 3000);
+
+        } catch (e) {
+            alert("שגיאה בתקשורת עם השרת");
+            console.error(e);
+        } finally {
+            btn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> <span>שמור וסנכרן לאקסל</span>';
+            btn.disabled = false;
+            lucide.createIcons();
+        }
     }
 
-    function switchView(v) { document.querySelectorAll('.view-section').forEach(x=>x.classList.add('hidden')); document.getElementById(v+'View').classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); document.getElementById('btn-'+v).classList.add('active'); refreshView(); }
-    function changeMonth(d) { currentDate.setMonth(currentDate.getMonth()+d); refreshView(); }
-    function closeModals() { document.querySelectorAll('.fixed').forEach(e=>{ if(e.id !== 'loader-screen') {e.classList.add('hidden'); e.classList.remove('flex');} }); }
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('data:application/javascript;base64,').then(() => console.log('SW Registered')); }
+    document.addEventListener('DOMContentLoaded', loadData);
 </script>
+
 </body>
 </html>
