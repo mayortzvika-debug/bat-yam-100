@@ -102,12 +102,11 @@
     // --- הגדרות ---
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
     
-    // הקישור שלך מוטמע כאן:
+    // הקישור שלך (מההודעה הקודמת):
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 
     let events = [];
 
-    // פונקציית טעינה
     async function loadData() {
         document.getElementById('loader').classList.remove('hidden');
         try {
@@ -124,12 +123,11 @@
                 }
             });
         } catch (e) {
-            console.error("Error loading data:", e);
+            console.error(e);
             document.getElementById('loader').classList.add('hidden');
         }
     }
 
-    // פונקציית רינדור רשימה
     function renderList() {
         const container = document.getElementById('listView');
         container.innerHTML = '';
@@ -139,7 +137,6 @@
             return;
         }
 
-        // מיון הפוך - החדשים למעלה
         [...events].reverse().forEach(e => {
             const title = e.Title || e['שם האירוע'] || 'ללא שם';
             const date = e.Date || e['תאריך'] || '--/--';
@@ -161,7 +158,7 @@
         lucide.createIcons();
     }
 
-    // פונקציית שמירה לאקסל (עם no-cors)
+    // התיקון הגדול: שימוש ב-URLSearchParams במקום JSON
     async function saveToExcel() {
         const title = document.getElementById('inTitle').value;
         const date = document.getElementById('inDate').value;
@@ -173,34 +170,31 @@
         btn.innerHTML = '<div class="loader-spin"></div> <span>שומר...</span>';
         btn.disabled = true;
 
-        const payload = {
-            title: title,
-            dateStr: date,
-            owner: owner
-        };
+        // הכנת הנתונים כפרמטרים של כתובת (כמו טופס רגיל)
+        const formData = new URLSearchParams();
+        formData.append('title', title);
+        formData.append('dateStr', date);
+        formData.append('owner', owner);
 
         try {
-            // שליחה בשיטת no-cors לעקיפת חסימות גוגל
             await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString() // שליחה כמחרוזת פרמטרים
             });
 
-            // "עדכון אופטימי" - מוסיף לרשימה מיד
+            // עדכון חזותי
             events.unshift({ "Title": title, "Date": date, "Owner": owner });
             renderList();
             
             alert("הנתונים נשלחו בהצלחה!");
             document.getElementById('addModal').classList.add('hidden');
             
-            // ניקוי שדות
             document.getElementById('inTitle').value = '';
             document.getElementById('inDate').value = '';
             document.getElementById('inOwner').value = '';
 
-            // טעינה מחדש אחרי השהייה קלה
             setTimeout(loadData, 3000);
 
         } catch (e) {
