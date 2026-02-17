@@ -286,16 +286,19 @@
                         const existingEvent = events.find(e => e.id === id);
                         if (existingEvent && existingEvent.image) existingImage = existingEvent.image;
 
-                        updates[id] = { 
-                            id, 
-                            title, 
-                            dateStr: dateRaw || 'טרם נקבע', 
-                            dateObj: dates.start.toISOString(), 
-                            endDateObj: dates.end.toISOString(), 
-                            desc, status, owner, audience, tasks, 
-                            image: existingImage 
-                        };
-                    });
+                       updates[id] = { 
+    id:         id,
+    title:      title       || '',
+    dateStr:    dateRaw     || 'טרם נקבע', 
+    dateObj:    dates.start.toISOString(), 
+    endDateObj: dates.end.toISOString(), 
+    desc:       desc        || '',
+    status:     status      || 'חדש',
+    owner:      owner       || '',
+    audience:   audience    || '',
+    tasks:      tasks       || [],
+    image:      existingImage || null
+};
 
                     // מחיקת אירועים שהוסרו מהאקסל
                     events.forEach(e => { 
@@ -689,3 +692,4 @@
 </script>
 </body>
 </html>
+
