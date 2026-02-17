@@ -4,170 +4,688 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bat Yam 100</title>
+    
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0077b6">
+    <link id="manifest-link" rel="manifest" href="">
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #0077b6; --bg: #f8fafc; }
-        body { background: var(--bg); font-family: 'Heebo', sans-serif; padding-bottom: 80px; }
-        .hero { background-image: linear-gradient(to bottom, rgba(0,50,100,0.6), rgba(0,119,182,0.2)), url('baner.jpg'); background-size: cover; background-position: center; height: 180px; border-radius: 0 0 30px 30px; }
-        .muni-card { background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: 0.2s; }
-        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(0, 119, 182, 0.3); }
+        :root { --primary: #0077b6; --bg-grad-start: #f8fafc; --text-main: #0f172a; }
+        body { background: var(--bg-grad-start); color: var(--text-main); font-family: 'Heebo', sans-serif; min-height: 100vh; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        .hero-wrapper { position: relative; height: 180px; border-radius: 0 0 30px 30px; box-shadow: 0 10px 40px -10px rgba(0, 119, 182, 0.4); overflow: hidden; margin-bottom: 20px; background-image: linear-gradient(to bottom, rgba(0, 50, 100, 0.6), rgba(0, 119, 182, 0.2)), url('baner.jpg'); background-size: cover; background-position: center; }
+        .glass-btn { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.4); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; height: 32px; }
+        .nav-container { background: white; border-radius: 16px; padding: 5px; box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); display: flex; gap: 5px; margin: 0 16px 20px 16px; }
+        .nav-btn { flex: 1; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 700; color: #64748b; background: transparent; border: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 119, 182, 0.2); }
+        .muni-card { background: #ffffff; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
+        input, textarea, select { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; width: 100%; outline: none; font-size: 16px; } 
+        .pulse-logo { animation: pulse-logo 2s infinite; }
+        @keyframes pulse-logo { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-300">
-    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p class="text-gray-400 font-bold">טוען נתונים...</p>
+<div id="loader-screen" class="fixed inset-0 z-[9999] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="relative w-24 h-24 flex items-center justify-center mb-4">
+        <div class="absolute inset-0 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+        <img src="loader.png" class="w-16 h-16 object-contain pulse-logo p-2"> 
+    </div>
+    <p class="text-slate-500 text-xs font-bold tracking-widest">טוען נתונים...</p>
 </div>
 
-<div class="max-w-xl mx-auto min-h-screen">
-    <div class="hero p-6 flex flex-col justify-between text-white shadow-xl">
-        <div class="flex justify-between items-center">
-            <div class="bg-black/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold border border-white/10" id="userDisplay">אורח</div>
-            <div class="flex gap-2">
-                <button onclick="loadData()" class="bg-white/20 p-2 rounded-full backdrop-blur-md"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-                <button onclick="openModal('addModal')" class="bg-white/40 p-2 rounded-full backdrop-blur-md"><i data-lucide="plus" class="w-5 h-5"></i></button>
+<div class="max-w-4xl mx-auto">
+    <div class="hero-wrapper">
+        <div class="relative z-10 px-6 pt-6 pb-4 h-full flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="openSettings()" class="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10 hover:bg-black/30 transition">
+                    <i data-lucide="user" class="w-3 h-3 text-white"></i>
+                    <span id="currentUserDisplay" class="text-[10px] font-bold text-white tracking-wider">אורח</span>
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="loadFromLinkedSheet()" class="glass-btn hover:bg-white/30">
+                        <i data-lucide="refresh-cw"></i> <span class="hidden sm:inline">סנכרון</span>
+                    </button>
+                    <button onclick="openAddModal()" class="glass-btn bg-white/30 hover:bg-white/40">
+                        <i data-lucide="plus"></i> <span class="hidden sm:inline">חדש</span>
+                    </button>
+                </div>
+            </div>
+            <div class="text-white mb-2">
+                <h1 class="text-3xl font-black tracking-tight leading-none drop-shadow-md">BAT YAM <span class="text-yellow-400">100</span></h1>
+                <p class="hero-subtitle text-blue-50 text-sm font-medium mt-1 opacity-90 drop-shadow-sm">ניהול אירועים ומשימות 2026</p>
             </div>
         </div>
-        <div>
-            <h1 class="text-3xl font-black tracking-tighter leading-none">BAT YAM <span class="text-yellow-400">100</span></h1>
-            <p class="text-blue-100 text-sm font-medium mt-1">דשבורד ניהול אירועים</p>
-        </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 px-6 -mt-8 relative z-10">
-        <div class="muni-card p-4 text-center">
-            <span class="text-[10px] text-gray-400 font-black uppercase block">סה"כ פרויקטים</span>
-            <span id="stat-total" class="text-2xl font-black text-blue-600">0</span>
-        </div>
-        <div class="muni-card p-4 text-center">
-            <span class="text-[10px] text-gray-400 font-black uppercase block">משימות פתוחות</span>
-            <span id="stat-tasks" class="text-2xl font-black text-red-500">0</span>
-        </div>
+    <div class="nav-container">
+        <button onclick="switchView('list')" id="btn-list" class="nav-btn active"><i data-lucide="layout-list" class="w-4 h-4"></i> רשימה</button>
+        <button onclick="switchView('calendar')" id="btn-calendar" class="nav-btn"><i data-lucide="calendar" class="w-4 h-4"></i> לוח שנה</button>
+        <button onclick="switchView('tasks')" id="btn-tasks" class="nav-btn"><i data-lucide="check-square" class="w-4 h-4"></i> משימות</button>
     </div>
 
-    <div id="listView" class="p-6 space-y-4 pb-24"></div>
-
-    <div class="fixed bottom-6 left-6 right-6 bg-white/80 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-2 flex justify-around items-center max-w-xl mx-auto z-50">
-        <button onclick="switchTab('list')" class="nav-btn active flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all"><i data-lucide="layout-list" class="w-5 h-5"></i><span class="text-[10px] font-bold">רשימה</span></button>
-        <button onclick="switchTab('calendar')" class="nav-btn flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all text-gray-400"><i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[10px] font-bold">יומן</span></button>
-        <button onclick="switchTab('tasks')" class="nav-btn flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all text-gray-400"><i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[10px] font-bold">משימות</span></button>
+    <div id="contentArea" class="px-4 min-h-[500px]">
+        <div id="listView" class="view-section grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        <div id="calendarView" class="view-section hidden muni-card p-4">
+            <div class="flex justify-between items-center mb-4 bg-slate-50 p-2 rounded-xl">
+                <button onclick="changeMonth(-1)" class="p-2 hover:bg-white rounded-full transition shadow-sm"><i data-lucide="chevron-right" class="text-blue-700 w-5 h-5"></i></button>
+                <h2 id="calendarTitle" class="text-lg font-black text-slate-800"></h2>
+                <button onclick="changeMonth(1)" class="p-2 hover:bg-white rounded-full transition shadow-sm"><i data-lucide="chevron-left" class="text-blue-700 w-5 h-5"></i></button>
+            </div>
+            <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
+        </div>
+        <div id="tasksView" class="view-section hidden">
+            <div class="muni-card p-5">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <div class="bg-blue-100 p-1.5 rounded-lg"><i data-lucide="list-todo" class="text-primary w-5 h-5"></i></div> דשבורד משימות
+                </h2>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-yellow-50 border border-yellow-100 p-2 rounded-xl text-xs text-yellow-800 flex flex-col justify-center">
+                        <span class="opacity-60 text-[10px]">אחראי</span>
+                        <div class="font-bold flex items-center gap-1"><i data-lucide="user" class="w-3 h-3"></i> <span id="tasksUserFilter">כולם</span></div>
+                    </div>
+                    <div class="relative">
+                        <select id="audienceFilter" onchange="renderGlobalTasks()" class="w-full bg-blue-50 border-blue-100 text-blue-900 text-xs font-bold p-2 rounded-xl h-full appearance-none outline-none focus:ring-2 focus:ring-blue-200">
+                            <option value="all">כל הקהלים</option>
+                        </select>
+                        <i data-lucide="filter" class="w-3 h-3 text-blue-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+                </div>
+                <div id="globalTaskList" class="space-y-3"></div>
+                <div id="noTasksMessage" class="hidden text-center py-10 text-slate-400"><i data-lucide="check-circle-2" class="w-12 h-12 mb-2 mx-auto opacity-30"></i> אין משימות</div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center backdrop-blur-sm">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-8 shadow-2xl">
-        <h2 class="text-2xl font-black text-slate-800 mb-6">הוספת אירוע</h2>
-        <div class="space-y-4">
-            <input id="inTitle" type="text" placeholder="שם האירוע" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 font-bold">
-            <input id="inDate" type="text" placeholder="תאריך (DD/MM/YYYY)" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none">
-            <input id="inOwner" type="text" placeholder="אחראי" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none">
-            <button onclick="saveNewEvent()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition">שמור באקסל</button>
-            <button onclick="closeModal('addModal')" class="w-full text-gray-400 font-bold py-2">סגור</button>
+<!-- Event Modal -->
+<div id="eventModal" class="fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm sm:p-4" onclick="closeModals()">
+    <div class="bg-white w-full md:max-w-4xl rounded-t-3xl md:rounded-3xl shadow-2xl relative flex flex-col md:flex-row overflow-hidden h-[90vh] md:h-auto md:max-h-[85vh]" onclick="event.stopPropagation()">
+        <div class="w-full md:w-1/3 bg-slate-50 p-6 border-l border-slate-100 flex flex-col relative shrink-0">
+            <div class="flex justify-between items-start mb-3"><span id="emDate" class="bg-white shadow-sm px-2.5 py-1 rounded-md text-xs font-bold text-blue-600"></span><span id="emStatus" class="inline-block px-2.5 py-1 rounded-md text-xs font-bold shadow-sm"></span></div>
+            <h2 id="emTitle" class="text-2xl font-black text-slate-800 leading-tight mb-4"></h2>
+            <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-primary rounded-2xl aspect-video flex items-center justify-center bg-white overflow-hidden transition-all shadow-sm" id="imagePreviewContainer" onclick="document.getElementById('emImageInput').click()">
+                <img id="emImage" class="absolute inset-0 w-full h-full object-cover hidden">
+                <div class="text-center p-4 opacity-60 transition" id="uploadPlaceholder"><i data-lucide="camera" class="w-8 h-8 mx-auto mb-1 text-slate-300"></i><span class="text-[10px] text-slate-500 font-bold">הוסף תמונה</span></div>
+                <input type="file" id="emImageInput" class="hidden" accept="image/*" onchange="uploadImage(this)">
+            </div>
+            <div class="mt-4 space-y-2">
+                <div class="flex items-center gap-2 text-sm text-slate-600 bg-white p-2.5 rounded-xl shadow-sm border border-slate-50"><i data-lucide="user-circle" class="w-4 h-4 text-blue-400"></i> <span id="emOwner" class="font-bold"></span></div>
+                <div class="flex items-center gap-2 text-sm text-slate-600 bg-white p-2.5 rounded-xl shadow-sm border border-slate-50"><i data-lucide="users" class="w-4 h-4 text-blue-400"></i> <span id="emAudience" class="font-bold"></span></div>
+            </div>
         </div>
+        <div class="w-full md:w-2/3 p-6 flex flex-col bg-white overflow-y-auto relative">
+            <button onclick="closeModals()" class="hidden md:block absolute top-4 left-4 p-2 rounded-full hover:bg-slate-100 transition z-20"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+            <div class="mb-6"><h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-wider">תיאור האירוע</h3><div class="bg-slate-50 p-4 rounded-xl text-slate-700 text-sm leading-relaxed whitespace-pre-wrap" id="emDesc"></div></div>
+            <div class="flex-1 flex flex-col min-h-0 bg-white rounded-xl border border-slate-100">
+                <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl"><h3 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2"><i data-lucide="check-square" class="w-3 h-3"></i> משימות</h3><span id="taskCount" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100"></span></div>
+                <div id="taskList" class="flex-1 overflow-y-auto p-2 space-y-2 mb-2 scrollbar-thin max-h-40"></div>
+                <div class="p-2 border-t border-slate-100 flex gap-2"><input type="text" id="newTaskInput" placeholder="משימה חדשה..." class="flex-1 bg-slate-50 border-transparent focus:bg-white text-sm rounded-lg"><button onclick="addNewTask()" class="bg-primary hover:bg-sky-600 text-white p-2.5 rounded-xl shadow-md transition active:scale-95"><i data-lucide="plus" class="w-5 h-5"></i></button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div id="addModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm p-4" onclick="closeModals()">
+    <div class="bg-white w-full max-w-md p-6 rounded-3xl shadow-2xl transform transition-all" onclick="event.stopPropagation()">
+        <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2"><div class="bg-blue-100 p-2 rounded-full"><i data-lucide="sparkles" class="w-5 h-5 text-primary"></i></div> יצירת אירוע חדש</h2>
+        <div class="space-y-3">
+            <div><label class="text-xs font-bold text-slate-500 mb-1 block">שם האירוע</label><input type="text" id="addTitle" placeholder="למשל: פסטיבל נוער"></div>
+            <div><label class="text-xs font-bold text-slate-500 mb-1 block">תאריך</label><input type="text" id="addDate" placeholder="DD/MM/YYYY"></div>
+            <div><label class="text-xs font-bold text-slate-500 mb-1 block">פרטים נוספים</label><textarea id="addDesc" rows="2" placeholder="תיאור קצר"></textarea></div>
+            <div class="grid grid-cols-2 gap-3"><input type="text" id="addAudience" placeholder="קהל יעד"><input type="text" id="addOwner" placeholder="אחראי"></div>
+            <button onclick="saveManualEvent()" class="w-full bg-primary hover:bg-sky-600 text-white py-3.5 rounded-xl font-bold mt-2 shadow-lg active:scale-95 transition">שמור וסנכרן</button>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 hidden backdrop-blur-sm p-4" onclick="closeModals()">
+    <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-2xl" onclick="event.stopPropagation()">
+        <h2 class="text-xl font-bold text-slate-800 mb-4 text-center">מי משתמש באפליקציה?</h2>
+        <div class="space-y-2 max-h-60 overflow-y-auto" id="userList"></div>
+        <div class="mt-4 pt-4 border-t border-gray-100 text-center"><button onclick="enableNotifications()" class="text-blue-600 text-xs font-bold bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100"><i data-lucide="bell" class="inline w-3 h-3 ml-1"></i> אפשר התראות</button></div>
     </div>
 </div>
 
 <script>
-    // הקישורים שלך
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuFrMR6GRahlYczIT8NDsv2GAbARxFGdud-8N4rQUFDTI8U4MG-5iAc0ljOlw1NmTVRw/exec";
+    // ✅ URL מעודכן של Apps Script
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznmBAUeyG6luw2Ml0DPATHaifPedcQ8ov9m5daY_UV2kar1k4dtUCBemEznPDzQ77AvQ/exec";
+    
+    // ✅ קריאת CSV ישירה מגוגל שיטס
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
 
-    let events = [];
+    const firebaseConfig = { 
+        apiKey: "AIzaSyBUXyx1kxTaEzhrwLjmgp-4-BszrDUgch4", 
+        authDomain: "bat-yam100.firebaseapp.com", 
+        databaseURL: "https://bat-yam100-default-rtdb.firebaseio.com", 
+        projectId: "bat-yam100", 
+        appId: "1:767374849866:web:812999710dca298c64b3b3" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const eventsRef = db.ref('events');
 
-    async function loadData() {
-        document.getElementById('loader').style.display = 'flex';
-        try {
-            const response = await fetch(CSV_URL + '&t=' + Date.now());
-            const csvText = await response.text();
+    let events = [], 
+        currentUser = localStorage.getItem('batyam_user') || 'כללי', 
+        currentDate = new Date(), 
+        activeEventId = null, 
+        isFirstLoad = true;
+    const colors = ['#0077b6', '#023e8a', '#0096c7', '#48cae4', '#ffb703', '#fb8500']; 
+
+    const manifest = { 
+        "name": "Bat Yam 100", 
+        "short_name": "BatYam100", 
+        "start_url": ".", 
+        "display": "standalone", 
+        "background_color": "#f8fafc", 
+        "theme_color": "#0077b6", 
+        "icons": [{ "src": "favicon.png", "sizes": "192x192", "type": "image/png" }] 
+    };
+    document.querySelector('#manifest-link').setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'})));
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('currentUserDisplay').innerText = currentUser;
+        loadFromLinkedSheet(true);
+        if(!localStorage.getItem('batyam_user')) openSettings(); 
+    });
+
+    function toDateSafe(v) { 
+        if (!v) return new Date(); 
+        if (v instanceof Date) return v; 
+        const d = new Date(v); 
+        return isNaN(d.getTime()) ? new Date() : d; 
+    }
+
+    eventsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        events = data ? Object.values(data).map(e => ({ 
+            ...e, 
+            dateObj: toDateSafe(e.dateObj), 
+            endDateObj: e.endDateObj ? toDateSafe(e.endDateObj) : toDateSafe(e.dateObj), 
+            tasks: Array.isArray(e.tasks) ? e.tasks : [] 
+        })) : [];
+        if (!isFirstLoad) checkNewAssignments(events);
+        isFirstLoad = false;
+        renderUserList(); 
+        updateAudienceFilterOptions(); 
+        refreshView();
+        const loader = document.getElementById('loader-screen'); 
+        if(loader) { 
+            loader.style.opacity = '0'; 
+            setTimeout(()=>loader.style.display='none', 500); 
+        }
+    });
+
+    // ✅ תיקון: קריאת CSV עם UTF-8 כדי לפתור בעיית ג'יבריש בעברית
+    function loadFromLinkedSheet(silent=false) {
+        const urlWithCache = SHEET_CSV_URL + "&t=" + Date.now();
+        
+        fetch(urlWithCache)
+        .then(r => r.blob())
+        .then(blob => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = () => reject(new Error("FileReader error"));
+                reader.readAsText(blob, 'UTF-8');
+            });
+        })
+        .then(csv => {
+            if(!csv || csv.length < 10) { 
+                console.error("CSV ריק או לא תקין"); 
+                return; 
+            }
             
-            Papa.parse(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results) => {
-                    events = results.data;
-                    renderList();
-                    document.getElementById('stat-total').innerText = events.length;
-                    document.getElementById('loader').style.display = 'none';
+            Papa.parse(csv, {
+                header: true, 
+                skipEmptyLines: true, 
+                complete: res => {
+                    console.log("נמצאו שורות באקסל:", res.data.length); 
+                    const updates = {};
+                    const validIds = new Set(); 
+
+                    res.data.forEach(row => {
+                        const title = row.Title || row['שם האירוע'] || row['כותרת'];
+                        if(!title) return;
+                        
+                        const id = row.ID && row.ID.trim().length > 0 
+                            ? row.ID.trim() 
+                            : 'evt_' + title.replace(/[^a-zA-Z0-9א-ת]/g, '');
+                        validIds.add(id);
+                        
+                        const dateRaw = row.Date || row['תאריך'];
+                        const dates = parseDateStringWithRange(dateRaw);
+                        
+                        const tasksRaw = row.Tasks || row['משימות'];
+                        let tasks = []; 
+                        if(tasksRaw) { 
+                            tasks = tasksRaw.split(',')
+                                .map(t => ({ 
+                                    text: t.replace('(V)', '').trim(), 
+                                    done: t.includes('(V)') 
+                                }))
+                                .filter(t => t.text); 
+                        }
+
+                        const owner    = row.Owner       || row['אחראי'];
+                        const audience = row.Audience    || row['קהל יעד'];
+                        const desc     = row.Description || row['תיאור'];
+                        const status   = row.Status      || row['סטטוס'];
+
+                        let existingImage = null;
+                        const existingEvent = events.find(e => e.id === id);
+                        if (existingEvent && existingEvent.image) existingImage = existingEvent.image;
+
+                        updates[id] = { 
+                            id, 
+                            title, 
+                            dateStr: dateRaw || 'טרם נקבע', 
+                            dateObj: dates.start.toISOString(), 
+                            endDateObj: dates.end.toISOString(), 
+                            desc, status, owner, audience, tasks, 
+                            image: existingImage 
+                        };
+                    });
+
+                    // מחיקת אירועים שהוסרו מהאקסל
+                    events.forEach(e => { 
+                        if (!validIds.has(e.id)) updates[e.id] = null; 
+                    });
+
+                    db.ref('events').update(updates);
+                    if(!silent) alert("✅ סנכרון הושלם בהצלחה!");
+                },
+                error: err => {
+                    console.error("שגיאת PapaParse:", err);
                 }
             });
-        } catch (e) {
-            alert("שגיאה בטעינה");
-            document.getElementById('loader').style.display = 'none';
-        }
-    }
-
-    function renderList() {
-        const list = document.getElementById('listView');
-        list.innerHTML = '';
-        events.forEach(e => {
-            const title = e.Title || e['שם האירוע'] || 'ללא שם';
-            const date = e.Date || e['תאריך'] || '';
-            const owner = e.Owner || e['אחראי'] || '-';
-            
-            list.innerHTML += `
-                <div class="muni-card p-5 flex items-center gap-5">
-                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 text-blue-600 font-black">
-                        <span class="text-lg">${date.split('/')[0] || '?'}</span>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800">${title}</h3>
-                        <p class="text-xs text-gray-400 font-medium">👤 ${owner}</p>
-                    </div>
-                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                </div>
-            `;
+        })
+        .catch(err => {
+            console.error("שגיאה בסנכרון:", err);
+            if(!silent) alert("❌ שגיאה בסנכרון. בדוק את ה-Console.");
         });
-        lucide.createIcons();
     }
 
-    async function saveNewEvent() {
-        const title = document.getElementById('inTitle').value;
-        if(!title) return alert("חובה שם");
-        
-        const btn = document.getElementById('saveBtn');
-        btn.innerText = "שומר...";
-        btn.disabled = true;
+    function parseDateStringWithRange(dateStr) {
+        if (!dateStr) return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
+        dateStr = dateStr.toString().trim();
+        const fullRangeMatch = dateStr.match(/^(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})\s*[-]\s*(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
+        if (fullRangeMatch) {
+            let sYear = parseInt(fullRangeMatch[3]); if(sYear<100) sYear+=2000;
+            const start = new Date(sYear, parseInt(fullRangeMatch[2])-1, parseInt(fullRangeMatch[1]));
+            let eYear = parseInt(fullRangeMatch[6]); if(eYear<100) eYear+=2000;
+            const end = new Date(eYear, parseInt(fullRangeMatch[5])-1, parseInt(fullRangeMatch[4]));
+            return { start, end };
+        }
+        const shortRangeMatch = dateStr.match(/^(\d{1,2})[-](\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
+        if (shortRangeMatch) {
+            let year = parseInt(shortRangeMatch[4]); if (year < 100) year += 2000;
+            const month = parseInt(shortRangeMatch[3]) - 1;
+            return { start: new Date(year, month, parseInt(shortRangeMatch[1])), end: new Date(year, month, parseInt(shortRangeMatch[2])) };
+        }
+        const parts = dateStr.split(/[\/\.]/);
+        if (parts.length >= 2) {
+            let year = parts.length === 3 ? parseInt(parts[2]) : new Date().getFullYear(); if (year < 100) year += 2000;
+            const d = new Date(year, parseInt(parts[1]) - 1, parseInt(parts[0]));
+            return { start: d, end: d };
+        }
+        return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
+    }
 
-        const payload = {
-            id: 'evt_' + Date.now(),
-            title: title,
-            dateStr: document.getElementById('inDate').value,
-            owner: document.getElementById('inOwner').value,
-            status: 'חדש',
-            desc: ''
-        };
-
+    // ✅ תיקון: שמירה לאקסל — עדכון שורה קיימת לפי ID
+    async function syncToSheet(eventData) {
         try {
-            await fetch(SCRIPT_URL, {
+            const tasksStr = (eventData.tasks || [])
+                .map(t => (t.done ? '(V)' : '') + t.text)
+                .join(',');
+
+            const payload = {
+                id:       eventData.id,
+                title:    eventData.title,
+                dateStr:  eventData.dateStr,
+                desc:     eventData.desc,
+                status:   eventData.status,
+                owner:    eventData.owner,
+                audience: eventData.audience,
+                tasks:    eventData.tasks || []
+            };
+
+            const res = await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                // ✅ תיקון CORS: שולחים כ-text/plain
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             });
-
-            alert("נשמר! הסנכרון יתבצע תוך דקה.");
-            closeModal('addModal');
-            document.getElementById('inTitle').value = '';
-            setTimeout(loadData, 2000);
-        } catch (e) {
-            alert("שגיאה בשמירה");
-        } finally {
-            btn.innerText = "שמור באקסל";
-            btn.disabled = false;
+            const txt = await res.text();
+            console.log("תגובת סנכרון:", txt);
+        } catch (e) { 
+            console.error("שמירה לאקסל נכשלה:", e); 
         }
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    function switchTab(tab) { alert("תצוגת " + tab + " תתעדכן לאחר הטעינה"); }
+    async function saveEvent(e) {
+        const start = toDateSafe(e.dateObj); 
+        const end = e.endDateObj ? toDateSafe(e.endDateObj) : start;
+        const payload = { 
+            ...e, 
+            dateObj: start.toISOString(), 
+            endDateObj: end.toISOString(), 
+            tasks: Array.isArray(e.tasks) ? e.tasks : [] 
+        };
+        await db.ref('events/' + e.id).set(payload);
+        await syncToSheet(payload);
+        refreshView();
+    }
+    
+    function renderUserList() { 
+        const uniqueOwners = new Set(['כללי', 'אורח']); 
+        events.forEach(e => { 
+            if(e.owner) e.owner.replace(/\+/g, ',').split(',').forEach(o => { 
+                const cleanName = o.trim().split(' ')[0]; 
+                if(cleanName && cleanName.length > 1) uniqueOwners.add(cleanName); 
+            }); 
+        }); 
+        if (!uniqueOwners.has(currentUser) && currentUser !== 'אורח' && currentUser !== 'כללי') selectUser('אורח'); 
+        const sortedOwners = Array.from(uniqueOwners).sort(); 
+        document.getElementById('userList').innerHTML = sortedOwners.map(name => 
+            `<button onclick="selectUser('${name}')" class="w-full text-right px-4 py-3 rounded-xl border ${currentUser===name ? 'border-blue-500 bg-blue-50 text-blue-700 font-bold' : 'border-gray-100 hover:bg-gray-50'} transition">${name}</button>`
+        ).join(''); 
+    }
 
-    document.addEventListener('DOMContentLoaded', loadData);
+    function updateAudienceFilterOptions() { 
+        const audiences = new Set(['all']); 
+        events.forEach(e => { if(e.audience) audiences.add(e.audience.trim()); }); 
+        const select = document.getElementById('audienceFilter'); 
+        const currentVal = select.value; 
+        select.innerHTML = ''; 
+        Array.from(audiences).sort().forEach(aud => { 
+            const opt = document.createElement('option'); 
+            opt.value = aud; 
+            opt.innerText = aud === 'all' ? 'כל הקהלים' : aud; 
+            select.appendChild(opt); 
+        }); 
+        if(audiences.has(currentVal)) select.value = currentVal; 
+    }
+
+    function checkNewAssignments(newEventsList) { 
+        if(currentUser === 'כללי' || currentUser === 'אורח') return; 
+        const myOldCount = events.filter(e => e.owner && e.owner.includes(currentUser)).length; 
+        const myNewCount = newEventsList.filter(e => e.owner && e.owner.includes(currentUser)).length; 
+        if (myNewCount > myOldCount) sendNotification("משימה חדשה!", `הוקצה לך אירוע חדש במערכת`); 
+    }
+
+    function sendNotification(title, body) { 
+        if (Notification.permission === "granted") new Notification(title, { body: body, icon: 'favicon.png' }); 
+    }
+
+    function enableNotifications() { 
+        Notification.requestPermission().then(permission => { 
+            if (permission === "granted") alert("התראות הופעלו בהצלחה!"); 
+        }); 
+    }
+
+    function setTaskReminder(taskText) { 
+        const min = prompt("בעוד כמה דקות להזכיר לך?", "60"); 
+        if(min) { 
+            setTimeout(() => { sendNotification("תזכורת למשימה", taskText); }, min * 60 * 1000); 
+            alert(`תזכורת נקבעה לעוד ${min} דקות`); 
+        } 
+    }
+
+    function openSettings() { 
+        document.getElementById('settingsModal').classList.remove('hidden'); 
+        document.getElementById('settingsModal').classList.add('flex'); 
+        renderUserList(); 
+    }
+
+    function selectUser(name) { 
+        currentUser = name; 
+        localStorage.setItem('batyam_user', name); 
+        document.getElementById('currentUserDisplay').innerText = name; 
+        closeModals(); 
+        refreshView(); 
+    }
+
+    function refreshView() { 
+        if (!document.getElementById('listView').classList.contains('hidden')) renderList(); 
+        if (!document.getElementById('calendarView').classList.contains('hidden')) renderCalendar(); 
+        if (!document.getElementById('tasksView').classList.contains('hidden')) renderGlobalTasks(); 
+        if(activeEventId && !document.getElementById('eventModal').classList.contains('hidden')) { 
+            const e = events.find(ev => ev.id == activeEventId); 
+            if(e) updateModalContent(e); 
+        } 
+        lucide.createIcons(); 
+    }
+
+    function renderList() { 
+        const list = document.getElementById('listView'); 
+        list.innerHTML = ''; 
+        [...events].sort((a,b) => a.dateObj - b.dateObj).forEach((e, i) => { 
+            const pending = e.tasks.filter(t=>!t.done).length; 
+            const dateNum = e.dateStr ? e.dateStr.split(/[\/\.-]/)[0] : '?'; 
+            const dateMonth = e.dateObj.toLocaleString('en-us',{month:'short'}); 
+            const isMine = e.owner && e.owner.includes(currentUser); 
+            const borderClass = isMine ? 'ring-2 ring-blue-400' : ''; 
+            list.innerHTML += `<div onclick="openEventModal('${e.id}')" class="muni-card p-4 cursor-pointer group relative ${borderClass} hover:border-blue-300">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl shadow-sm border border-white/50" style="background: linear-gradient(135deg, ${colors[i%colors.length]}, var(--primary));">
+                        <span class="text-lg font-black leading-none text-white">${dateNum}</span>
+                        <span class="text-[9px] uppercase font-bold leading-none mt-0.5 text-white/80">${dateMonth}</span>
+                    </div>
+                    ${pending ? `<span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg text-[10px] font-bold border border-red-100 flex items-center gap-1 shadow-sm"><i data-lucide="alert-circle" class="w-3 h-3"></i> ${pending}</span>` : ''}
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-1 leading-tight group-hover:text-primary transition">${e.title}</h3>
+                <div class="flex flex-col gap-1.5 mt-3">
+                    <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium bg-slate-50 w-fit px-2 py-0.5 rounded-md">
+                        <i data-lucide="calendar" class="w-3 h-3 text-blue-400"></i> ${e.dateStr || 'TBA'}
+                    </div>
+                </div>
+            </div>`; 
+        }); 
+    }
+
+    function renderCalendar() { 
+        document.getElementById('calendarTitle').innerText = currentDate.toLocaleString('he-IL', {month:'long', year:'numeric'}); 
+        const grid = document.getElementById('calendarGrid'); 
+        grid.innerHTML = ''; 
+        const year=currentDate.getFullYear(), month=currentDate.getMonth(); 
+        const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month+1, 0).getDate(); 
+        ['א','ב','ג','ד','ה','ו','ש'].forEach(d=>grid.innerHTML+=`<div class="text-center text-slate-400 text-xs font-bold py-2">${d}</div>`); 
+        for(let i=0; i<firstDay; i++) grid.innerHTML+=`<div class="h-24 bg-slate-50/50 rounded-xl"></div>`; 
+        for(let d=1; d<=daysInMonth; d++) { 
+            const currentDay = new Date(year, month, d); 
+            currentDay.setHours(0,0,0,0); 
+            const dayEv = events.filter(e => { 
+                const start = new Date(e.dateObj); start.setHours(0,0,0,0); 
+                const end = new Date(e.endDateObj); end.setHours(0,0,0,0); 
+                return currentDay.getTime() >= start.getTime() && currentDay.getTime() <= end.getTime(); 
+            }); 
+            let html = dayEv.map((e, idx)=>
+                `<div onclick="openEventModal('${e.id}'); event.stopPropagation()" class="text-[9px] px-1.5 py-0.5 rounded-md text-white mb-0.5 truncate cursor-pointer hover:opacity-90 font-bold shadow-sm" style="background:${colors[idx%colors.length]}">${e.title}</div>`
+            ).join(''); 
+            grid.innerHTML += `<div class="h-28 bg-white rounded-xl p-1 border border-slate-100 hover:border-blue-300 transition overflow-hidden shadow-sm flex flex-col">
+                <span class="text-slate-400 text-xs font-bold mb-1 text-center bg-slate-50 rounded py-0.5">${d}</span>
+                <div class="flex flex-col gap-0.5 overflow-y-auto scrollbar-hide flex-1">${html}</div>
+            </div>`; 
+        } 
+    }
+
+    function renderGlobalTasks() { 
+        const cont = document.getElementById('globalTaskList'); 
+        cont.innerHTML=''; 
+        document.getElementById('tasksUserFilter').innerText = currentUser; 
+        let relevantEvents = events; 
+        if (currentUser !== 'כללי' && currentUser !== 'אורח') {
+            relevantEvents = events.filter(e => e.owner && e.owner.includes(currentUser)); 
+        }
+        const audFilter = document.getElementById('audienceFilter').value; 
+        if (audFilter !== 'all') relevantEvents = relevantEvents.filter(e => e.audience === audFilter); 
+        let count=0; 
+        [...relevantEvents].sort((a,b)=>a.dateObj-b.dateObj).forEach((e, idx) => { 
+            const open = e.tasks.filter(t=>!t.done); 
+            if(open.length) { 
+                count += open.length; 
+                cont.innerHTML += `<div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 border-r-4" style="border-right-color:${colors[idx%colors.length]}">
+                    <div class="flex items-center gap-2 mb-3 border-b border-slate-50 pb-2">
+                        <h4 class="font-bold text-slate-800 text-sm cursor-pointer hover:text-primary transition" onclick="openEventModal('${e.id}')">${e.title}</h4>
+                        <span class="mr-auto text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded">${e.dateStr}</span>
+                    </div>
+                    <div class="space-y-2">${open.map(t=>
+                        `<div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></div>
+                                <span class="text-sm text-slate-600">${t.text}</span>
+                            </div>
+                            <button onclick="setTaskReminder('${t.text}')" class="text-slate-300 hover:text-blue-500 px-2"><i data-lucide="bell" class="w-4 h-4"></i></button>
+                        </div>`
+                    ).join('')}</div>
+                </div>`; 
+            } 
+        }); 
+        document.getElementById('noTasksMessage').classList.toggle('hidden', count>0); 
+    }
+
+    function openEventModal(id) { 
+        activeEventId = id; 
+        const e = events.find(ev => ev.id == id); 
+        updateModalContent(e); 
+        document.getElementById('eventModal').classList.remove('hidden'); 
+        document.getElementById('eventModal').classList.add('flex'); 
+    }
+
+    function updateModalContent(e) { 
+        if(!e) return; 
+        document.getElementById('emTitle').innerText = e.title; 
+        document.getElementById('emDate').innerText = e.dateStr || '—'; 
+        document.getElementById('emDesc').innerText = e.desc || ''; 
+        document.getElementById('emAudience').innerText = e.audience || '—'; 
+        document.getElementById('emOwner').innerText = e.owner || '—'; 
+        const img = document.getElementById('emImage'), ph = document.getElementById('uploadPlaceholder'); 
+        if(e.image) { 
+            img.src = e.image; 
+            img.classList.remove('hidden'); 
+            ph.classList.add('hidden'); 
+        } else { 
+            img.classList.add('hidden'); 
+            ph.classList.remove('hidden'); 
+        } 
+        const st = document.getElementById('emStatus'); 
+        st.innerText = e.status || 'חדש'; 
+        st.className = `inline-block px-2 py-1 rounded text-xs font-bold text-white shadow-sm ${e.status === 'בוצע' ? 'bg-green-500' : 'bg-blue-500'}`; 
+        const list = document.getElementById('taskList'); 
+        list.innerHTML=''; 
+        (e.tasks||[]).forEach((t,i) => { 
+            list.innerHTML += `<div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition group">
+                <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary cursor-pointer" ${t.done?'checked':''} onchange="toggleTask(${i})">
+                <span class="flex-1 text-sm font-medium text-slate-700 ${t.done?'line-through text-slate-400':''}">${t.text}</span>
+                <button onclick="setTaskReminder('${t.text}')" class="text-slate-300 hover:text-blue-500 px-2"><i data-lucide="bell" class="w-4 h-4"></i></button>
+                <button onclick="delTask(${i})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>`; 
+        }); 
+        document.getElementById('taskCount').innerText = `${(e.tasks||[]).filter(t=>!t.done).length} לביצוע`; 
+        lucide.createIcons(); 
+    }
+
+    function toggleTask(i) { 
+        const e=events.find(x=>x.id==activeEventId); 
+        e.tasks[i].done=!e.tasks[i].done; 
+        saveEvent(e); 
+    }
+
+    function delTask(i) { 
+        if(confirm('למחוק?')) { 
+            const e=events.find(x=>x.id==activeEventId); 
+            e.tasks.splice(i,1); 
+            saveEvent(e); 
+        } 
+    }
+
+    function addNewTask() { 
+        const inp=document.getElementById('newTaskInput'); 
+        const val=inp.value.trim(); 
+        if(!val) return; 
+        const e=events.find(x=>x.id==activeEventId); 
+        if(!e.tasks) e.tasks=[]; 
+        e.tasks.push({text:val, done:false}); 
+        inp.value=''; 
+        saveEvent(e); 
+    }
+
+    function uploadImage(inp) { 
+        if(inp.files[0]) { 
+            const r = new FileReader(); 
+            r.onload = function(res) { 
+                const e=events.find(x=>x.id==activeEventId); 
+                e.image = res.target.result; 
+                saveEvent(e); 
+            }; 
+            r.readAsDataURL(inp.files[0]); 
+        } 
+    }
+
+    function openAddModal() { 
+        document.getElementById('addModal').classList.remove('hidden'); 
+        document.getElementById('addModal').classList.add('flex'); 
+    }
+
+    function saveManualEvent() { 
+        const title = document.getElementById('addTitle').value; 
+        if(!title) return alert("חובה שם"); 
+        const dStr = document.getElementById('addDate').value; 
+        const dates = parseDateStringWithRange(dStr); 
+        const ev = { 
+            id: 'evt_'+Date.now(), 
+            title: title, 
+            dateObj: dates.start, 
+            endDateObj: dates.end, 
+            dateStr: dStr || 'טרם נקבע', 
+            desc: document.getElementById('addDesc').value, 
+            audience: document.getElementById('addAudience').value, 
+            owner: document.getElementById('addOwner').value, 
+            status: 'חדש', 
+            tasks: [] 
+        }; 
+        saveEvent(ev); 
+        closeModals(); 
+        document.getElementById('addTitle').value = ''; 
+        document.getElementById('addDate').value = ''; 
+    }
+
+    function switchView(v) { 
+        document.querySelectorAll('.view-section').forEach(x=>x.classList.add('hidden')); 
+        document.getElementById(v+'View').classList.remove('hidden'); 
+        document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); 
+        document.getElementById('btn-'+v).classList.add('active'); 
+        refreshView(); 
+    }
+
+    function changeMonth(d) { 
+        currentDate.setMonth(currentDate.getMonth()+d); 
+        refreshView(); 
+    }
+
+    function closeModals() { 
+        document.querySelectorAll('.fixed').forEach(e=>{ 
+            if(e.id !== 'loader-screen') {
+                e.classList.add('hidden'); 
+                e.classList.remove('flex');
+            } 
+        }); 
+    }
+
+    if ('serviceWorker' in navigator) { 
+        navigator.serviceWorker.register('data:application/javascript;base64,').catch(()=>{}); 
+    }
 </script>
-
 </body>
 </html>
