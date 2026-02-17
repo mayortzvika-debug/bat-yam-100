@@ -322,12 +322,12 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-black text-slate-800 text-base" id="calTitle"></h2>
                 <div class="flex gap-2">
-                    <button onclick="changeMonth(-1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i></button>
-                    <button onclick="changeMonth(1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-left" class="w-4 h-4 text-slate-600"></i></button>
+                    <button type="button" onclick="changeMonth(-1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i></button>
+                    <button type="button" onclick="changeMonth(1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-left" class="w-4 h-4 text-slate-600"></i></button>
                 </div>
             </div>
             <div class="grid grid-cols-7 text-center text-[10px] font-black text-slate-400 mb-2 gap-1">
-                <div>א</div><div>ב</div><div>ג</div><div>ד</div><div>ה</div><div>ו</div><div>ש</div>
+                <div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div>
             </div>
             <div id="calGrid" class="grid grid-cols-7 gap-1 pb-28"></div>
         </div>
@@ -397,9 +397,9 @@
             <div>
                 <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">סטטוס</label>
                 <div class="flex gap-2">
-                    <button onclick="setStatus(this,'חדש')" data-status="חדש" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm pill-new border-2 border-blue-200">חדש</button>
-                    <button onclick="setStatus(this,'בטיפול')" data-status="בטיפול" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בטיפול</button>
-                    <button onclick="setStatus(this,'בוצע')" data-status="בוצע" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בוצע</button>
+                    <button type="button" onclick="setStatus(this,'חדש')" data-status="חדש" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm pill-new border-2 border-blue-200">חדש</button>
+                    <button type="button" onclick="setStatus(this,'בטיפול')" data-status="בטיפול" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בטיפול</button>
+                    <button type="button" onclick="setStatus(this,'בוצע')" data-status="בוצע" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בוצע</button>
                 </div>
                 <input type="hidden" id="inStatus" value="חדש">
             </div>
@@ -410,7 +410,7 @@
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
                     <label class="text-[10px] font-black text-slate-400 uppercase">משימות</label>
-                    <button onclick="addTaskLine('newTasksList')" class="text-blue-600 text-xs font-bold">+ הוסף</button>
+                    <button type="button" onclick="addTaskLine('newTasksList')" class="text-blue-600 text-xs font-bold">+ הוסף</button>
                 </div>
                 <div id="newTasksList" class="space-y-2"></div>
             </div>
@@ -466,7 +466,7 @@
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1"><i data-lucide="list-checks" class="w-3 h-3"></i> משימות</h3>
-                    <button onclick="addTaskLine('viewTasksList')" class="text-blue-500 text-xs font-bold">+ הוסף</button>
+                    <button type="button" onclick="addTaskLine('viewTasksList')" class="text-blue-500 text-xs font-bold">+ הוסף</button>
                 </div>
                 <div id="viewTasksList" class="space-y-2"></div>
             </div>
@@ -701,10 +701,12 @@ function renderCalendar() {
     document.getElementById('calTitle').innerText =
         new Date(year, month, 1).toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
 
+    // ✅ תיקון: firstDay — 0=ראשון (א׳), 6=שבת (ש׳) — מספר תאים ריקים משמאל בגריד RTL
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
 
+    // תאים ריקים לפני תחילת החודש (RTL — ראשון הוא הראשון)
     for (let i = 0; i < firstDay; i++) {
         const blank = document.createElement('div');
         blank.className = 'cal-day other-month';
@@ -712,20 +714,37 @@ function renderCalendar() {
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const dayEvents = events.filter(e => (e.Date || '').trim() === dateStr);
+        // ✅ תיקון: בניית מחרוזת תאריך לכל פורמט אפשרי מ-CSV
+        const mm = String(month + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        const dateISO  = `${year}-${mm}-${dd}`;       // YYYY-MM-DD
+        const dateSlash = `${d}/${month+1}/${year}`;  // D/M/YYYY
+        const dateSlash2 = `${dd}/${mm}/${year}`;     // DD/MM/YYYY
+
+        const dayEvents = events.filter(e => {
+            const evDate = (e.Date || '').trim();
+            return evDate === dateISO || evDate === dateSlash || evDate === dateSlash2 ||
+                   evDate.startsWith(dateISO);
+        });
+
         const isToday = today.getDate()===d && today.getMonth()===month && today.getFullYear()===year;
 
         const cell = document.createElement('div');
         cell.className = `cal-day${isToday ? ' today' : ''}`;
-        cell.innerHTML = `<span class="font-bold text-slate-400 block">${d}</span>`;
+
+        // ✅ מספר היום עם הדגשה ברורה
+        const dayNum = document.createElement('span');
+        dayNum.className = `font-bold block mb-0.5 ${isToday ? 'text-blue-600' : 'text-slate-500'}`;
+        dayNum.style.fontSize = '10px';
+        dayNum.textContent = d;
+        cell.appendChild(dayNum);
 
         dayEvents.forEach(e => {
             const idx = events.indexOf(e);
-            const isMine = (e.Owner||'').includes(currentUser);
+            const isMine = (e.Owner || '').includes(currentUser);
             const ev = document.createElement('div');
             ev.className = `cal-event${isMine ? ' mine' : ''}`;
-            ev.textContent = e.Title || e[1];
+            ev.textContent = e.Title || e[1] || '—';
             ev.onclick = (evt) => { evt.stopPropagation(); openViewModal(idx); };
             cell.appendChild(ev);
         });
@@ -892,13 +911,13 @@ function setStatus(btn, val) {
 }
 
 function addTaskLine(containerId) {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = `
-        <div class="flex gap-2">
-            <input type="text" class="task-input flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-blue-400" placeholder="משימה...">
-            <button type="button" onclick="this.closest('div').parentElement.remove()" class="text-red-400 shrink-0 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>`;
-    document.getElementById(containerId).appendChild(wrapper);
+    // ✅ תיקון: div בודד — כפתור המחיקה מוחק את ה-div עצמו
+    const row = document.createElement('div');
+    row.className = 'flex gap-2';
+    row.innerHTML = `
+        <input type="text" class="task-input flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-blue-400" placeholder="משימה...">
+        <button type="button" onclick="this.parentElement.remove()" class="text-red-400 shrink-0 p-1 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+    document.getElementById(containerId).appendChild(row);
     lucide.createIcons();
 }
 
@@ -932,6 +951,8 @@ async function saveEvent() {
     const status = document.getElementById('inStatus').value;
     const tasks  = Array.from(document.querySelectorAll('#newTasksList .task-input'))
                         .map(i => i.value.trim()).filter(Boolean).join('|');
+
+    console.log('📤 שולח לאקסל:', { title, date, owner, status, tasks }); // debug
 
     if (!title) return alert('נא להזין שם אירוע');
 
