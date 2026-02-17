@@ -290,7 +290,7 @@
         </h2>
         <div class="space-y-3">
             <div><label class="text-xs font-bold text-slate-500 mb-1 block">שם האירוע</label><input type="text" id="addTitle" placeholder="למשל: פסטיבל נוער"></div>
-            <div><label class="text-xs font-bold text-slate-500 mb-1 block">תאריך (14/06/2026 או טווח)</label><input type="text" id="addDate" placeholder="DD/MM/YYYY"></div>
+            <div><label class="text-xs font-bold text-slate-500 mb-1 block">תאריך (למשל: 14/06/2026)</label><input type="text" id="addDate" placeholder="DD/MM/YYYY או DD/MM/YYYY-DD/MM/YYYY"></div>
             <div><label class="text-xs font-bold text-slate-500 mb-1 block">פרטים נוספים</label><textarea id="addDesc" rows="2" placeholder="תיאור קצר"></textarea></div>
             <div class="grid grid-cols-2 gap-3"><input type="text" id="addAudience" placeholder="קהל יעד"><input type="text" id="addOwner" placeholder="אחראי"></div>
             <button onclick="saveManualEvent()" class="w-full bg-primary hover:bg-sky-600 text-white py-3.5 rounded-xl font-bold mt-2 shadow-lg active:scale-95 transition">שמור וסנכרן</button>
@@ -362,25 +362,116 @@
         events = newEvents;
         isFirstLoad = false;
         renderUserList();
-        updateAudienceFilterOptions(); // Populate dropdown
+        updateAudienceFilterOptions(); 
         refreshView();
         
         const loader = document.getElementById('loader-screen');
         if(loader) { loader.style.opacity = '0'; setTimeout(()=>loader.style.display='none', 500); }
     });
 
-    // --- Dynamic Filters (User & Audience) ---
+    // --- SMART DATE PARSER (Fixed for Long Ranges) ---
+    function parseDateStringWithRange(dateStr) {
+        if (!dateStr) return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
+        dateStr = dateStr.trim();
+
+        // 1. טווח ארוך מלא: 26/7/2026-30/8/2026 (או עם נקודות)
+        // Regex מזהה: תאריך מלא - תאריך מלא
+        const fullRangeMatch = dateStr.match(/^(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})\s*[-]\s*(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
+        
+        if (fullRangeMatch) {
+            let sYear = parseInt(fullRangeMatch[3]); if(sYear<100) sYear+=2000;
+            const start = new Date(sYear, parseInt(fullRangeMatch[2])-1, parseInt(fullRangeMatch[1]));
+            
+            let eYear = parseInt(fullRangeMatch[6]); if(eYear<100) eYear+=2000;
+            const end = new Date(eYear, parseInt(fullRangeMatch[5])-1, parseInt(fullRangeMatch[4]));
+            
+            return { start, end };
+        }
+
+        // 2. טווח קצר באותו חודש: 14-16/06/2026
+        const shortRangeMatch = dateStr.match(/^(\d{1,2})[-](\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
+        if (shortRangeMatch) {
+            const startDay = parseInt(shortRangeMatch[1]);
+            const endDay = parseInt(shortRangeMatch[2]);
+            const month = parseInt(shortRangeMatch[3]) - 1;
+            let year = parseInt(shortRangeMatch[4]); if (year < 100) year += 2000;
+            return { start: new Date(year, month, startDay), end: new Date(year, month, endDay) };
+        }
+
+        // 3. תאריך בודד: 14/06/2026
+        const parts = dateStr.split(/[\/\.]/);
+        if (parts.length >= 2) {
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            let year = parts.length === 3 ? parseInt(parts[2]) : new Date().getFullYear(); if (year < 100) year += 2000;
+            const d = new Date(year, month, day);
+            return { start: d, end: d };
+        }
+
+        return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
+    }
+
+    // --- Sync Logic ---
+    function loadFromLinkedSheet(silent=false) {
+        const urlWithCache = SHEET_CSV_URL + "&t=" + Date.now();
+        fetch(urlWithCache).then(r=>r.text()).then(csv=>{
+            Papa.parse(csv, {header:true, skipEmptyLines:true, complete: res => {
+                const updates = {};
+                const validIds = new Set(); 
+
+                res.data.forEach(row => {
+                    if(!row.Title) return;
+                    
+                    const id = 'evt_' + row.Title.replace(/[^a-zA-Z0-9א-ת]/g, '');
+                    validIds.add(id);
+                    
+                    const dates = parseDateStringWithRange(row.Date);
+                    
+                    let tasks = []; 
+                    if(row.Tasks) { 
+                        tasks = row.Tasks.split(',').map(t=>({ text: t.replace('(V)','').trim(), done: t.includes('(V)') })).filter(t=>t.text); 
+                    }
+
+                    let existingImage = null;
+                    const existingEvent = events.find(e => e.id === id);
+                    if (existingEvent && existingEvent.image) existingImage = existingEvent.image;
+
+                    updates[id] = { 
+                        id: id, 
+                        title: row.Title, 
+                        dateStr: row.Date || 'טרם נקבע', 
+                        dateObj: dates.start.toISOString(), 
+                        endDateObj: dates.end.toISOString(), 
+                        desc: row.Description, 
+                        status: row.Status, 
+                        owner: row.Owner, 
+                        audience: row.Audience, 
+                        tasks: tasks,
+                        image: existingImage 
+                    };
+                });
+
+                events.forEach(e => { if (!validIds.has(e.id)) updates[e.id] = null; });
+
+                db.ref('events').update(updates);
+                if(!silent) alert("סנכרון וניקוי הושלמו בהצלחה!");
+            }});
+        }).catch(err => console.error("Sync Error:", err));
+    }
+
+    // --- Settings & User Logic ---
     function renderUserList() {
         const uniqueOwners = new Set(['כללי', 'אורח']);
         events.forEach(e => {
             if(e.owner) {
-                // Split by + or comma, trim, take first word
                 e.owner.replace(/\+/g, ',').split(',').forEach(o => {
                     const cleanName = o.trim().split(' ')[0];
                     if(cleanName && cleanName.length > 1) uniqueOwners.add(cleanName);
                 });
             }
         });
+        
+        if (!uniqueOwners.has(currentUser) && currentUser !== 'אורח' && currentUser !== 'כללי') selectUser('אורח');
         
         const sortedOwners = Array.from(uniqueOwners).sort();
         const container = document.getElementById('userList');
@@ -393,25 +484,18 @@
 
     function updateAudienceFilterOptions() {
         const audiences = new Set(['all']);
-        events.forEach(e => {
-            if(e.audience) audiences.add(e.audience.trim());
-        });
-        
+        events.forEach(e => { if(e.audience) audiences.add(e.audience.trim()); });
         const select = document.getElementById('audienceFilter');
         const currentVal = select.value;
-        
         select.innerHTML = '';
         Array.from(audiences).sort().forEach(aud => {
             const opt = document.createElement('option');
-            opt.value = aud;
-            opt.innerText = aud === 'all' ? 'כל הקהלים' : aud;
+            opt.value = aud; opt.innerText = aud === 'all' ? 'כל הקהלים' : aud;
             select.appendChild(opt);
         });
-        
         if(audiences.has(currentVal)) select.value = currentVal;
     }
 
-    // --- Notification Logic ---
     function checkNewAssignments(newEventsList) {
         if(currentUser === 'כללי' || currentUser === 'אורח') return;
         const myOldCount = events.filter(e => e.owner && e.owner.includes(currentUser)).length;
@@ -432,7 +516,6 @@
         if(min) { setTimeout(() => { sendNotification("תזכורת למשימה", taskText); }, min * 60 * 1000); alert(`תזכורת נקבעה לעוד ${min} דקות`); }
     }
 
-    // --- Settings ---
     function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('settingsModal').classList.add('flex'); renderUserList(); }
     function selectUser(name) {
         currentUser = name;
@@ -440,25 +523,6 @@
         document.getElementById('currentUserDisplay').innerText = name;
         closeModals();
         refreshView();
-    }
-
-    // --- Standard Logic ---
-    function parseDateStringWithRange(dateStr) {
-        if (!dateStr) return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
-        const rangeMatch = dateStr.match(/^(\d{1,2})[-](\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/);
-        if (rangeMatch) {
-            const startDay = parseInt(rangeMatch[1]), endDay = parseInt(rangeMatch[2]), month = parseInt(rangeMatch[3]) - 1;
-            let year = parseInt(rangeMatch[4]); if (year < 100) year += 2000;
-            return { start: new Date(year, month, startDay), end: new Date(year, month, endDay) };
-        }
-        const parts = dateStr.split(/[\/\.]/);
-        if (parts.length >= 2) {
-            const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1;
-            let year = parts.length === 3 ? parseInt(parts[2]) : new Date().getFullYear(); if (year < 100) year += 2000;
-            const d = new Date(year, month, day);
-            return { start: d, end: d };
-        }
-        return { start: new Date(2099,0,1), end: new Date(2099,0,1) };
     }
 
     async function syncToSheet(eventData) { try { await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(eventData) }); } catch (e) { console.error("Sync failed", e); } }
@@ -482,7 +546,6 @@
             const pending = (e.tasks||[]).filter(t=>!t.done).length;
             const dateNum = e.dateStr ? e.dateStr.split(/[\/\.-]/)[0] : '?';
             const dateMonth = e.dateObj.toLocaleString('en-us',{month:'short'});
-            // הדגשת כרטיסיות שלי
             const isMine = e.owner && e.owner.includes(currentUser);
             const borderClass = isMine ? 'ring-2 ring-blue-400' : '';
 
@@ -514,17 +577,13 @@
         const cont = document.getElementById('globalTaskList'); cont.innerHTML='';
         document.getElementById('tasksUserFilter').innerText = currentUser;
         
-        // 1. User Filter
         let relevantEvents = events;
         if (currentUser !== 'כללי' && currentUser !== 'אורח') {
             relevantEvents = events.filter(e => e.owner && e.owner.includes(currentUser));
         }
 
-        // 2. Audience Filter
         const audFilter = document.getElementById('audienceFilter').value;
-        if (audFilter !== 'all') {
-            relevantEvents = relevantEvents.filter(e => e.audience === audFilter);
-        }
+        if (audFilter !== 'all') relevantEvents = relevantEvents.filter(e => e.audience === audFilter);
 
         let count=0;
         relevantEvents.sort((a,b)=>a.dateObj-b.dateObj).forEach((e, idx) => {
@@ -565,27 +624,6 @@
         saveEvent(ev); closeModals(); document.getElementById('addTitle').value = ''; document.getElementById('addDate').value = '';
     }
     
-    // --- Cache Buster Fix ---
-    function loadFromLinkedSheet(silent=false) {
-        // הוספת חותמת זמן כדי למנוע שמירה בזיכרון של הטלפון
-        const urlWithCache = SHEET_CSV_URL + "&t=" + Date.now();
-        
-        fetch(urlWithCache).then(r=>r.text()).then(csv=>{
-            Papa.parse(csv, {header:true, skipEmptyLines:true, complete: res => {
-                const updates = {};
-                res.data.forEach(row => {
-                    if(!row.Title) return;
-                    const id = 'evt_' + row.Title.replace(/[^a-zA-Z0-9א-ת]/g, '');
-                    const dates = parseDateStringWithRange(row.Date);
-                    let tasks = []; if(row.Tasks) { tasks = row.Tasks.split(',').map(t=>({ text: t.replace('(V)','').trim(), done: t.includes('(V)') })).filter(t=>t.text); }
-                    updates[id] = { id: id, title: row.Title, dateStr: row.Date || 'טרם נקבע', dateObj: dates.start.toISOString(), endDateObj: dates.end.toISOString(), desc: row.Description, status: row.Status, owner: row.Owner, audience: row.Audience, tasks: tasks };
-                });
-                db.ref('events').update(updates);
-                if(!silent) alert("סנכרון הושלם");
-            }});
-        });
-    }
-
     function switchView(v) { document.querySelectorAll('.view-section').forEach(x=>x.classList.add('hidden')); document.getElementById(v+'View').classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); document.getElementById('btn-'+v).classList.add('active'); refreshView(); }
     function changeMonth(d) { currentDate.setMonth(currentDate.getMonth()+d); refreshView(); }
     function closeModals() { document.querySelectorAll('.fixed').forEach(e=>{ if(e.id !== 'loader-screen') {e.classList.add('hidden'); e.classList.remove('flex');} }); }
