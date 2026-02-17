@@ -4,96 +4,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bat Yam 100</title>
-    <link rel="icon" type="image/png" href="favicon.png">
     
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJhdCBZYW0gMTAwIiwKICAic2hvcnRfbmFtZSI6ICJCYXRZYW0iLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDc3YjYiLAogICJpY29ucyI6IFt7CiAgICAic3JjIjogImh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzI5OTAvMjk5MDk5NS5wbmciLAogICAgInNpemVzIjogIjE5MngxOTIiLAogICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogIH1dCn0=">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2990/2990995.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
-        body { background: #f8fafc; font-family: 'Heebo', sans-serif; padding-bottom: 30px; }
-        .hero { background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%); height: 160px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .card { background: white; border-radius: 18px; border: 1px solid #f1f5f9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }
-        .card:active { transform: scale(0.98); }
-        .loader-spin { border: 3px solid #f3f3f3; border-top: 3px solid #0077b6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        body { background: #f0f9ff; font-family: 'Heebo', sans-serif; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        .hero { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 24px; border-radius: 0 0 32px 32px; color: white; box-shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.5); position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02); border: 1px solid #f0f9ff; transition: all 0.2s; }
+        .card:active { transform: scale(0.97); }
+        .nav-bar { position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 10px; border-radius: 24px; display: flex; justify-content: space-around; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.5); z-index: 40; }
+        .nav-btn { padding: 10px; border-radius: 16px; color: #94a3b8; transition: 0.3s; }
+        .nav-btn.active { background: #e0f2fe; color: #0284c7; }
+        .modal-enter { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-300">
-    <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-    <p class="text-slate-400 font-bold text-sm tracking-widest">טוען נתונים מהאקסל...</p>
+<div id="loader" class="fixed inset-0 bg-slate-50 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="relative">
+        <div class="w-16 h-16 border-4 border-slate-200 border-t-sky-500 rounded-full animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center font-black text-sky-600 text-xs">100</div>
+    </div>
+    <p class="text-slate-400 text-xs font-bold mt-4 tracking-widest">טוען מערכת...</p>
 </div>
 
 <div class="max-w-md mx-auto min-h-screen">
-    <div class="hero p-6 text-white flex flex-col justify-between shadow-xl">
-        <div class="flex justify-between items-center">
-            <div class="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold border border-white/10 uppercase tracking-wider">Bat Yam Municipality</div>
+    <div class="hero">
+        <div class="flex justify-between items-start mb-6 relative z-10">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-md border border-white/20">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-[10px] font-bold tracking-wider">מחובר לאקסל</span>
+                </div>
+            </div>
             <div class="flex gap-2">
-                <button onclick="loadData()" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-white/40 p-2 rounded-full hover:bg-white/50 transition"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                <button onclick="requestNotificationPermission()" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition"><i data-lucide="bell" class="w-5 h-5"></i></button>
+                <button onclick="loadData(true)" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
             </div>
         </div>
-        <div>
-            <h1 class="text-3xl font-black tracking-tighter leading-none">BAT YAM <span class="text-yellow-400">100</span></h1>
-            <p class="text-blue-50 text-xs font-medium mt-1 opacity-90">ניהול פרויקטים ואירועים 2026</p>
+        <div class="relative z-10">
+            <h1 class="text-4xl font-black tracking-tight leading-none mb-1">BAT YAM <span class="text-yellow-300">100</span></h1>
+            <p class="text-sky-100 text-sm font-medium opacity-90">דשבורד ניהול פרויקטים</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 px-6 -mt-6 relative z-10">
-        <div class="card p-4 text-center">
-            <span class="text-[10px] text-slate-400 font-black uppercase block mb-1">פרויקטים</span>
-            <span id="stat-total" class="text-2xl font-black text-blue-600">0</span>
+    <div class="px-5 -mt-6 relative z-10 pb-28">
+        <div class="flex gap-3 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+            <div class="card p-4 min-w-[140px] flex-1 bg-white">
+                <span class="text-xs text-slate-400 font-bold block mb-1">פרויקטים פעילים</span>
+                <div class="flex items-end gap-2">
+                    <span id="stat-total" class="text-3xl font-black text-slate-800">0</span>
+                    <span class="text-xs font-bold text-green-500 mb-1.5">+2 השבוע</span>
+                </div>
+            </div>
+             <div class="card p-4 min-w-[140px] flex-1 bg-sky-50 border-sky-100">
+                <span class="text-xs text-sky-600 font-bold block mb-1">משימות פתוחות</span>
+                <span class="text-3xl font-black text-sky-700">0</span>
+            </div>
         </div>
-        <div class="card p-4 text-center">
-            <span class="text-[10px] text-slate-400 font-black uppercase block mb-1">סנכרון</span>
-            <span class="text-xs font-bold text-green-500 flex items-center justify-center gap-1 mt-2">
-                <i data-lucide="check-circle" class="w-3 h-3"></i> פעיל
-            </span>
-        </div>
+
+        <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i data-lucide="calendar-days" class="w-5 h-5 text-sky-500"></i> סדר יום
+        </h2>
+        <div id="listView" class="space-y-3"></div>
     </div>
 
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="font-black text-slate-800 text-lg">אירועים קרובים</h2>
-        </div>
-        <div id="listView" class="space-y-3">
-            </div>
+    <div class="nav-bar">
+        <button class="nav-btn active"><i data-lucide="home" class="w-6 h-6"></i></button>
+        <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-sky-500 text-white p-3 rounded-2xl -mt-8 shadow-lg shadow-sky-300 hover:scale-105 transition active:scale-95 border-4 border-white">
+            <i data-lucide="plus" class="w-7 h-7"></i>
+        </button>
+        <button class="nav-btn" onclick="alert('בפיתוח')"><i data-lucide="list-todo" class="w-6 h-6"></i></button>
     </div>
 </div>
 
-<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4 transition-all">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-8 shadow-2xl animate-slide-up">
+<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4 transition-all" style="backdrop-filter: blur(4px);">
+    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl modal-enter h-[85vh] flex flex-col">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black text-slate-800">אירוע חדש</h2>
-            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+            <h2 class="text-2xl font-black text-slate-800">פרויקט חדש</h2>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-slate-50 rounded-full hover:bg-slate-100"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
         </div>
         
-        <div class="space-y-4">
+        <div class="flex-1 overflow-y-auto space-y-5 px-1 pb-20">
             <div>
-                <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">שם האירוע / פרויקט</label>
-                <input id="inTitle" type="text" placeholder="למשל: שיפוץ הטיילת" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 font-bold transition">
+                <label class="text-xs font-bold text-slate-400 uppercase mb-1.5 block">שם האירוע</label>
+                <input id="inTitle" type="text" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 focus:bg-white focus:border-sky-500 outline-none font-bold text-lg transition">
             </div>
-            
-            <div class="grid grid-cols-2 gap-4">
+
+            <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">תאריך</label>
-                    <input id="inDate" type="text" placeholder="DD/MM/YYYY" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 transition">
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-1.5 block">תאריך</label>
+                    <input id="inDate" type="date" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-sky-500 font-medium">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">אחראי</label>
-                    <input id="inOwner" type="text" placeholder="שם" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 transition">
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-1.5 block">אחראי</label>
+                    <input id="inOwner" type="text" placeholder="שם" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-sky-500 font-medium">
                 </div>
             </div>
 
-            <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition flex justify-center items-center gap-3 mt-4">
-                <i data-lucide="send" class="w-5 h-5"></i>
-                <span>שמור וסנכרן לאקסל</span>
+            <div>
+                <label class="text-xs font-bold text-slate-400 uppercase mb-1.5 block">תיאור ופרטים</label>
+                <textarea id="inDesc" rows="3" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 focus:bg-white focus:border-sky-500 outline-none text-sm"></textarea>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase">משימות</label>
+                    <button onclick="addTaskLine()" class="text-sky-600 text-xs font-bold hover:underline">+ הוסף משימה</button>
+                </div>
+                <div id="tasksContainer" class="space-y-2"></div>
+            </div>
+
+            <div>
+                <label class="block w-full p-4 border-2 border-dashed border-slate-200 rounded-xl text-center cursor-pointer hover:border-sky-400 hover:bg-sky-50 transition group">
+                    <input type="file" id="inImage" class="hidden" accept="image/*" onchange="previewImage(this)">
+                    <div id="imgPreview" class="hidden h-32 w-full bg-cover bg-center rounded-lg mb-2"></div>
+                    <div id="imgPlaceholder" class="group-hover:scale-105 transition-transform">
+                        <i data-lucide="image-plus" class="w-8 h-8 text-slate-300 mx-auto mb-2 group-hover:text-sky-500"></i>
+                        <span class="text-xs font-bold text-slate-400 group-hover:text-sky-600">הוסף תמונה (אופציונלי)</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100">
+            <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-sky-600 text-white py-4 rounded-xl font-black shadow-lg shadow-sky-200 active:scale-95 transition flex justify-center items-center gap-3">
+                <span>שמור וסנכרן</span>
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </button>
+        </div>
+    </div>
+</div>
+
+<div id="viewModal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4 transition-all">
+    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-0 shadow-2xl modal-enter h-[85vh] flex flex-col overflow-hidden">
+        <div class="h-40 bg-slate-200 relative">
+            <img id="viewImage" class="w-full h-full object-cover hidden">
+            <div id="viewImagePlaceholder" class="absolute inset-0 flex items-center justify-center text-slate-400 bg-slate-100">
+                <i data-lucide="image" class="w-10 h-10 opacity-20"></i>
+            </div>
+            <button onclick="document.getElementById('viewModal').classList.add('hidden')" class="absolute top-4 left-4 bg-black/30 text-white p-2 rounded-full backdrop-blur-md"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        
+        <div class="p-6 flex-1 overflow-y-auto">
+            <div class="flex gap-2 mb-3">
+                <span class="bg-sky-100 text-sky-700 px-2 py-0.5 rounded text-[10px] font-bold" id="viewDate"></span>
+                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold" id="viewStatus">פעיל</span>
+            </div>
+            <h2 id="viewTitle" class="text-2xl font-black text-slate-800 mb-2 leading-tight"></h2>
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold">👤</div>
+                <span id="viewOwner" class="text-sm font-bold text-slate-500"></span>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xs font-black text-slate-400 uppercase mb-2">תיאור</h3>
+                <p id="viewDesc" class="text-sm text-slate-600 leading-relaxed"></p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <h3 class="text-xs font-black text-slate-400 uppercase mb-3 flex items-center gap-2"><i data-lucide="list-checks" class="w-3 h-3"></i> משימות</h3>
+                <div id="viewTasks" class="space-y-3"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -102,14 +184,14 @@
     // --- הגדרות ---
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
     
-    // הקישור שלך:
+    // *** עדכן כאן את הקישור אם הוא השתנה ***
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 
     let events = [];
+    let currentImageBase64 = "";
 
-    // טעינת נתונים
-    async function loadData() {
-        document.getElementById('loader').classList.remove('hidden');
+    async function loadData(manual = false) {
+        if(manual) document.getElementById('loader').classList.remove('hidden');
         try {
             const response = await fetch(CSV_URL + '&t=' + Date.now());
             const csvText = await response.text();
@@ -124,60 +206,147 @@
                 }
             });
         } catch (e) {
-            console.error("Error loading data:", e);
+            console.error(e);
             document.getElementById('loader').classList.add('hidden');
         }
     }
 
-    // תצוגה
     function renderList() {
         const container = document.getElementById('listView');
         container.innerHTML = '';
         
         if (events.length === 0) {
-            container.innerHTML = '<div class="text-center py-10 text-slate-400 font-medium">אין אירועים להצגה</div>';
+            container.innerHTML = '<div class="text-center py-20 text-slate-400 font-medium">אין נתונים להצגה</div>';
             return;
         }
 
-        // מיון הפוך - החדשים למעלה
-        [...events].reverse().forEach(e => {
-            const title = e.Title || e['שם האירוע'] || 'ללא שם';
-            const date = e.Date || e['תאריך'] || '--/--';
-            const owner = e.Owner || e['אחראי'] || '-';
+        [...events].reverse().forEach((e, idx) => {
+            const title = e.Title || e[1] || 'ללא שם';
+            const date = e.Date || e[2] || '';
+            const owner = e.Owner || e[3] || '-';
+            const desc = e.Description || e[4] || ''; // עמודה 5
             
             container.innerHTML += `
-                <div class="card p-5 flex items-center gap-5 border-r-4 border-r-blue-500">
-                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 text-blue-600 font-black shrink-0">
-                        <span class="text-lg leading-none">${date.split('/')[0] || '?'}</span>
+                <div onclick="openViewModal(${idx})" class="card p-4 flex items-center gap-4 cursor-pointer hover:shadow-md border-r-4 border-r-sky-500">
+                    <div class="w-14 h-14 bg-sky-50 rounded-2xl flex flex-col items-center justify-center border border-sky-100 text-sky-600 font-black shrink-0 shadow-sm">
+                        <span class="text-lg leading-none">${date.split('-')[2] || date.split('/')[0] || '?'}</span>
+                        <span class="text-[9px] uppercase mt-0.5 opacity-70">דצמ</span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-bold text-slate-800 truncate text-base">${title}</h3>
-                        <p class="text-xs text-slate-400 font-bold mt-0.5">👤 ${owner}</p>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-xs text-slate-400 font-medium flex items-center gap-1"><i data-lucide="user" class="w-3 h-3"></i> ${owner}</span>
+                            ${desc ? '<span class="w-1 h-1 rounded-full bg-slate-300"></span><span class="text-[10px] text-slate-400 truncate max-w-[100px]">'+desc+'</span>' : ''}
+                        </div>
                     </div>
-                    <i data-lucide="chevron-left" class="w-4 h-4 text-slate-300"></i>
+                    <i data-lucide="chevron-left" class="w-5 h-5 text-slate-300"></i>
                 </div>
             `;
         });
         lucide.createIcons();
     }
 
-    // שליחה (מותאם לסקריפט החדש)
+    // --- ניהול משימות ---
+    function addTaskLine() {
+        const div = document.createElement('div');
+        div.className = "flex gap-2";
+        div.innerHTML = `
+            <input type="text" class="task-input flex-1 bg-white border border-slate-200 rounded-lg p-2 text-sm outline-none focus:border-sky-400" placeholder="משימה חדשה...">
+            <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        `;
+        document.getElementById('tasksContainer').appendChild(div);
+        lucide.createIcons();
+    }
+
+    // --- ניהול תמונה ---
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // בדיקת גודל - שלא יקריס את הסקריפט (עד 30KB בערך)
+                if(e.target.result.length > 40000) {
+                    alert("התמונה גדולה מדי לשיטה זו. אנא בחר תמונה קטנה יותר.");
+                    input.value = "";
+                    return;
+                }
+                currentImageBase64 = e.target.result;
+                const preview = document.getElementById('imgPreview');
+                preview.style.backgroundImage = `url(${e.target.result})`;
+                preview.classList.remove('hidden');
+                document.getElementById('imgPlaceholder').classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // --- פתיחת צפייה באירוע ---
+    function openViewModal(idx) {
+        // בגלל שעשינו reverse בתצוגה, צריך למצוא את האינדקס הנכון
+        const realIdx = (events.length - 1) - idx;
+        const e = events[realIdx];
+        
+        document.getElementById('viewTitle').innerText = e.Title || e[1];
+        document.getElementById('viewDate').innerText = e.Date || e[2];
+        document.getElementById('viewOwner').innerText = e.Owner || e[3];
+        document.getElementById('viewDesc').innerText = e.Description || e[4] || "אין פירוט נוסף";
+        
+        // תמונה
+        const imgUrl = e.Image || e[7];
+        if(imgUrl && imgUrl.startsWith('data:image')) {
+            document.getElementById('viewImage').src = imgUrl;
+            document.getElementById('viewImage').classList.remove('hidden');
+            document.getElementById('viewImagePlaceholder').classList.add('hidden');
+        } else {
+            document.getElementById('viewImage').classList.add('hidden');
+            document.getElementById('viewImagePlaceholder').classList.remove('hidden');
+        }
+
+        // משימות
+        const tasksStr = e.Tasks || e[5] || "";
+        const tasksContainer = document.getElementById('viewTasks');
+        tasksContainer.innerHTML = '';
+        if(tasksStr) {
+            tasksStr.split('|').forEach(task => {
+                tasksContainer.innerHTML += `
+                    <div class="flex items-center gap-2 text-sm text-slate-700 bg-white p-2 rounded border border-slate-100">
+                        <input type="checkbox" class="accent-sky-500 w-4 h-4">
+                        <span>${task}</span>
+                    </div>`;
+            });
+        } else {
+            tasksContainer.innerHTML = '<span class="text-xs text-slate-400">אין משימות</span>';
+        }
+
+        document.getElementById('viewModal').classList.remove('hidden');
+    }
+
+    // --- שליחה ---
     async function saveToExcel() {
         const title = document.getElementById('inTitle').value;
         const date = document.getElementById('inDate').value;
         const owner = document.getElementById('inOwner').value;
+        const desc = document.getElementById('inDesc').value;
+        
+        // איסוף משימות
+        const tasks = Array.from(document.querySelectorAll('.task-input'))
+                           .map(input => input.value)
+                           .filter(val => val.trim() !== "")
+                           .join('|');
 
         if(!title) return alert("אנא הזן שם לאירוע");
 
         const btn = document.getElementById('saveBtn');
-        btn.innerHTML = '<div class="loader-spin"></div> <span>שומר...</span>';
+        btn.innerHTML = '<span>שולח...</span>';
         btn.disabled = true;
 
-        // הכנת הנתונים בצורה פשוטה: title, date, owner
         const formData = new URLSearchParams();
         formData.append('title', title);
-        formData.append('date', date);  // שינינו מ-dateStr ל-date
+        formData.append('date', date);
         formData.append('owner', owner);
+        formData.append('desc', desc);
+        formData.append('tasks', tasks);
+        formData.append('status', 'חדש');
+        formData.append('image', currentImageBase64); // נשלח את התמונה אם היא קטנה
 
         try {
             await fetch(APPS_SCRIPT_URL, {
@@ -188,29 +357,48 @@
             });
 
             // עדכון אופטימי
-            events.unshift({ "Title": title, "Date": date, "Owner": owner });
+            events.unshift({ 
+                "Title": title, "Date": date, "Owner": owner, 
+                "Description": desc, "Tasks": tasks, "Image": currentImageBase64 
+            });
             renderList();
             
-            alert("הנתונים נשלחו בהצלחה!");
             document.getElementById('addModal').classList.add('hidden');
             
+            // ניקוי
             document.getElementById('inTitle').value = '';
-            document.getElementById('inDate').value = '';
-            document.getElementById('inOwner').value = '';
+            document.getElementById('inDesc').value = '';
+            document.getElementById('tasksContainer').innerHTML = '';
+            currentImageBase64 = "";
+            document.getElementById('imgPreview').classList.add('hidden');
+            document.getElementById('imgPlaceholder').classList.remove('hidden');
+
+            // הודעה מקומית (פושים)
+            if(Notification.permission === "granted") {
+                new Notification("האירוע נשמר בהצלחה!", { body: title });
+            }
 
             setTimeout(loadData, 3000);
 
         } catch (e) {
-            alert("שגיאה בתקשורת עם השרת");
+            alert("שגיאה בתקשורת");
             console.error(e);
         } finally {
-            btn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> <span>שמור וסנכרן לאקסל</span>';
+            btn.innerHTML = '<span>שמור וסנכרן</span><i data-lucide="arrow-left" class="w-5 h-5"></i>';
             btn.disabled = false;
-            lucide.createIcons();
         }
     }
 
-    document.addEventListener('DOMContentLoaded', loadData);
+    function requestNotificationPermission() {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") alert("התראות הופעלו!");
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        lucide.createIcons();
+    });
 </script>
 
 </body>
