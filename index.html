@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bat Yam 100 - מערכת חדשה</title>
+    <title>Bat Yam 100</title>
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJhdCBZYW0gMTAwIiwKICAic2hvcnRfbmFtZSI6ICJCYXRZYW0iLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwNzdiNiIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDc3YjYiLAogICJpY29ucyI6IFt7CiAgICAic3JjIjogImh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzI5OTAvMjk5MDk5NS5wbmciLAogICAgInNpemVzIjogIjE5MngxOTIiLAogICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogIH1dCn0=">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJhdCBZYW0gMTAwIiwKICAic2hvcnRfbmFtZSI6ICJCYXRZYW0iLAogICJzdGFydF91cmwiOiAiYXBwLmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDc3YjYiLAogICJ0aGVtZV9jb2xvciI6ICIjMDA3N2I2IiwKICAiaWNvbnMiOiBbeyKic3JjIjogImh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzI5OTAvMjk5MDk5NS5wbmciLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyJ9XQp9">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -25,13 +25,13 @@
             border-radius: 0 0 35px 35px; 
             overflow: hidden; 
             box-shadow: 0 10px 40px -10px rgba(0, 119, 182, 0.5);
-            background: #0077b6; /* גיבוי */
+            background: linear-gradient(135deg, #0077b6, #023e8a);
         }
         .hero-bg {
-            background-image: linear-gradient(to bottom, rgba(0,50,100,0.3), rgba(0,119,182,0.8)), url('baner.jpg');
+            background-image: url('baner.jpg');
             background-size: cover;
             background-position: center;
-            position: absolute; inset: 0; z-index: 0;
+            position: absolute; inset: 0; z-index: 0; opacity: 0.8;
         }
 
         .glass-btn { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
@@ -85,7 +85,7 @@
         <div class="hero-bg"></div>
         <div class="relative z-10 p-6 flex flex-col justify-between h-full">
             <div class="flex justify-between items-start">
-                <div class="glass-btn px-3 py-1 text-xs font-bold shadow-lg">
+                <div class="glass-btn px-3 py-1 flex items-center gap-2 text-xs font-bold shadow-lg">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                     <span id="userGreeting">אורח</span>
                 </div>
@@ -156,31 +156,35 @@
         
         <div class="space-y-4 overflow-y-auto flex-1 pb-4 px-1">
             <input id="inTitle" type="text" placeholder="שם האירוע" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none font-bold text-lg focus:bg-white focus:border-blue-500 transition">
+            
             <div class="grid grid-cols-2 gap-3">
                 <input id="inDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
                 <input id="inOwner" type="text" placeholder="אחראי" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
             </div>
+            
             <select id="inStatus" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
                 <option value="חדש">חדש</option>
                 <option value="בטיפול">בטיפול</option>
                 <option value="בוצע">בוצע</option>
             </select>
-            <textarea id="inDesc" rows="3" placeholder="תיאור..." class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none"></textarea>
+
+            <textarea id="inDesc" rows="3" placeholder="תיאור ופרטים נוספים..." class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:bg-white focus:border-blue-500 transition"></textarea>
             
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div class="flex justify-between items-center mb-2">
-                    <label class="text-xs font-bold text-slate-400 block">משימות</label>
+                    <label class="text-xs font-bold text-slate-400 block">משימות (צ'ק ליסט)</label>
                     <button onclick="addNewTaskLine()" class="text-blue-600 text-xs font-bold">+ הוסף</button>
                 </div>
                 <div id="newTasksList" class="space-y-2"></div>
             </div>
-            
+
              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-100 transition">
                 <input type="file" id="inImage" class="hidden" accept="image/*" onchange="handleImageUpload(this)">
                 <i data-lucide="image-plus" class="text-slate-400"></i>
                 <span class="text-sm font-bold text-slate-500" id="imgStatus">הוסף תמונה (אופציונלי)</span>
             </label>
         </div>
+
         <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg">שמור וסנכרן</button>
     </div>
 </div>
@@ -195,6 +199,7 @@
             <button onclick="document.getElementById('viewModal').classList.add('hidden')" class="absolute top-4 left-4 bg-black/30 text-white p-2 rounded-full backdrop-blur-md"><i data-lucide="x" class="w-5 h-5"></i></button>
             <div id="viewStatusBadge" class="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur"></div>
         </div>
+        
         <div class="p-6 flex-1 overflow-y-auto">
             <h2 id="viewTitle" class="text-2xl font-black text-slate-800 mb-1 leading-tight"></h2>
             <div class="flex items-center gap-2 mb-4 text-sm text-slate-500 font-medium">
@@ -212,23 +217,13 @@
 </div>
 
 <script>
-    // הגדרות
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
-    
-    // *** הקישור שלך לסקריפט המעודכן ***
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 
     let events = [];
     let currentUser = localStorage.getItem('batyamUser') || "";
     let currentMonth = new Date();
     let currentImageBase64 = "";
-
-    // ניקוי Cache כפוי (רץ אוטומטית כשהדף עולה)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) { registration.unregister(); }
-        });
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
         if (currentUser) {
@@ -478,6 +473,7 @@
             alert("האירוע נשמר בהצלחה!");
             document.getElementById('addModal').classList.add('hidden');
             
+            // Clear inputs
             document.getElementById('inTitle').value = '';
             document.getElementById('inDesc').value = '';
             document.getElementById('newTasksList').innerHTML = '';
