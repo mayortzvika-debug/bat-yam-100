@@ -28,7 +28,9 @@
         
         /* COMPONENTS */
         .glass-btn { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
-        .nav-bar { position: fixed; bottom: 25px; left: 20px; right: 20px; background: white; padding: 8px 20px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; z-index: 40; }
+        
+        /* NAVIGATION BAR - FIXED Z-INDEX */
+        .nav-bar { position: fixed; bottom: 25px; left: 20px; right: 20px; background: white; padding: 8px 20px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; z-index: 999; }
         .nav-btn { padding: 12px; border-radius: 16px; color: #94a3b8; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { color: var(--primary); transform: translateY(-2px); }
         .add-btn-main { background: var(--primary); color: white; padding: 12px; border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0, 119, 182, 0.4); transform: translateY(-20px); border: 4px solid white; }
@@ -42,13 +44,6 @@
         .user-chip { padding: 8px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 14px; font-weight: bold; color: #64748b; transition: 0.2s; }
         .user-chip.selected { background: #0077b6; color: white; border-color: #0077b6; box-shadow: 0 4px 10px rgba(0,119,182,0.3); }
 
-        /* LANDSCAPE FIX */
-        @media (orientation: landscape) and (max-height: 600px) {
-            body { padding-bottom: 0; background: white; }
-            .hero-wrapper, .nav-bar, #listViewContainer, #tasksView { display: none !important; }
-            #calendarView { display: block !important; height: 100vh; position: fixed; inset: 0; z-index: 100; background: white; padding: 10px; overflow-y: auto; }
-        }
-        
         .animate-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
@@ -226,7 +221,7 @@
     let currentMonth = new Date();
     let currentImageBase64 = "";
     
-    // רשימת ברירת מחדל אם אין חיבור
+    // ברירת מחדל אם אין חיבור
     let knownUsers = new Set(['בן', 'רינת', 'דוד', 'שרה', 'מיכל']);
 
     // Clear Cache Forcefully
@@ -235,7 +230,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadData(false); // Load data first to get users!
+        loadData(false);
     });
 
     function initApp() {
@@ -299,7 +294,6 @@
             Papa.parse(text, { header: true, skipEmptyLines: true, complete: (results) => {
                 events = results.data;
                 
-                // חילוץ משתמשים מהאקסל
                 events.forEach(e => {
                     const owner = e.Owner || e[3];
                     if(owner) knownUsers.add(owner.trim());
@@ -308,7 +302,6 @@
                 document.getElementById('totalEvents').innerText = events.length;
                 document.getElementById('loader').classList.add('hidden');
                 
-                // רק אחרי שיש נתונים, מפעילים את האפליקציה או מסך כניסה
                 if(manual) renderAll();
                 else initApp();
             }});
@@ -375,7 +368,6 @@
 
     function renderMyTasks() {
         const list = document.getElementById('myTasksList');
-        // סינון חכם: מראה רק משימות שמשויכות למשתמש המחובר
         const myEvents = events.filter(e => (e.Owner || e[3] || "").includes(currentUser));
         
         document.getElementById('taskBadge').classList.toggle('hidden', myEvents.length === 0);
@@ -400,6 +392,7 @@
         }).join('');
     }
 
+    // --- תיקון לוח שנה: זיהוי תאריכים חכם ---
     function renderCalendar() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
@@ -415,17 +408,22 @@
         for (let i = 0; i < firstDay; i++) html += `<div></div>`;
 
         for (let d = 1; d <= daysInMonth; d++) {
-            const paddedMonth = String(month + 1).padStart(2, '0');
-            const paddedDay = String(d).padStart(2, '0');
-            const isoDate = `${year}-${paddedMonth}-${paddedDay}`;
-            
             const dayEvents = events.filter(e => {
-                const eDate = e.Date || "";
-                if (!eDate) return false;
-                if (eDate === isoDate) return true;
-                const parts = eDate.split('/');
-                if (parts.length >= 2) return parseInt(parts[0]) === d && parseInt(parts[1]) === (month + 1);
-                return false;
+                const dateStr = e.Date || "";
+                if (!dateStr) return false;
+                
+                // תמיכה בכל הפורמטים: 2026-02-05, 5/2/2026, 05/02/2026
+                const parts = dateStr.split(/[-/]/); 
+                if (parts.length < 3) return false;
+
+                // בדיקה אם זה YYYY-MM-DD
+                if (parts[0].length === 4) {
+                    return parseInt(parts[0]) === year && parseInt(parts[1]) === (month + 1) && parseInt(parts[2]) === d;
+                }
+                // בדיקה אם זה DD/MM/YYYY
+                else {
+                    return parseInt(parts[2]) === year && parseInt(parts[1]) === (month + 1) && parseInt(parts[0]) === d;
+                }
             });
 
             const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
