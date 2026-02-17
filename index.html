@@ -4,162 +4,381 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bat Yam 100</title>
-    
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJhdCBZYW0gMTAwIiwKICAic2hvcnRfbmFtZSI6ICJCYXRZYW0iLAogICJzdGFydF91cmwiOiAiYXBwLmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDc3YjYiLAogICJ0aGVtZV9jb2xvciI6ICIjMDA3N2I2IiwKICAiaWNvbnMiOiBbeyKic3JjIjogImh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzI5OTAvMjk5MDk5NS5wbmciLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyJ9XQp9">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2990/2990995.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
+
     <style>
-        :root { --primary: #0077b6; --primary-dark: #023e8a; --bg: #f0f9ff; }
-        body { background: var(--bg); font-family: 'Heebo', sans-serif; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
-        
-        /* Hero */
-        .hero-wrapper { position: relative; height: 230px; border-radius: 0 0 40px 40px; overflow: hidden; box-shadow: 0 16px 48px -12px rgba(0, 119, 182, 0.55); background: linear-gradient(145deg, var(--primary), var(--primary-dark)); }
-        .hero-bg { background-image: url('baner.jpg'); background-size: cover; background-position: center top; position: absolute; inset: 0; z-index: 0; opacity: 0.75; }
-        .hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,30,80,0.3) 0%, rgba(0,20,60,0.6) 100%); }
+        :root {
+            --primary: #0077b6;
+            --primary-dark: #023e8a;
+            --accent: #f9c74f;
+            --bg: #f0f9ff;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Heebo', sans-serif;
+            padding-bottom: 100px;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+        }
+
+        /* ===== HERO ===== */
+        .hero-wrapper {
+            position: relative;
+            height: 230px;
+            border-radius: 0 0 40px 40px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px -12px rgba(0, 119, 182, 0.55);
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+        }
+        .hero-bg {
+            background-image: url('baner.jpg');
+            background-size: cover;
+            background-position: center top;
+            position: absolute; inset: 0; z-index: 0;
+            opacity: 0.75;
+        }
+        .hero-overlay {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(to bottom, rgba(0,30,80,0.3) 0%, rgba(0,20,60,0.6) 100%);
+        }
         .hero-content { position: relative; z-index: 2; padding: 22px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
 
-        /* Buttons */
-        .glass-btn { background: rgba(255,255,255,0.18); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.32); color: white; border-radius: 50px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+        /* Glass buttons */
+        .glass-btn {
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.32);
+            color: white;
+            border-radius: 50px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
         .glass-btn:active { transform: scale(0.93); background: rgba(255,255,255,0.35); }
 
-        /* Cards */
-        .card { background: white; border-radius: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid rgba(0,119,182,0.07); transition: transform 0.15s; cursor: pointer; }
-        .card:active { transform: scale(0.97); }
+        /* ===== CARDS ===== */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+            border: 1px solid rgba(0,119,182,0.07);
+            transition: transform 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+        }
+        .card:active { transform: scale(0.97); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
 
-        /* Nav */
-        .nav-bar { position: fixed; bottom: 22px; left: 18px; right: 18px; background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); padding: 8px 16px; border-radius: 26px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 16px 48px -8px rgba(0,0,0,0.14); border: 1px solid rgba(255,255,255,0.6); z-index: 40; }
-        .nav-btn { padding: 10px 14px; border-radius: 18px; color: #94a3b8; transition: all 0.25s; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; }
+        /* ===== NAV ===== */
+        .nav-bar {
+            position: fixed;
+            bottom: 22px; left: 18px; right: 18px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(16px);
+            padding: 8px 16px;
+            border-radius: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 16px 48px -8px rgba(0,0,0,0.14);
+            border: 1px solid rgba(255,255,255,0.6);
+            z-index: 40;
+        }
+        .nav-btn {
+            padding: 10px 14px;
+            border-radius: 18px;
+            color: #94a3b8;
+            transition: all 0.25s;
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            font-size: 9px; font-weight: 700;
+        }
         .nav-btn.active { color: var(--primary); background: #e0f2fe; }
-        .nav-add { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 13px; border-radius: 22px; box-shadow: 0 8px 24px -4px rgba(0,119,182,0.5); transform: translateY(-18px); border: 4px solid white; transition: all 0.2s; }
+        .nav-add {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 13px;
+            border-radius: 22px;
+            box-shadow: 0 8px 24px -4px rgba(0,119,182,0.5);
+            transform: translateY(-18px);
+            border: 4px solid white;
+            transition: all 0.2s;
+        }
         .nav-add:active { transform: translateY(-18px) scale(0.94); }
 
-        /* Status Pills */
-        .pill-new { background:#dbeafe; color:#1d4ed8; }
+        /* ===== STATUS PILL ===== */
+        .pill-new    { background:#dbeafe; color:#1d4ed8; }
         .pill-active { background:#fef3c7; color:#b45309; }
-        .pill-done { background:#dcfce7; color:#16a34a; }
+        .pill-done   { background:#dcfce7; color:#16a34a; }
 
-        /* Calendar */
-        .cal-day { min-height: 72px; background: white; border-radius: 10px; border: 1px solid #e0f2fe; padding: 4px; font-size: 10px; position: relative; }
+        /* ===== CALENDAR ===== */
+        .cal-day {
+            min-height: 68px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0f2fe;
+            padding: 4px;
+            font-size: 10px;
+            position: relative;
+            overflow: hidden;
+        }
         .cal-day.today { border: 2px solid var(--primary); background: #f0f9ff; }
-        .cal-event { background: var(--primary); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 8px; font-weight: 700; cursor: pointer; }
+        .cal-day.other-month { 
+            background: #f8fafc; 
+            opacity: 0.4; 
+            min-height: 68px; /* חייב גובה גם תאים ריקים */
+        }
+        .cal-event {
+            background: var(--primary);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: block;
+        }
         .cal-event.mine { background: #16a34a; }
 
-        /* Modals */
-        .modal-sheet { position: fixed; inset: 0; background: rgba(15,23,42,0.65); display: flex; align-items: flex-end; justify-content: center; z-index: 150; backdrop-filter: blur(4px); }
-        .sheet-body { background: white; width: 100%; max-width: 480px; border-radius: 32px 32px 0 0; animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; max-height: 92vh; }
+        /* ===== MODALS ===== */
+        .modal-sheet {
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,0.65);
+            display: flex; align-items: flex-end;
+            justify-content: center;
+            z-index: 150;
+            backdrop-filter: blur(4px);
+        }
+        .modal-sheet.sm-center { align-items: center; padding: 16px; }
+        .sheet-body {
+            background: white;
+            width: 100%; max-width: 480px;
+            border-radius: 32px 32px 0 0;
+            animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+            display: flex; flex-direction: column;
+            max-height: 92vh;
+        }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Login */
-        .login-box { background: white; border-radius: 28px; padding: 36px 28px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 24px 64px -12px rgba(0,0,0,0.25); animation: popIn 0.4s; }
+        /* ===== LOGIN ===== */
+        .login-box {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            width: 100%; max-width: 340px;
+            text-align: center;
+            box-shadow: 0 24px 64px -12px rgba(0,0,0,0.25);
+            animation: popIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
         @keyframes popIn { from { transform: scale(0.88); opacity:0; } to { transform: scale(1); opacity:1; } }
-        .user-chip { padding: 10px 20px; border-radius: 50px; border: 2px solid #e2e8f0; cursor: pointer; font-weight: 700; font-size: 15px; transition: all 0.18s; background: white; }
-        .user-chip:hover, .user-chip.selected { border-color: var(--primary); background: #e0f2fe; color: var(--primary); }
 
-        /* Utils */
-        .task-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8fafc; border-radius: 12px; transition: background 0.15s; }
+        .user-chip {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.18s;
+            background: white;
+        }
+        .user-chip:hover, .user-chip.selected {
+            border-color: var(--primary);
+            background: #e0f2fe;
+            color: var(--primary);
+        }
+
+        /* ===== TASK ITEM ===== */
+        .task-item {
+            display: flex; align-items: center; gap-10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            gap: 10px;
+            transition: background 0.15s;
+        }
         .task-item.done-task { opacity: 0.5; }
-        .task-item input { width: 18px; height: 18px; accent-color: var(--primary); }
+        .task-item input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+        .task-item span.done-text { text-decoration: line-through; color: #94a3b8; }
+
+        /* ===== STAT CARDS ===== */
+        .stat-card { background: white; border-radius: 18px; padding: 14px 16px; border: 1px solid rgba(0,119,182,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+
+        /* ===== SCROLLBAR HIDE ===== */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ===== BADGE ===== */
         .badge { position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; }
+
+        /* ===== LOADER ===== */
+        #loader { transition: opacity 0.4s; }
         #loader.fade { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
-<div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-300">
+<!-- LOADER -->
+<div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center">
     <div class="relative mb-5">
         <div class="w-16 h-16 border-4 border-slate-100 border-t-blue-600 rounded-full animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center font-black text-blue-600 text-xs">100</div>
     </div>
     <p class="text-slate-400 text-xs font-bold tracking-widest">טוען מערכת...</p>
 </div>
 
-<div id="loginModal" class="fixed inset-0 bg-slate-900 z-[200] flex items-center justify-center p-5 hidden">
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="fixed inset-0 bg-slate-900 z-[200] flex items-center justify-center p-5" style="display:none!important">
     <div class="login-box">
         <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-5 text-4xl shadow-inner">👋</div>
         <h2 class="text-2xl font-black text-slate-800 mb-1">ברוכים הבאים</h2>
-        <p class="text-slate-400 text-sm mb-6">מי מתחבר?</p>
-        <div class="flex flex-wrap gap-2 justify-center mb-5" id="userChips"></div>
-        <input id="customNameInput" type="text" placeholder="שם אחר..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold outline-none focus:border-blue-500 mb-4 text-sm">
+        <p class="text-slate-400 text-sm mb-6">מי את/ה? בחר/י שם</p>
+        <div class="flex flex-wrap gap-2 justify-center mb-5" id="userChips">
+            <!-- chips rendered by JS -->
+        </div>
+        <input id="customNameInput" type="text" placeholder="שם אחר..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold outline-none focus:border-blue-500 mb-4 transition text-sm">
         <button onclick="login()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg active:scale-95 transition">כניסה →</button>
     </div>
 </div>
 
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-sheet hidden">
+    <div class="sheet-body" style="border-radius:32px 32px 0 0; padding:28px;">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-black text-slate-800">הגדרות</h2>
+            <button onclick="closeModal('settingsModal')" class="p-2 bg-slate-50 rounded-full"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+        </div>
+        <p class="text-xs font-bold text-slate-400 mb-3 uppercase">החלף משתמש</p>
+        <div class="flex flex-wrap gap-2 mb-4" id="settingsChips"></div>
+        <input id="settingsCustomName" type="text" placeholder="שם אחר..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold outline-none focus:border-blue-500 mb-4 transition text-sm">
+        <button onclick="switchUser()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-black active:scale-95 transition">החלף</button>
+    </div>
+</div>
+
+<!-- MAIN APP -->
 <div id="app" class="hidden max-w-md mx-auto">
+
+    <!-- HERO -->
     <div class="hero-wrapper">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
+            <!-- Top row -->
             <div class="flex justify-between items-center">
-                <button onclick="logout()" class="glass-btn px-3 py-2 text-xs font-bold">
+                <button onclick="openModal('settingsModal'); renderSettingsChips()" class="glass-btn px-3 py-2 text-xs font-bold">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                     <span id="userGreeting">אורח</span>
-                    <i data-lucide="log-out" class="w-3 h-3 opacity-70"></i>
+                    <i data-lucide="settings" class="w-3 h-3 opacity-70"></i>
                 </button>
                 <div class="flex gap-2">
+                    <button onclick="requestNotif()" class="glass-btn p-2"><i data-lucide="bell" class="w-5 h-5"></i></button>
                     <button onclick="loadData(true)" class="glass-btn p-2"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
                 </div>
             </div>
+            <!-- Title -->
             <div>
-                <h1 class="text-4xl font-black tracking-tighter leading-none text-white drop-shadow-lg mb-1">BAT YAM <span class="text-yellow-300">100</span></h1>
+                <h1 class="text-4xl font-black tracking-tighter leading-none text-white drop-shadow-lg mb-1">
+                    BAT YAM <span class="text-yellow-300">100</span>
+                </h1>
                 <p class="text-blue-100 text-sm font-medium opacity-90">ניהול פרויקטים · 2026</p>
             </div>
         </div>
     </div>
 
+    <!-- CONTENT AREA -->
     <div class="px-4 pt-5">
+
+        <!-- ===== LIST VIEW ===== -->
         <div id="listView">
+            <!-- Stats row -->
             <div class="flex gap-3 mb-5 overflow-x-auto scrollbar-hide pb-1">
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex-1 min-w-[120px]">
+                <div class="stat-card flex-1 min-w-[120px]">
                     <span class="text-[10px] text-slate-400 font-bold block mb-1">סה"כ פרויקטים</span>
                     <span id="statTotal" class="text-3xl font-black text-slate-800">0</span>
                 </div>
-                <div class="bg-green-50 p-4 rounded-2xl border border-green-100 shadow-sm flex-1 min-w-[120px]">
+                <div class="stat-card flex-1 min-w-[120px] bg-green-50 border-green-100">
                     <span class="text-[10px] text-green-600 font-bold block mb-1">המשימות שלי</span>
                     <span id="statMine" class="text-3xl font-black text-green-700">0</span>
                 </div>
+                <div class="stat-card flex-1 min-w-[120px] bg-amber-50 border-amber-100">
+                    <span class="text-[10px] text-amber-600 font-bold block mb-1">בטיפול</span>
+                    <span id="statActive" class="text-3xl font-black text-amber-700">0</span>
+                </div>
             </div>
-            
-            <h2 class="text-base font-black text-slate-700 mb-3 flex items-center gap-2"><i data-lucide="layout-list" class="w-4 h-4 text-blue-500"></i> כל הפרויקטים</h2>
+            <h2 class="text-base font-black text-slate-700 mb-3 flex items-center gap-2">
+                <i data-lucide="layout-list" class="w-4 h-4 text-blue-500"></i> כל הפרויקטים
+            </h2>
             <div id="eventCards" class="space-y-3 pb-28"></div>
         </div>
 
+        <!-- ===== CALENDAR VIEW ===== -->
         <div id="calendarView" class="hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-black text-slate-800 text-base" id="calTitle"></h2>
                 <div class="flex gap-2">
-                    <button onclick="changeMonth(-1)" class="p-2 bg-white rounded-full border"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                    <button onclick="changeMonth(1)" class="p-2 bg-white rounded-full border"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <button type="button" onclick="changeMonth(-1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i></button>
+                    <button type="button" onclick="changeMonth(1)" class="p-2 bg-white rounded-full shadow-sm border border-slate-100"><i data-lucide="chevron-left" class="w-4 h-4 text-slate-600"></i></button>
                 </div>
             </div>
             <div class="grid grid-cols-7 text-center text-[10px] font-black text-slate-400 mb-2 gap-1">
-                <div>א</div><div>ב</div><div>ג</div><div>ד</div><div>ה</div><div>ו</div><div>ש</div>
+                <div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div>
             </div>
-            <div id="calGrid" class="grid grid-cols-7 gap-1 pb-28"></div>
+            <div id="calGrid" class="grid grid-cols-7 gap-1 pb-28 items-start"></div>
         </div>
 
+        <!-- ===== TASKS VIEW ===== -->
         <div id="tasksView" class="hidden">
-            <h2 class="text-base font-black text-slate-700 mb-4 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-green-500"></i> משימות שלי</h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-base font-black text-slate-700 flex items-center gap-2">
+                    <i data-lucide="check-square" class="w-4 h-4 text-green-500"></i> משימות פתוחות
+                </h2>
+                <select id="taskFilter" onchange="renderTasksView()" class="text-xs font-bold bg-white border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    <option value="">כולם</option>
+                </select>
+            </div>
             <div id="taskCards" class="space-y-3 pb-28"></div>
         </div>
+
     </div>
 
+    <!-- BOTTOM NAV -->
     <div class="nav-bar">
-        <button onclick="switchView('list')" id="nav-list" class="nav-btn active"><i data-lucide="home" class="w-5 h-5"></i><span>בית</span></button>
+        <button onclick="switchView('list')" id="nav-list" class="nav-btn active">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span>בית</span>
+        </button>
         <button onclick="switchView('tasks')" id="nav-tasks" class="nav-btn relative">
-            <i data-lucide="check-square" class="w-5 h-5"></i><span>משימות</span>
+            <i data-lucide="check-square" class="w-5 h-5"></i>
+            <span>משימות</span>
             <span id="taskBadge" class="badge hidden"></span>
         </button>
-        <button onclick="openModal('addModal')" class="nav-add"><i data-lucide="plus" class="w-7 h-7"></i></button>
-        <button onclick="switchView('calendar')" id="nav-calendar" class="nav-btn"><i data-lucide="calendar" class="w-5 h-5"></i><span>יומן</span></button>
+        <button onclick="openModal('addModal')" class="nav-add">
+            <i data-lucide="plus" class="w-7 h-7"></i>
+        </button>
+        <button onclick="switchView('calendar')" id="nav-calendar" class="nav-btn">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+            <span>לוח שנה</span>
+        </button>
+        <button onclick="openModal('settingsModal'); renderSettingsChips()" id="nav-settings" class="nav-btn">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>פרופיל</span>
+        </button>
     </div>
 </div>
 
+<!-- ===== ADD EVENT MODAL ===== -->
 <div id="addModal" class="modal-sheet hidden">
     <div class="sheet-body" style="height:90vh;">
         <div class="p-5 flex justify-between items-center border-b border-slate-100">
@@ -167,35 +386,51 @@
             <button onclick="closeModal('addModal')" class="p-2 bg-slate-50 rounded-full"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
         </div>
         <div class="flex-1 overflow-y-auto p-5 space-y-4">
-            <input id="inTitle" type="text" placeholder="שם האירוע *" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 font-bold text-lg outline-none focus:border-blue-500">
+            <div>
+                <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">שם האירוע *</label>
+                <input id="inTitle" type="text" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none font-bold text-lg focus:bg-white focus:border-blue-500 transition">
+            </div>
             <div class="grid grid-cols-2 gap-3">
-                <input id="inDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
-                <input id="inOwner" type="text" placeholder="אחראי" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">תאריך</label>
+                    <input id="inDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">אחראי</label>
+                    <input id="inOwner" type="text" placeholder="שם" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500 font-medium">
+                </div>
             </div>
             <div>
                 <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">סטטוס</label>
                 <div class="flex gap-2">
-                    <button onclick="setStatus(this,'חדש')" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm pill-new border-2 border-blue-200">חדש</button>
-                    <button onclick="setStatus(this,'בטיפול')" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בטיפול</button>
-                    <button onclick="setStatus(this,'בוצע')" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בוצע</button>
+                    <button type="button" onclick="setStatus(this,'חדש')" data-status="חדש" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm pill-new border-2 border-blue-200">חדש</button>
+                    <button type="button" onclick="setStatus(this,'בטיפול')" data-status="בטיפול" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בטיפול</button>
+                    <button type="button" onclick="setStatus(this,'בוצע')" data-status="בוצע" class="status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100">בוצע</button>
                 </div>
                 <input type="hidden" id="inStatus" value="חדש">
             </div>
-            <textarea id="inDesc" rows="3" placeholder="תיאור..." class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none text-sm"></textarea>
-            
+            <div>
+                <label class="text-[10px] font-black text-slate-400 uppercase mb-1 block">תיאור</label>
+                <textarea id="inDesc" rows="3" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:bg-white focus:border-blue-500 transition text-sm"></textarea>
+            </div>
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
                     <label class="text-[10px] font-black text-slate-400 uppercase">משימות</label>
-                    <button onclick="addTaskLine('newTasksList')" class="text-blue-600 text-xs font-bold">+ הוסף</button>
+                    <button type="button" onclick="addTaskLine('newTasksList')" class="text-blue-600 text-xs font-bold">+ הוסף</button>
                 </div>
                 <div id="newTasksList" class="space-y-2"></div>
             </div>
-
-            <label class="flex items-center gap-3 p-4 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400">
-                <input type="file" class="hidden" accept="image/*" onchange="handleImage(this)">
-                <i data-lucide="image-plus" class="text-slate-300 w-5 h-5"></i>
-                <span class="text-sm font-bold text-slate-500" id="imgMsg">הוסף תמונה (עד 50KB)</span>
+            <label class="flex items-center gap-3 p-4 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition group">
+                <input type="file" id="inImage" class="hidden" accept="image/*" onchange="handleImageUpload(this,'addImgStatus','addImgPreview')">
+                <i data-lucide="image-plus" class="text-slate-300 group-hover:text-blue-500 w-5 h-5 transition"></i>
+                <div>
+                    <span class="text-sm font-bold text-slate-500 group-hover:text-blue-600 block" id="addImgStatus">הוסף תמונה (אופציונלי)</span>
+                    <span class="text-[10px] text-slate-400">עד ~37KB — מומלץ להקטין לפני</span>
+                </div>
             </label>
+            <div id="addImgPreview" class="hidden h-36 rounded-xl overflow-hidden border border-slate-100">
+                <img id="addImgEl" class="w-full h-full object-cover">
+            </div>
         </div>
         <div class="p-5 border-t border-slate-100">
             <button onclick="saveEvent()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg active:scale-95 transition">שמור וסנכרן ←</button>
@@ -203,76 +438,146 @@
     </div>
 </div>
 
+<!-- ===== VIEW EVENT MODAL ===== -->
 <div id="viewModal" class="modal-sheet hidden">
     <div class="sheet-body" style="height:88vh; border-radius:32px 32px 0 0;">
+        <!-- Image header -->
         <div class="h-44 bg-slate-200 relative shrink-0">
             <img id="viewImg" class="w-full h-full object-cover hidden">
-            <div id="viewImgPlaceholder" class="absolute inset-0 flex items-center justify-center bg-slate-100"><i data-lucide="image" class="w-12 h-12 text-slate-200"></i></div>
+            <div id="viewImgPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100">
+                <i data-lucide="image" class="w-12 h-12 text-slate-200"></i>
+            </div>
             <button onclick="closeModal('viewModal')" class="absolute top-4 left-4 bg-black/30 text-white p-2 rounded-full backdrop-blur-sm"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div id="viewStatusPill" class="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-black backdrop-blur-sm shadow-sm"></div>
         </div>
+        <!-- Body -->
         <div class="flex-1 overflow-y-auto p-5">
             <h2 id="viewTitle" class="text-2xl font-black text-slate-800 mb-1 leading-snug"></h2>
-            <div class="flex items-center gap-2 mb-4 text-sm text-slate-500">
+            <div class="flex items-center gap-2 mb-4 text-sm">
                 <span id="viewDate" class="bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded-lg text-xs"></span>
-                <span>•</span>
-                <span id="viewOwner"></span>
-            </div>
-            
-            <div class="flex gap-2 mb-5">
-                <button onclick="updateStatus('חדש')" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 bg-slate-50">חדש</button>
-                <button onclick="updateStatus('בטיפול')" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 bg-slate-50">בטיפול</button>
-                <button onclick="updateStatus('בוצע')" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 bg-slate-50">בוצע</button>
+                <span class="text-slate-300">•</span>
+                <span id="viewOwner" class="text-slate-500 font-medium text-xs"></span>
             </div>
 
-            <p id="viewDesc" class="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl mb-5"></p>
-            
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase mb-3">משימות</h3>
-                <div id="viewTasksList" class="space-y-2 text-sm text-slate-600"></div>
+            <!-- Status change -->
+            <div class="flex gap-2 mb-5">
+                <button onclick="changeViewStatus('חדש')" id="vs-חדש" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 transition">חדש</button>
+                <button onclick="changeViewStatus('בטיפול')" id="vs-בטיפול" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 transition">בטיפול</button>
+                <button onclick="changeViewStatus('בוצע')" id="vs-בוצע" class="flex-1 py-2 rounded-xl font-bold text-xs border-2 transition">בוצע</button>
+            </div>
+
+            <p id="viewDesc" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl mb-5"></p>
+
+            <!-- Tasks checklist -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1"><i data-lucide="list-checks" class="w-3 h-3"></i> משימות</h3>
+                    <button type="button" onclick="addTaskLine('viewTasksList')" class="text-blue-500 text-xs font-bold">+ הוסף</button>
+                </div>
+                <div id="viewTasksList" class="space-y-2"></div>
+            </div>
+
+            <!-- Upload image button -->
+            <label class="flex items-center gap-3 p-3 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition group">
+                <input type="file" id="viewImageInput" class="hidden" accept="image/*" onchange="handleImageUpload(this,'viewImgStatus','viewImgPreviewWrap','viewImg','viewImgPlaceholder')">
+                <i data-lucide="image-plus" class="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition"></i>
+                <span id="viewImgStatus" class="text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">
+                    החלף / הוסף תמונה
+                </span>
+            </label>
+            <div id="viewImgPreviewWrap" class="hidden mt-2 h-28 rounded-xl overflow-hidden border border-slate-100">
+                <img id="viewImgNew" class="w-full h-full object-cover">
             </div>
         </div>
     </div>
 </div>
 
 <script>
+// ============================================================
+//  CONFIG
+// ============================================================
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
-const PRESET_USERS = ['בן', 'רינת', 'דוד', 'שרה'];
 
-let events = [], currentUser = localStorage.getItem('batyamUser') || "", viewEventId = null;
+const PRESET_USERS = ['בן', 'רינת', 'דוד', 'שרה', 'מיכל'];
+
+// ============================================================
+//  STATE
+// ============================================================
+let events = [];
+let currentUser = localStorage.getItem('batyamUser') || "";
+let currentView = 'list';
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
 let currentImageBase64 = "";
+let viewEventIdx = -1;         // index of currently viewed event
+let lastKnownEventCount = parseInt(localStorage.getItem('batyamCount') || '0');
 
+// ============================================================
+//  BOOT
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
-    if(currentUser) bootApp();
-    else {
-        const chips = document.getElementById('userChips');
-        PRESET_USERS.forEach(u => {
-            const b = document.createElement('button');
-            b.className = 'user-chip'; b.innerText = u;
-            b.onclick = () => { document.querySelectorAll('.user-chip').forEach(c=>c.classList.remove('selected')); b.classList.add('selected'); };
-            chips.appendChild(b);
-        });
-        document.getElementById('loginModal').classList.remove('hidden');
+    if (currentUser) {
+        bootApp();
+    } else {
+        showLoginModal();
     }
 });
 
+function showLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.style.removeProperty('display');
+    modal.classList.remove('hidden');
+    renderUserChips('userChips', 'customNameInput');
+}
+
+function renderUserChips(containerId, inputId) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    PRESET_USERS.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'user-chip' + (currentUser === name ? ' selected' : '');
+        btn.textContent = name;
+        btn.onclick = () => {
+            document.querySelectorAll(`#${containerId} .user-chip`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            if (inputId) document.getElementById(inputId).value = '';
+        };
+        c.appendChild(btn);
+    });
+}
+
+function renderSettingsChips() {
+    renderUserChips('settingsChips', 'settingsCustomName');
+}
+
+function getSelectedChip(containerId, inputId) {
+    const selected = document.querySelector(`#${containerId} .user-chip.selected`);
+    if (selected) return selected.textContent;
+    const custom = document.getElementById(inputId).value.trim();
+    return custom || null;
+}
+
 function login() {
-    const chip = document.querySelector('.user-chip.selected');
-    const custom = document.getElementById('customNameInput').value.trim();
-    const name = custom || (chip ? chip.innerText : null);
-    if(!name) return alert('בחר שם');
+    const name = getSelectedChip('userChips', 'customNameInput');
+    if (!name) return alert("בחר שם או הקלד שם");
     localStorage.setItem('batyamUser', name);
     currentUser = name;
     document.getElementById('loginModal').classList.add('hidden');
     bootApp();
 }
 
-function logout() {
-    if(confirm('להתנתק?')) {
-        localStorage.removeItem('batyamUser');
-        location.reload();
-    }
+function switchUser() {
+    const name = getSelectedChip('settingsChips', 'settingsCustomName');
+    if (!name) return alert("בחר שם");
+    localStorage.setItem('batyamUser', name);
+    currentUser = name;
+    document.getElementById('userGreeting').innerText = name;
+    renderList();
+    renderTasksView();
+    updateStats();
+    closeModal('settingsModal');
 }
 
 function bootApp() {
@@ -281,195 +586,531 @@ function bootApp() {
     loadData();
 }
 
-async function loadData(manual=false) {
-    if(manual) document.getElementById('loader').classList.remove('fade');
+// ============================================================
+//  DATA
+// ============================================================
+async function loadData(manual = false) {
+    if (manual) {
+        document.getElementById('loader').classList.remove('fade');
+        document.getElementById('loader').style.opacity = 1;
+        document.getElementById('loader').style.pointerEvents = 'auto';
+    }
     try {
         const res = await fetch(CSV_URL + '&t=' + Date.now());
         const text = await res.text();
-        Papa.parse(text, { header:true, skipEmptyLines:true, complete: (r) => {
-            events = r.data; // CSV Columns: ID, Title, Date, Owner, Description, Status, Tasks, Image
-            renderAll();
-            document.getElementById('loader').classList.add('fade');
-        }});
-    } catch(e) { console.error(e); document.getElementById('loader').classList.add('fade'); }
+        Papa.parse(text, {
+            header: true, skipEmptyLines: true,
+            complete: (r) => {
+                const newEvents = r.data;
+                checkForNewTasks(newEvents);
+                events = newEvents;
+                lastKnownEventCount = events.length;
+                localStorage.setItem('batyamCount', events.length);
+                renderAll();
+                hideLoader();
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        hideLoader();
+    }
+}
+
+function hideLoader() {
+    const l = document.getElementById('loader');
+    l.classList.add('fade');
+    setTimeout(() => { l.style.display = 'none'; }, 500);
 }
 
 function renderAll() {
-    // Stats
-    document.getElementById('statTotal').innerText = events.length;
-    const myTasks = events.filter(e => (e.Owner||e[3]||'').includes(currentUser));
-    document.getElementById('statMine').innerText = myTasks.length;
-    document.getElementById('taskBadge').classList.toggle('hidden', myTasks.length === 0);
-
-    // List
-    const list = document.getElementById('eventCards');
-    list.innerHTML = '';
-    [...events].reverse().forEach(e => {
-        const title = e.Title||e[1], date = e.Date||e[2], owner = e.Owner||e[3], status = e.Status||e[5]||'חדש';
-        const isMine = (owner||'').includes(currentUser);
-        const day = date.split('-')[2] || date.split('/')[0] || '?';
-        const pill = status==='בוצע'?'pill-done':status==='בטיפול'?'pill-active':'pill-new';
-        
-        list.innerHTML += `
-            <div onclick="openViewModal('${e.ID||e[0]}')" class="card p-4 flex items-center gap-4 border-r-4 ${isMine?'border-r-green-500':'border-r-transparent'}">
-                <div class="w-14 h-14 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 font-black text-blue-600 shrink-0 shadow-sm">
-                    <span class="text-xl leading-none">${day}</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-start mb-1">
-                        <h3 class="font-bold text-slate-800 text-sm truncate">${title}</h3>
-                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${pill}">${status}</span>
-                    </div>
-                    <span class="text-[11px] text-slate-400 font-medium">👤 ${owner}</span>
-                </div>
-            </div>`;
-    });
-
-    // My Tasks
-    const tasksContainer = document.getElementById('taskCards');
-    tasksContainer.innerHTML = '';
-    myTasks.forEach(e => {
-        const tasks = (e.Tasks||e[6]||'').split('|').filter(t=>t);
-        tasksContainer.innerHTML += `
-            <div class="card p-4 border-r-4 border-r-green-500">
-                <div class="flex justify-between border-b pb-2 mb-2">
-                    <h3 class="font-bold text-slate-800 text-sm">${e.Title||e[1]}</h3>
-                    <span class="text-[10px] bg-blue-50 text-blue-600 px-2 rounded font-bold">${e.Date||e[2]}</span>
-                </div>
-                ${tasks.length ? tasks.map(t=>`<div class="task-item"><input type="checkbox"><span>${t}</span></div>`).join('') : '<span class="text-xs text-slate-300">אין משימות</span>'}
-                <button onclick="openViewModal('${e.ID||e[0]}')" class="mt-2 text-xs font-bold text-blue-500">פתח ←</button>
-            </div>`;
-    });
-    
+    renderList();
     renderCalendar();
+    renderTasksView();
+    updateStats();
+    populateFilterDropdown();
+}
+
+// ============================================================
+//  STATS
+// ============================================================
+function updateStats() {
+    document.getElementById('statTotal').innerText = events.length;
+    const mine = events.filter(e => (e.Owner || '').includes(currentUser)).length;
+    document.getElementById('statMine').innerText = mine;
+    const active = events.filter(e => (e.Status || '') === 'בטיפול').length;
+    document.getElementById('statActive').innerText = active;
+
+    // badge
+    const myOpen = events.filter(e =>
+        (e.Owner || '').includes(currentUser) && (e.Status || '') !== 'בוצע'
+    ).length;
+    document.getElementById('taskBadge').classList.toggle('hidden', myOpen === 0);
+}
+
+// ============================================================
+//  LIST VIEW
+// ============================================================
+function renderList() {
+    const container = document.getElementById('eventCards');
+    container.innerHTML = '';
+
+    if (!events.length) {
+        container.innerHTML = '<p class="text-center text-slate-400 py-16 font-medium">אין פרויקטים עדיין</p>';
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    [...events].map((e, i) => ({ e, i })).reverse().forEach(({ e, i }) => {
+        const title = e.Title || e[1] || 'ללא שם';
+        const date  = e.Date  || e[2] || '';
+        const owner = e.Owner || e[3] || '-';
+        const status = e.Status || e[5] || 'חדש';
+        const isMine = (e.Owner || '').includes(currentUser);
+        const day   = date.split('-')[2] || date.split('/')[0] || '?';
+
+        const pillClass = status === 'בוצע' ? 'pill-done' : status === 'בטיפול' ? 'pill-active' : 'pill-new';
+
+        const card = document.createElement('div');
+        card.className = `card p-4 flex items-center gap-4 border-r-4 ${isMine ? 'border-r-green-500' : 'border-r-transparent'}`;
+        card.onclick = () => openViewModal(i);
+        card.innerHTML = `
+            <div class="w-14 h-14 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 font-black text-blue-600 shrink-0 shadow-sm">
+                <span class="text-xl leading-none">${day}</span>
+                <span class="text-[8px] opacity-60 mt-0.5">חודש</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start gap-2 mb-1">
+                    <h3 class="font-bold text-slate-800 text-sm leading-snug truncate">${title}</h3>
+                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 ${pillClass}">${status}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] text-slate-400 font-medium">👤 ${owner}</span>
+                    ${isMine ? '<span class="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded font-bold">שלי ✓</span>' : ''}
+                </div>
+            </div>
+            <i data-lucide="chevron-left" class="w-4 h-4 text-slate-300 shrink-0"></i>`;
+        fragment.appendChild(card);
+    });
+
+    container.appendChild(fragment);
     lucide.createIcons();
 }
 
-// --- Calendar ---
-let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
+// ============================================================
+//  CALENDAR VIEW
+// ============================================================
 function renderCalendar() {
-    const grid = document.getElementById('calGrid'); grid.innerHTML = '';
-    document.getElementById('calTitle').innerText = new Date(calYear, calMonth, 1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
-    const firstDay = new Date(calYear, calMonth, 1).getDay();
-    const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-    
-    for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
-    for(let d=1; d<=daysInMonth; d++) {
-        const dateISO = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const dayEvents = events.filter(e => (e.Date||e[2]||'').startsWith(dateISO));
-        grid.innerHTML += `
-            <div class="cal-day ${new Date().getDate()===d && new Date().getMonth()===calMonth ? 'today':''}">
-                <span class="font-bold block mb-1 text-slate-400">${d}</span>
-                ${dayEvents.map(e => `<div class="cal-event ${e.Owner.includes(currentUser)?'mine':''}" onclick="openViewModal('${e.ID||e[0]}')">${e.Title||e[1]}</div>`).join('')}
-            </div>`;
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+
+    const year = calYear, month = calMonth;
+    document.getElementById('calTitle').innerText =
+        new Date(year, month, 1).toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1).getDay(); // 0=ראשון, 6=שבת
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+
+    // Debug: הצג אילו תאריכים יש במערך
+    console.log('📅 תאריכים ב-events:', events.map(e => e.Date || e[2]).filter(Boolean));
+
+    // תאים ריקים לפני יום ראשון
+    for (let i = 0; i < firstDay; i++) {
+        const blank = document.createElement('div');
+        blank.className = 'cal-day other-month';
+        grid.appendChild(blank);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const mm  = String(month + 1).padStart(2, '0');
+        const dd  = String(d).padStart(2, '0');
+
+        // כל פורמטי תאריך אפשריים
+        const formats = [
+            `${year}-${mm}-${dd}`,        // 2026-02-17
+            `${d}/${month+1}/${year}`,     // 17/2/2026
+            `${dd}/${mm}/${year}`,         // 17/02/2026
+            `${d}/${month+1}`,             // 17/2
+            `${dd}/${mm}`,                 // 17/02
+        ];
+
+        const dayEvents = events.filter(e => {
+            const evDate = (e.Date || e[2] || '').trim();
+            return formats.some(f => evDate === f || evDate.startsWith(f));
+        });
+
+        const isToday = today.getDate()===d && today.getMonth()===month && today.getFullYear()===year;
+
+        const cell = document.createElement('div');
+        cell.className = `cal-day${isToday ? ' today' : ''}`;
+
+        const numSpan = document.createElement('span');
+        numSpan.style.cssText = `font-size:11px; font-weight:800; display:block; margin-bottom:2px; color:${isToday ? '#0077b6' : '#64748b'}`;
+        numSpan.textContent = d;
+        cell.appendChild(numSpan);
+
+        dayEvents.forEach(e => {
+            const idx = events.indexOf(e);
+            const isMine = (e.Owner || '').includes(currentUser);
+            const ev = document.createElement('div');
+            ev.className = `cal-event${isMine ? ' mine' : ''}`;
+            ev.textContent = e.Title || e[1] || '—';
+            ev.addEventListener('click', (evt) => { evt.stopPropagation(); openViewModal(idx); });
+            cell.appendChild(ev);
+        });
+
+        grid.appendChild(cell);
     }
 }
-function changeMonth(d) { calMonth+=d; if(calMonth>11){calMonth=0;calYear++} if(calMonth<0){calMonth=11;calYear--} renderCalendar(); }
 
-// --- Modals & Logic ---
-function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
-function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
-function switchView(v){ 
-    ['list','tasks','calendar'].forEach(i => document.getElementById(i+'View').classList.add('hidden'));
-    document.getElementById(v+'View').classList.remove('hidden');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('nav-'+v).classList.add('active');
-    if(v==='calendar') renderCalendar();
+function changeMonth(delta) {
+    calMonth += delta;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
+    renderCalendar();
 }
 
-function openViewModal(id) {
-    const e = events.find(x => (x.ID||x[0]) == id);
-    if(!e) return;
-    viewEventId = id;
-    
-    document.getElementById('viewTitle').innerText = e.Title||e[1];
-    document.getElementById('viewDate').innerText = e.Date||e[2];
-    document.getElementById('viewOwner').innerText = e.Owner||e[3];
-    document.getElementById('viewDesc').innerText = e.Description||e[4]||'';
-    
-    const img = e.Image||e[7];
-    if(img && img.length > 50) {
-        document.getElementById('viewImg').src = img;
+// ============================================================
+//  TASKS VIEW
+// ============================================================
+function populateFilterDropdown() {
+    const sel = document.getElementById('taskFilter');
+    const current = sel.value;
+    const owners = [...new Set(events.map(e => e.Owner || e[3] || '').filter(Boolean))];
+    sel.innerHTML = '<option value="">כולם</option>';
+    owners.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o; opt.textContent = o;
+        if (o === current) opt.selected = true;
+        sel.appendChild(opt);
+    });
+}
+
+function renderTasksView() {
+    const container = document.getElementById('taskCards');
+    container.innerHTML = '';
+    const filter = document.getElementById('taskFilter').value;
+
+    const openEvents = events.filter(e => {
+        const owner = e.Owner || e[3] || '';
+        const status = e.Status || e[5] || 'חדש';
+        if (status === 'בוצע') return false;
+        if (filter && !owner.includes(filter)) return false;
+        return true;
+    });
+
+    if (!openEvents.length) {
+        container.innerHTML = '<div class="text-center py-16"><p class="text-4xl mb-2">🎉</p><p class="text-slate-400 font-medium">אין משימות פתוחות!</p></div>';
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    openEvents.forEach(e => {
+        const tasks = (e.Tasks || e[6] || '').split('|').filter(t => t.trim());
+        const isMine = (e.Owner||'').includes(currentUser);
+        const idx = events.indexOf(e);
+
+        const card = document.createElement('div');
+        card.className = `card p-4 border-r-4 ${isMine ? 'border-r-green-500' : 'border-r-blue-200'}`;
+        card.innerHTML = `
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-50">
+                <h3 class="font-bold text-slate-800 text-sm truncate">${e.Title||e[1]}</h3>
+                <span class="text-[10px] font-bold text-slate-400 shrink-0 mr-2">👤 ${e.Owner||e[3]||'-'}</span>
+            </div>
+            <div class="space-y-1.5">
+                ${tasks.length ? tasks.map(t => `
+                    <div class="task-item">
+                        <input type="checkbox" onclick="this.parentElement.classList.toggle('done-task')">
+                        <span>${t}</span>
+                    </div>`).join('') : '<span class="text-xs text-slate-300">אין משימות מפורטות</span>'}
+            </div>
+            <button onclick="openViewModal(${idx})" class="mt-3 text-xs font-bold text-blue-500">פתח פרויקט ←</button>`;
+        fragment.appendChild(card);
+    });
+    container.appendChild(fragment);
+}
+
+// ============================================================
+//  VIEW MODAL
+// ============================================================
+function openViewModal(idx) {
+    const e = events[idx];
+    if (!e) return;
+    viewEventIdx = idx;
+
+    document.getElementById('viewTitle').innerText = e.Title || e[1];
+    document.getElementById('viewDate').innerText  = e.Date  || e[2];
+    document.getElementById('viewOwner').innerText = e.Owner || e[3];
+    document.getElementById('viewDesc').innerText  = e.Description || e[4] || 'אין תיאור';
+
+    const status = e.Status || e[5] || 'חדש';
+    updateViewStatusButtons(status);
+
+    // image
+    const imgSrc = e.Image || e[7];
+    if (imgSrc && imgSrc.startsWith('data:image')) {
+        document.getElementById('viewImg').src = imgSrc;
         document.getElementById('viewImg').classList.remove('hidden');
         document.getElementById('viewImgPlaceholder').classList.add('hidden');
     } else {
         document.getElementById('viewImg').classList.add('hidden');
         document.getElementById('viewImgPlaceholder').classList.remove('hidden');
     }
-    
-    const tasks = (e.Tasks||e[6]||'').split('|').filter(t=>t);
-    document.getElementById('viewTasksList').innerHTML = tasks.length ? tasks.map(t=>`<div>• ${t}</div>`).join('') : 'אין משימות';
-    
+
+    // tasks checklist
+    const tasksStr = e.Tasks || e[6] || '';
+    const tList = document.getElementById('viewTasksList');
+    tList.innerHTML = '';
+    if (tasksStr) {
+        tasksStr.split('|').filter(t=>t.trim()).forEach(t => {
+            const div = document.createElement('div');
+            div.className = 'task-item';
+            div.innerHTML = `<input type="checkbox" onclick="this.parentElement.classList.toggle('done-task')"><span>${t}</span>`;
+            tList.appendChild(div);
+        });
+    } else {
+        tList.innerHTML = '<span class="text-xs text-slate-300">אין משימות</span>';
+    }
+
+    // reset new image upload
+    document.getElementById('viewImageInput').value = '';
+    document.getElementById('viewImgStatus').innerText = 'החלף / הוסף תמונה';
+    document.getElementById('viewImgPreviewWrap').classList.add('hidden');
+
     openModal('viewModal');
 }
 
+function updateViewStatusButtons(status) {
+    const statuses = ['חדש','בטיפול','בוצע'];
+    const pillMap = { 'חדש': 'bg-blue-100 text-blue-800', 'בטיפול': 'bg-amber-100 text-amber-800', 'בוצע': 'bg-green-100 text-green-800' };
+    const activeMap = { 'חדש': 'pill-new border-blue-400', 'בטיפול': 'pill-active border-amber-400', 'בוצע': 'pill-done border-green-400' };
+
+    statuses.forEach(s => {
+        const btn = document.getElementById('vs-' + s);
+        if (s === status) {
+            btn.className = `flex-1 py-2 rounded-xl font-bold text-xs border-2 ${activeMap[s]}`;
+        } else {
+            btn.className = 'flex-1 py-2 rounded-xl font-bold text-xs border-2 bg-slate-50 text-slate-400 border-slate-100';
+        }
+    });
+
+    const pill = document.getElementById('viewStatusPill');
+    pill.innerText = status;
+    pill.className = `absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-black backdrop-blur-sm shadow-sm ${pillMap[status]}`;
+}
+
+function changeViewStatus(status) {
+    if (viewEventIdx < 0) return;
+    events[viewEventIdx].Status = status;
+    updateViewStatusButtons(status);
+    updateStats();
+    renderList();
+    // fire-and-forget update to sheet
+    sendUpdate(viewEventIdx, { status });
+}
+
+// ============================================================
+//  ADD EVENT
+// ============================================================
 function setStatus(btn, val) {
     document.getElementById('inStatus').value = val;
-    document.querySelectorAll('.status-btn').forEach(b => b.className = 'status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100');
-    const cls = val==='בוצע'?'pill-done border-green-300':val==='בטיפול'?'pill-active border-amber-300':'pill-new border-blue-300';
+    document.querySelectorAll('.status-btn').forEach(b => {
+        b.className = 'status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100';
+    });
+    const cls = val==='בוצע' ? 'pill-done border-green-300' : val==='בטיפול' ? 'pill-active border-amber-300' : 'pill-new border-blue-300';
     btn.className = `status-btn flex-1 py-2 rounded-xl font-bold text-sm ${cls} border-2`;
 }
 
-function addTaskLine(id) {
-    const div = document.createElement('div');
-    div.innerHTML = `<div class="flex gap-2"><input type="text" class="task-input flex-1 bg-white border border-slate-200 rounded-xl p-2 text-sm outline-none" placeholder="משימה..."><button onclick="this.parentElement.parentElement.remove()" class="text-red-400">🗑</button></div>`;
-    document.getElementById(id).appendChild(div);
+function addTaskLine(containerId) {
+    const row = document.createElement('div');
+    row.className = 'flex gap-2 items-center';
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'task-input flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-blue-400';
+    input.placeholder = 'משימה...';
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'text-red-400 shrink-0 p-1 hover:text-red-600';
+    delBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+    delBtn.addEventListener('click', () => row.remove());
+
+    row.appendChild(input);
+    row.appendChild(delBtn);
+    document.getElementById(containerId).appendChild(row);
+    lucide.createIcons();
 }
 
-function handleImage(input) {
+function handleImageUpload(input, statusId, previewWrapperId, imgElId, placeholderId) {
+    if (!input.files || !input.files[0]) return;
     const reader = new FileReader();
-    reader.onload = e => {
-        if(e.target.result.length > 50000) { alert('תמונה גדולה מדי! בחר קובץ קטן מ-50KB'); input.value=''; return; }
-        currentImageBase64 = e.target.result;
-        document.getElementById('imgMsg').innerText = '✅ תמונה נבחרה';
+    reader.onload = function(ev) {
+        if (ev.target.result.length > 50000) {
+            alert(`התמונה גדולה מדי (${Math.round(ev.target.result.length/1024)}KB).\nבחר תמונה קטנה מ-37KB.`);
+            input.value = '';
+            return;
+        }
+        currentImageBase64 = ev.target.result;
+        document.getElementById(statusId).innerText = '✅ תמונה נבחרה';
+        const wrap = document.getElementById(previewWrapperId);
+        if (wrap) {
+            wrap.classList.remove('hidden');
+            const imgEl = imgElId ? document.getElementById(imgElId) : wrap.querySelector('img');
+            if (imgEl) imgEl.src = ev.target.result;
+        }
+        if (placeholderId) document.getElementById(placeholderId).classList.add('hidden');
     };
     reader.readAsDataURL(input.files[0]);
 }
 
 async function saveEvent() {
-    const title = document.getElementById('inTitle').value;
-    if(!title) return alert('חובה למלא שם');
-    
+    const title  = document.getElementById('inTitle').value.trim();
+    const date   = document.getElementById('inDate').value;
+    const owner  = document.getElementById('inOwner').value.trim();
+    const desc   = document.getElementById('inDesc').value.trim();
+    const status = document.getElementById('inStatus').value;
+    const tasks  = Array.from(document.querySelectorAll('#newTasksList .task-input'))
+                        .map(i => i.value.trim()).filter(Boolean).join('|');
+
+    console.log('📤 שולח לאקסל:', { title, date, owner, status, tasks }); // debug
+
+    if (!title) return alert('נא להזין שם אירוע');
+
     const btn = document.getElementById('saveBtn');
-    btn.innerText = 'שולח...'; btn.disabled = true;
-    
-    // Create unique ID
-    const id = Date.now().toString();
-    const tasks = Array.from(document.querySelectorAll('#newTasksList input')).map(i=>i.value).join('|');
-    const params = new URLSearchParams({
-        action: 'create',
-        id: id,
-        title: title,
-        date: document.getElementById('inDate').value,
-        owner: document.getElementById('inOwner').value,
-        status: document.getElementById('inStatus').value,
-        desc: document.getElementById('inDesc').value,
-        tasks: tasks,
-        image: currentImageBase64
+    btn.innerText = 'שומר...';
+    btn.disabled = true;
+
+    const formData = new URLSearchParams();
+    formData.append('title', title);
+    formData.append('date', date);
+    formData.append('owner', owner);
+    formData.append('desc', desc);
+    formData.append('status', status);
+    formData.append('tasks', tasks);
+    formData.append('image', currentImageBase64);
+
+    let ok = false;
+    try {
+        await fetch(APPS_SCRIPT_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        });
+        ok = true;
+    } catch(err) { console.error(err); }
+
+    // optimistic insert
+    const newEvent = { Title:title, Date:date, Owner:owner, Description:desc, Status:status, Tasks:tasks, Image:currentImageBase64 };
+    events.unshift(newEvent);
+    renderAll();
+
+    closeModal('addModal');
+    resetAddForm();
+
+    if (ok) {
+        notifyUser('האירוע נשמר בהצלחה! ✅', title);
+        setTimeout(() => loadData(), 3000);
+    } else {
+        alert('⚠️ שגיאת רשת — האירוע נוסף מקומית בלבד');
+    }
+
+    btn.innerText = 'שמור וסנכרן ←';
+    btn.disabled = false;
+}
+
+function resetAddForm() {
+    ['inTitle','inDate','inOwner','inDesc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('inStatus').value = 'חדש';
+    document.getElementById('newTasksList').innerHTML = '';
+    document.getElementById('inImage').value = '';
+    document.getElementById('addImgStatus').innerText = 'הוסף תמונה (אופציונלי)';
+    document.getElementById('addImgPreview').classList.add('hidden');
+    // reset status buttons
+    document.querySelectorAll('.status-btn').forEach((b,i) => {
+        if(i===0) b.className='status-btn flex-1 py-2 rounded-xl font-bold text-sm pill-new border-2 border-blue-200';
+        else b.className='status-btn flex-1 py-2 rounded-xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-100';
     });
-
-    try {
-        await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', body:params });
-        alert('נשמר בהצלחה!');
-        closeModal('addModal');
-        setTimeout(loadData, 2000); // Reload to see new data
-    } catch(e) { alert('שגיאה'); }
-    
-    btn.innerText = 'שמור וסנכרן ←'; btn.disabled = false;
+    currentImageBase64 = '';
 }
 
-async function updateStatus(newStatus) {
-    if(!viewEventId) return;
-    if(!confirm('לעדכן סטטוס ל-'+newStatus+'?')) return;
-    
-    const params = new URLSearchParams({ action: 'update', id: viewEventId, status: newStatus });
+// ============================================================
+//  SEND UPDATE (status change)
+// ============================================================
+async function sendUpdate(idx, fields) {
+    const e = events[idx];
+    const formData = new URLSearchParams();
+    formData.append('action', 'update');
+    formData.append('title', e.Title || '');
+    formData.append('status', fields.status || e.Status || '');
     try {
-        await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', body:params });
-        alert('עודכן! יופיע תוך כמה שניות');
-        closeModal('viewModal');
-        setTimeout(loadData, 2000);
-    } catch(e) { alert('שגיאה בעדכון'); }
+        await fetch(APPS_SCRIPT_URL, {
+            method:'POST', mode:'no-cors',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: formData.toString()
+        });
+    } catch(err) { console.error('Update error:', err); }
 }
+
+// ============================================================
+//  NOTIFICATIONS
+// ============================================================
+function checkForNewTasks(newEvents) {
+    if (!currentUser) return;
+    const myOld = lastKnownEventCount;
+    const myNew = newEvents.filter(e => (e.Owner||'').includes(currentUser)).length;
+    if (myNew > myOld && lastKnownEventCount > 0) {
+        notifyUser('משימה חדשה עבורך! 🔔', 'נוספה משימה חדשה ב-Bat Yam 100');
+    }
+}
+
+function notifyUser(title, body) {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/2990/2990995.png' });
+    }
+}
+
+function requestNotif() {
+    Notification.requestPermission().then(p => {
+        alert(p === 'granted' ? '🔔 התראות הופעלו!' : 'התראות לא אושרו');
+    });
+}
+
+// ============================================================
+//  VIEW SWITCHING
+// ============================================================
+function switchView(name) {
+    ['list','calendar','tasks'].forEach(v => {
+        document.getElementById(v+'View').classList.add('hidden');
+        const btn = document.getElementById('nav-'+v);
+        if (btn) btn.classList.remove('active');
+    });
+    document.getElementById(name+'View').classList.remove('hidden');
+    const activeBtn = document.getElementById('nav-'+name);
+    if (activeBtn) activeBtn.classList.add('active');
+    currentView = name;
+    if (name === 'calendar') renderCalendar();
+    if (name === 'tasks') renderTasksView();
+}
+
+// ============================================================
+//  MODAL HELPERS
+// ============================================================
+function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+    lucide.createIcons();
+}
+function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+}
+
+// close on backdrop click
+document.addEventListener('click', (ev) => {
+    ['addModal','viewModal','settingsModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (ev.target === modal) closeModal(id);
+    });
+});
 </script>
 </body>
 </html>
