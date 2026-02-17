@@ -6,258 +6,167 @@
     <title>Bat Yam 100</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #f8fafc; font-family: 'Heebo', sans-serif; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
-        .hero { background-image: linear-gradient(to bottom, rgba(0,50,100,0.6), rgba(0,119,182,0.2)), url('baner.jpg'); background-size: cover; height: 160px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .nav-btn.active { background: #0077b6; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,119,182,0.3); }
-        .card { background: white; border-radius: 16px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
-        .card:active { transform: scale(0.98); }
-        /* Hide scrollbar */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        :root { --primary: #0077b6; --bg: #f8fafc; }
+        body { background: var(--bg); font-family: 'Heebo', sans-serif; padding-bottom: 80px; }
+        .hero { background-image: linear-gradient(to bottom, rgba(0,50,100,0.6), rgba(0,119,182,0.2)), url('baner.jpg'); background-size: cover; background-position: center; height: 180px; border-radius: 0 0 30px 30px; }
+        .muni-card { background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: 0.2s; }
+        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(0, 119, 182, 0.3); }
     </style>
 </head>
 <body>
 
 <div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-300">
-    <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-    <p class="text-gray-400 text-xs font-bold tracking-widest">מסנכרן נתונים...</p>
+    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="text-gray-400 font-bold">טוען נתונים...</p>
 </div>
 
-<div class="max-w-md mx-auto min-h-screen relative">
-    
-    <div class="hero p-6 flex flex-col justify-between text-white">
+<div class="max-w-xl mx-auto min-h-screen">
+    <div class="hero p-6 flex flex-col justify-between text-white shadow-xl">
         <div class="flex justify-between items-center">
-            <button onclick="openUserSelect()" class="bg-black/20 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-black/30 transition">
-                <i data-lucide="user" class="w-3 h-3"></i>
-                <span id="currentUserDisplay">אורח</span>
-            </button>
+            <div class="bg-black/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold border border-white/10" id="userDisplay">אורח</div>
             <div class="flex gap-2">
-                <button onclick="loadData(true)" class="bg-white/20 p-2 rounded-full hover:bg-white/30 backdrop-blur-md transition"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-white/40 p-2 rounded-full hover:bg-white/50 backdrop-blur-md transition"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                <button onclick="loadData()" class="bg-white/20 p-2 rounded-full backdrop-blur-md"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                <button onclick="openModal('addModal')" class="bg-white/40 p-2 rounded-full backdrop-blur-md"><i data-lucide="plus" class="w-5 h-5"></i></button>
             </div>
         </div>
         <div>
-            <h1 class="text-3xl font-black tracking-tight">BAT YAM <span class="text-yellow-400">100</span></h1>
-            <p class="text-blue-100 text-sm font-medium opacity-90">ניהול אירועים 2026</p>
+            <h1 class="text-3xl font-black tracking-tighter leading-none">BAT YAM <span class="text-yellow-400">100</span></h1>
+            <p class="text-blue-100 text-sm font-medium mt-1">דשבורד ניהול אירועים</p>
         </div>
     </div>
 
-    <div class="flex gap-3 px-4 -mt-6 relative z-10 overflow-x-auto no-scrollbar pb-2">
-        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 min-w-[100px] flex-1">
-            <span class="text-[10px] text-gray-400 font-bold block mb-1">סה"כ אירועים</span>
-            <span id="statTotal" class="text-xl font-black text-blue-600">0</span>
+    <div class="grid grid-cols-2 gap-4 px-6 -mt-8 relative z-10">
+        <div class="muni-card p-4 text-center">
+            <span class="text-[10px] text-gray-400 font-black uppercase block">סה"כ פרויקטים</span>
+            <span id="stat-total" class="text-2xl font-black text-blue-600">0</span>
         </div>
-        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 min-w-[100px] flex-1">
-            <span class="text-[10px] text-gray-400 font-bold block mb-1">החודש</span>
-            <span id="statMonth" class="text-xl font-black text-blue-600">0</span>
+        <div class="muni-card p-4 text-center">
+            <span class="text-[10px] text-gray-400 font-black uppercase block">משימות פתוחות</span>
+            <span id="stat-tasks" class="text-2xl font-black text-red-500">0</span>
         </div>
     </div>
 
-    <div id="listView" class="p-4 grid gap-3 pb-24"></div>
+    <div id="listView" class="p-6 space-y-4 pb-24"></div>
 
-    <div class="fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg border border-white/50 shadow-xl rounded-2xl p-2 flex justify-between text-[10px] font-bold text-gray-400 max-w-md mx-auto z-40">
-        <button onclick="switchTab('list')" id="nav-list" class="nav-btn active flex-1 py-3 rounded-xl flex flex-col items-center gap-1 transition-all"><i data-lucide="list" class="w-5 h-5"></i>רשימה</button>
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-btn flex-1 py-3 rounded-xl flex flex-col items-center gap-1 transition-all"><i data-lucide="calendar" class="w-5 h-5"></i>יומן</button>
-        <button onclick="switchTab('tasks')" id="nav-tasks" class="nav-btn flex-1 py-3 rounded-xl flex flex-col items-center gap-1 transition-all"><i data-lucide="check-square" class="w-5 h-5"></i>משימות</button>
+    <div class="fixed bottom-6 left-6 right-6 bg-white/80 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-2 flex justify-around items-center max-w-xl mx-auto z-50">
+        <button onclick="switchTab('list')" class="nav-btn active flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all"><i data-lucide="layout-list" class="w-5 h-5"></i><span class="text-[10px] font-bold">רשימה</span></button>
+        <button onclick="switchTab('calendar')" class="nav-btn flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all text-gray-400"><i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[10px] font-bold">יומן</span></button>
+        <button onclick="switchTab('tasks')" class="nav-btn flex-1 py-3 rounded-2xl flex flex-col items-center gap-1 transition-all text-gray-400"><i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[10px] font-bold">משימות</span></button>
     </div>
-
 </div>
 
-<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm transition-all">
-    <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl p-6 shadow-2xl animate-slide-up">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-black text-slate-800">אירוע חדש</h2>
-            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
+<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center backdrop-blur-sm">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-8 shadow-2xl">
+        <h2 class="text-2xl font-black text-slate-800 mb-6">הוספת אירוע</h2>
         <div class="space-y-4">
-            <div><label class="text-xs font-bold text-gray-400 mb-1 block">כותרת</label><input id="inTitle" type="text" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:border-blue-500 focus:bg-white transition outline-none font-bold"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="text-xs font-bold text-gray-400 mb-1 block">תאריך (DD/MM/YYYY)</label><input id="inDate" type="text" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none"></div>
-                <div><label class="text-xs font-bold text-gray-400 mb-1 block">אחראי</label><input id="inOwner" type="text" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none"></div>
-            </div>
-            <div><label class="text-xs font-bold text-gray-400 mb-1 block">תיאור קצר</label><textarea id="inDesc" rows="2" class="w-full p-3.5 bg-slate-50 rounded-xl border border-slate-200 outline-none"></textarea></div>
-            <button onclick="submitEvent()" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold mt-2 shadow-lg shadow-blue-200 active:scale-95 transition flex justify-center items-center gap-2">
-                <span>שמור וסנכרן</span> <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </button>
+            <input id="inTitle" type="text" placeholder="שם האירוע" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none focus:border-blue-500 font-bold">
+            <input id="inDate" type="text" placeholder="תאריך (DD/MM/YYYY)" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none">
+            <input id="inOwner" type="text" placeholder="אחראי" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 outline-none">
+            <button onclick="saveNewEvent()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition">שמור באקסל</button>
+            <button onclick="closeModal('addModal')" class="w-full text-gray-400 font-bold py-2">סגור</button>
         </div>
     </div>
 </div>
 
 <script>
-    // *** שים כאן את הקישור החדש שיצרת בשלב 1 ***
-    const APPS_SCRIPT_URL = https://script.google.com/macros/s/AKfycbxfdI4L1sHNELYK_CsLDB3mX2rAsdwiupFjwGHNQGeqLdgAWpS1GW5vzxWaOZhbUt21WQ/exec
+    // הקישורים שלך
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuFrMR6GRahlYczIT8NDsv2GAbARxFGdud-8N4rQUFDTI8U4MG-5iAc0ljOlw1NmTVRw/exec";
 
     let events = [];
-    let currentUser = localStorage.getItem('batyam_user') || 'אורח';
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('currentUserDisplay').innerText = currentUser;
-        loadData();
-        lucide.createIcons();
-    });
-
-    async function loadData(manual = false) {
-        if(manual) document.getElementById('loader').classList.remove('hidden');
-        
+    async function loadData() {
+        document.getElementById('loader').style.display = 'flex';
         try {
-            // קריאה ישירה לסקריפט (מקבל JSON)
-            const res = await fetch(APPS_SCRIPT_URL);
-            const data = await res.json();
+            const response = await fetch(CSV_URL + '&t=' + Date.now());
+            const csvText = await response.text();
             
-            // המרה לפורמט פנימי אחיד
-            events = data.map(row => ({
-                id: row.ID || row.id || 'evt_'+Math.random(),
-                title: row.Title || row['שם האירוע'] || row['כותרת'] || 'ללא שם',
-                date: row.Date || row['תאריך'] || '',
-                owner: row.Owner || row['אחראי'] || '',
-                status: row.Status || row['סטטוס'] || 'חדש',
-                desc: row.Description || row['תיאור'] || ''
-            }));
-
-            renderList();
-            updateStats();
-            
-        } catch (e) {
-            console.error(e);
-            if(manual) alert("שגיאה בטעינה. וודא שהסקריפט מוגדר כ-Anyone");
-        } finally {
-            document.getElementById('loader').classList.add('hidden');
-        }
-    }
-
-    async function submitEvent() {
-        const btn = document.getElementById('submitBtn');
-        const title = document.getElementById('inTitle').value;
-        const date = document.getElementById('inDate').value;
-        
-        if(!title) return alert("חסר שם אירוע");
-
-        btn.innerHTML = `<div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> שולח...`;
-        btn.disabled = true;
-
-        const payload = {
-            id: 'evt_' + Date.now(),
-            title: title,
-            dateStr: date,
-            owner: document.getElementById('inOwner').value,
-            desc: document.getElementById('inDesc').value,
-            status: 'חדש',
-            tasks: []
-        };
-
-        try {
-            await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // חובה כדי להימנע משגיאות CORS
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    events = results.data;
+                    renderList();
+                    document.getElementById('stat-total').innerText = events.length;
+                    document.getElementById('loader').style.display = 'none';
+                }
             });
-
-            // עדכון אופטימי (מציג למשתמש מיד)
-            events.push({
-                id: payload.id,
-                title: payload.title,
-                date: payload.dateStr,
-                owner: payload.owner,
-                status: payload.status,
-                desc: payload.desc
-            });
-            
-            renderList();
-            updateStats();
-            document.getElementById('addModal').classList.add('hidden');
-            
-            // ניקוי שדות
-            document.getElementById('inTitle').value = '';
-            document.getElementById('inDate').value = '';
-            document.getElementById('inDesc').value = '';
-
-            alert("האירוע נשלח בהצלחה!");
-
         } catch (e) {
-            alert("שגיאה בשליחה: " + e);
-        } finally {
-            btn.innerHTML = `<span>שמור וסנכרן</span> <i data-lucide="arrow-left" class="w-4 h-4"></i>`;
-            btn.disabled = false;
-            lucide.createIcons();
+            alert("שגיאה בטעינה");
+            document.getElementById('loader').style.display = 'none';
         }
     }
 
     function renderList() {
-        const container = document.getElementById('listView');
-        container.innerHTML = '';
-        
-        // מיון לפי תאריך (אם קיים)
-        const sorted = [...events].sort((a,b) => {
-            if(!a.date) return 1;
-            if(!b.date) return -1;
-            return parseDate(a.date) - parseDate(b.date);
-        });
-
-        sorted.forEach(e => {
-            const dateObj = parseDate(e.date);
-            const day = dateObj.getDate() || '?';
-            const month = dateObj.toLocaleString('he-IL', {month:'short'}) || '?';
+        const list = document.getElementById('listView');
+        list.innerHTML = '';
+        events.forEach(e => {
+            const title = e.Title || e['שם האירוע'] || 'ללא שם';
+            const date = e.Date || e['תאריך'] || '';
+            const owner = e.Owner || e['אחראי'] || '-';
             
-            container.innerHTML += `
-                <div class="card p-4 flex gap-4 items-center">
-                    <div class="flex flex-col items-center justify-center bg-blue-50 text-blue-600 rounded-xl w-14 h-14 shrink-0 border border-blue-100">
-                        <span class="text-lg font-black leading-none">${day}</span>
-                        <span class="text-[10px] font-bold uppercase leading-none mt-0.5">${month}</span>
+            list.innerHTML += `
+                <div class="muni-card p-5 flex items-center gap-5">
+                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex flex-col items-center justify-center border border-blue-100 text-blue-600 font-black">
+                        <span class="text-lg">${date.split('/')[0] || '?'}</span>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-slate-800 text-base truncate">${e.title}</h3>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-xs text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 truncate max-w-[100px]">
-                                <i data-lucide="user" class="inline w-3 h-3 align-text-top mr-0.5"></i> ${e.owner || 'ללא אחראי'}
-                            </span>
-                        </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800">${title}</h3>
+                        <p class="text-xs text-gray-400 font-medium">👤 ${owner}</p>
                     </div>
-                    <div class="w-2 h-2 rounded-full ${e.status === 'בוצע' ? 'bg-green-500' : 'bg-blue-500'}"></div>
+                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
                 </div>
             `;
         });
         lucide.createIcons();
     }
 
-    function updateStats() {
-        document.getElementById('statTotal').innerText = events.length;
-        const thisMonth = new Date().getMonth();
-        const monthCount = events.filter(e => parseDate(e.date).getMonth() === thisMonth).length;
-        document.getElementById('statMonth').innerText = monthCount;
-    }
+    async function saveNewEvent() {
+        const title = document.getElementById('inTitle').value;
+        if(!title) return alert("חובה שם");
+        
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "שומר...";
+        btn.disabled = true;
 
-    function parseDate(dateStr) {
-        if(!dateStr) return new Date(2099,0,1);
-        const parts = dateStr.split(/[\/\.-]/); 
-        if(parts.length < 2) return new Date(2099,0,1);
-        // DD/MM/YYYY
-        return new Date(parts[2] || new Date().getFullYear(), parts[1]-1, parts[0]);
-    }
+        const payload = {
+            id: 'evt_' + Date.now(),
+            title: title,
+            dateStr: document.getElementById('inDate').value,
+            owner: document.getElementById('inOwner').value,
+            status: 'חדש',
+            desc: ''
+        };
 
-    function switchTab(tab) {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('nav-'+tab).classList.add('active');
-        if(tab === 'list') {
-            document.getElementById('listView').classList.remove('hidden');
-            // כאן אפשר להוסיף לוגיקה להסתיר/להציג תצוגות אחרות
-        } else {
-            alert("תצוגת " + tab + " בפיתוח");
-            switchTab('list'); // זמני
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            alert("נשמר! הסנכרון יתבצע תוך דקה.");
+            closeModal('addModal');
+            document.getElementById('inTitle').value = '';
+            setTimeout(loadData, 2000);
+        } catch (e) {
+            alert("שגיאה בשמירה");
+        } finally {
+            btn.innerText = "שמור באקסל";
+            btn.disabled = false;
         }
     }
-    
-    function openUserSelect() {
-        const name = prompt("הכנס את שמך:");
-        if(name) {
-            currentUser = name;
-            localStorage.setItem('batyam_user', name);
-            document.getElementById('currentUserDisplay').innerText = name;
-        }
-    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function switchTab(tab) { alert("תצוגת " + tab + " תתעדכן לאחר הטעינה"); }
+
+    document.addEventListener('DOMContentLoaded', loadData);
 </script>
 
 </body>
