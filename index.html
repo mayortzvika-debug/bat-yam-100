@@ -21,40 +21,43 @@
         /* Hero Section */
         .hero-wrapper { 
             position: relative; 
-            height: 200px; 
+            height: 220px; 
             border-radius: 0 0 35px 35px; 
             overflow: hidden; 
             box-shadow: 0 10px 40px -10px rgba(0, 119, 182, 0.5);
         }
         .hero-bg {
-            background-image: linear-gradient(to bottom, rgba(0,50,100,0.4), rgba(0,119,182,0.8)), url('baner.jpg');
+            background-image: linear-gradient(to bottom, rgba(0,50,100,0.3), rgba(0,119,182,0.8)), url('baner.jpg');
             background-size: cover;
             background-position: center;
             position: absolute; inset: 0; z-index: 0;
         }
-        /* Fallback if no image */
+        /* גיבוי אם אין תמונה */
         .hero-bg:not([style*="url"]) { background: linear-gradient(135deg, #0077b6, #023e8a); }
 
-        .glass-btn { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; transition: 0.2s; }
+        .glass-btn { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; transition: 0.2s; }
         .glass-btn:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.4); }
 
         /* Navigation */
-        .nav-bar { position: fixed; bottom: 25px; left: 20px; right: 20px; background: white; padding: 10px; border-radius: 24px; display: flex; justify-content: space-around; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; z-index: 40; }
-        .nav-btn { padding: 12px; border-radius: 16px; color: #94a3b8; transition: 0.3s; display: flex; flex-col: column; align-items: center; gap: 4px; }
-        .nav-btn.active { background: #e0f2fe; color: var(--primary); font-weight: bold; }
+        .nav-bar { position: fixed; bottom: 25px; left: 20px; right: 20px; background: white; padding: 8px 20px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; z-index: 40; }
+        .nav-btn { padding: 12px; border-radius: 16px; color: #94a3b8; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-btn.active { color: var(--primary); transform: translateY(-2px); }
+        .add-btn-main { background: var(--primary); color: white; padding: 12px; border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0, 119, 182, 0.4); transform: translateY(-20px); border: 4px solid white; }
         
         /* Calendar */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .cal-day { min-height: 80px; background: white; border-radius: 8px; border: 1px solid #f1f5f9; padding: 4px; font-size: 10px; position: relative; }
-        .cal-event { background: var(--primary); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9px; }
+        .cal-day { min-height: 80px; background: white; border-radius: 12px; border: 1px solid #f1f5f9; padding: 4px; font-size: 10px; position: relative; }
+        .cal-day.today { border: 2px solid var(--primary); }
+        .cal-event { background: var(--primary); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9px; font-weight: bold; }
 
-        /* Landscape Mode Fixes */
+        /* Landscape Mode Fixes (מצב לרוחב) */
         @media (orientation: landscape) {
-            body { padding-bottom: 0; }
-            .hero-wrapper, .nav-bar, .stats-row { display: none !important; }
+            body { padding-bottom: 0; background: white; }
+            .hero-wrapper, .nav-bar, .stats-row, #listViewContainer, #tasksView { display: none !important; }
             #calendarView { display: block !important; height: 100vh; position: fixed; inset: 0; z-index: 100; background: white; padding: 10px; overflow-y: auto; }
-            .calendar-grid { height: 90vh; }
-            .cal-day { min-height: 15vh; }
+            .calendar-grid { height: 85vh; }
+            .cal-day { min-height: 12vh; }
+            .landscape-warning { display: block; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 5px 10px; border-radius: 20px; font-size: 10px; opacity: 0.5; z-index: 200; pointer-events: none;}
         }
 
         .animate-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -63,19 +66,19 @@
 </head>
 <body>
 
-<div id="loginModal" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center p-6">
+<div id="loginModal" class="fixed inset-0 bg-slate-900 z-[200] flex items-center justify-center p-6 hidden">
     <div class="bg-white w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl animate-enter">
-        <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">👋</div>
+        <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">👋</div>
         <h2 class="text-2xl font-black text-slate-800 mb-2">ברוכים הבאים</h2>
-        <p class="text-slate-500 text-sm mb-6">מי מתחבר למערכת?</p>
-        <input type="text" id="usernameInput" placeholder="הקלד את שמך..." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold text-lg outline-none focus:border-blue-500 mb-4">
+        <p class="text-slate-500 text-sm mb-6">לניהול חגיגות ה-100 לבת ים.<br>מי מתחבר?</p>
+        <input type="text" id="usernameInput" placeholder="הקלד שם (למשל: בן)" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold text-lg outline-none focus:border-blue-500 mb-4 transition">
         <button onclick="login()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 active:scale-95 transition">התחל לעבוד</button>
     </div>
 </div>
 
-<div id="loader" class="fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center hidden">
+<div id="loader" class="fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center transition-opacity duration-300">
     <div class="w-12 h-12 border-4 border-slate-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-    <p class="text-slate-400 font-bold text-xs">מסנכרן...</p>
+    <p class="text-slate-400 font-bold text-xs tracking-widest">טוען נתונים...</p>
 </div>
 
 <div id="app" class="hidden max-w-md mx-auto min-h-screen relative">
@@ -84,18 +87,18 @@
         <div class="hero-bg"></div>
         <div class="relative z-10 p-6 flex flex-col justify-between h-full">
             <div class="flex justify-between items-start">
-                <div class="glass-btn px-3 py-1 flex items-center gap-2 text-xs font-bold">
+                <div class="glass-btn px-3 py-1 flex items-center gap-2 text-xs font-bold shadow-lg">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                     <span id="userGreeting">אורח</span>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="loadData(true)" class="glass-btn p-2 rounded-full"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-                    <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="glass-btn p-2 rounded-full"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    <button onclick="loadData(true)" class="glass-btn p-2 rounded-full shadow-lg"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                    <button onclick="logout()" class="glass-btn p-2 rounded-full shadow-lg"><i data-lucide="log-out" class="w-5 h-5"></i></button>
                 </div>
             </div>
-            <div class="text-white">
-                <h1 class="text-4xl font-black tracking-tighter leading-none mb-1 shadow-black drop-shadow-md">BAT YAM <span class="text-yellow-400">100</span></h1>
-                <p class="text-blue-50 text-sm font-medium opacity-90 drop-shadow-sm">מערכת ניהול פרויקטים</p>
+            <div class="text-white pb-2">
+                <h1 class="text-4xl font-black tracking-tighter leading-none mb-1 drop-shadow-lg">BAT YAM <span class="text-yellow-400">100</span></h1>
+                <p class="text-blue-50 text-sm font-medium opacity-90 drop-shadow-md">ניהול פרויקטים ואירועים 2026</p>
             </div>
         </div>
     </div>
@@ -103,18 +106,22 @@
     <div class="px-5 pt-6">
         
         <div id="listViewContainer">
-            <h2 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
-                <i data-lucide="list" class="w-5 h-5 text-blue-500"></i> אירועים קרובים
-            </h2>
-            <div id="listView" class="space-y-3 pb-24"></div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <i data-lucide="list" class="w-5 h-5 text-blue-500"></i> לוח אירועים
+                </h2>
+                <span id="totalEvents" class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-md">0</span>
+            </div>
+            <div id="listView" class="space-y-4 pb-24"></div>
         </div>
 
         <div id="calendarView" class="hidden">
-            <div class="flex justify-between items-center mb-4">
+            <div class="landscape-warning hidden">סובב חזרה לאורך לתפריט</div>
+            <div class="flex justify-between items-center mb-4 pt-4 md:pt-0">
                 <h2 class="font-bold text-slate-800 text-lg" id="calMonthTitle"></h2>
                 <div class="flex gap-2">
-                    <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 rounded-full"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                    <button onclick="changeMonth(1)" class="p-2 bg-slate-100 rounded-full"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 rounded-full hover:bg-slate-200"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <button onclick="changeMonth(1)" class="p-2 bg-slate-100 rounded-full hover:bg-slate-200"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
                 </div>
             </div>
             <div class="grid grid-cols-7 text-center text-xs font-bold text-slate-400 mb-2">
@@ -133,49 +140,116 @@
     </div>
 
     <div class="nav-bar">
-        <button onclick="switchView('list')" id="btn-list" class="nav-btn active"><i data-lucide="home" class="w-6 h-6"></i></button>
-        <button onclick="switchView('calendar')" id="btn-calendar" class="nav-btn"><i data-lucide="calendar" class="w-6 h-6"></i></button>
+        <button onclick="switchView('list')" id="btn-list" class="nav-btn active">
+            <i data-lucide="home" class="w-6 h-6"></i>
+        </button>
+        <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="add-btn-main active:scale-95 transition">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+        </button>
+        <button onclick="switchView('calendar')" id="btn-calendar" class="nav-btn">
+            <i data-lucide="calendar" class="w-6 h-6"></i>
+        </button>
         <button onclick="switchView('tasks')" id="btn-tasks" class="nav-btn relative">
             <i data-lucide="user-check" class="w-6 h-6"></i>
-            <span id="taskBadge" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full hidden"></span>
+            <span id="taskBadge" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-white hidden"></span>
         </button>
     </div>
 </div>
 
-<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm" style="z-index: 200;">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-enter h-[85vh] flex flex-col">
-        <div class="flex justify-between items-center mb-6">
+<div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-enter h-[90vh] flex flex-col">
+        <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-black text-slate-800">פרויקט חדש</h2>
-            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-slate-50 rounded-full"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="p-2 bg-slate-50 rounded-full hover:bg-slate-100"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
         </div>
         
-        <div class="space-y-4 overflow-y-auto flex-1 pb-4">
-            <input id="inTitle" type="text" placeholder="שם האירוע" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none font-bold text-lg">
-            <div class="grid grid-cols-2 gap-3">
-                <input id="inDate" type="date" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none">
-                <input id="inOwner" type="text" placeholder="אחראי" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none">
-            </div>
-            <textarea id="inDesc" rows="3" placeholder="תיאור..." class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none"></textarea>
+        <div class="space-y-4 overflow-y-auto flex-1 pb-4 px-1">
+            <input id="inTitle" type="text" placeholder="שם האירוע" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none font-bold text-lg focus:bg-white focus:border-blue-500 transition">
             
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <label class="text-xs font-bold text-slate-400 block mb-2">משימות</label>
-                <div id="newTasksList" class="space-y-2"></div>
-                <button onclick="addNewTaskLine()" class="text-blue-600 text-xs font-bold mt-2">+ הוסף שורה</button>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 block mb-1">תאריך</label>
+                    <input id="inDate" type="date" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 block mb-1">אחראי</label>
+                    <input id="inOwner" type="text" placeholder="שם" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                </div>
             </div>
+            
+            <div>
+                <label class="text-xs font-bold text-slate-400 block mb-1">סטטוס</label>
+                <select id="inStatus" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                    <option value="חדש">חדש</option>
+                    <option value="בטיפול">בטיפול</option>
+                    <option value="בוצע">בוצע</option>
+                </select>
+            </div>
+
+            <textarea id="inDesc" rows="3" placeholder="תיאור ופרטים נוספים..." class="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:bg-white focus:border-blue-500 transition"></textarea>
+            
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-xs font-bold text-slate-400 block">משימות (צ'ק ליסט)</label>
+                    <button onclick="addNewTaskLine()" class="text-blue-600 text-xs font-bold">+ הוסף</button>
+                </div>
+                <div id="newTasksList" class="space-y-2"></div>
+            </div>
+
+             <label class="flex items-center gap-3 p-3 bg-slate-50 border border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-100 transition">
+                <input type="file" id="inImage" class="hidden" accept="image/*" onchange="handleImageUpload(this)">
+                <i data-lucide="image-plus" class="text-slate-400"></i>
+                <span class="text-sm font-bold text-slate-500" id="imgStatus">הוסף תמונה (אופציונלי)</span>
+            </label>
         </div>
 
-        <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg mt-2">שמור וסנכרן</button>
+        <button onclick="saveToExcel()" id="saveBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black shadow-lg shadow-blue-200 active:scale-95 transition">שמור וסנכרן</button>
+    </div>
+</div>
+
+<div id="viewModal" class="fixed inset-0 bg-slate-900/60 hidden z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-0 shadow-2xl animate-enter h-[85vh] flex flex-col overflow-hidden">
+        <div class="h-40 bg-slate-200 relative">
+            <img id="viewImage" class="w-full h-full object-cover hidden">
+            <div id="viewImagePlaceholder" class="absolute inset-0 flex items-center justify-center text-slate-400 bg-slate-100">
+                <i data-lucide="image" class="w-12 h-12 opacity-20"></i>
+            </div>
+            <button onclick="document.getElementById('viewModal').classList.add('hidden')" class="absolute top-4 left-4 bg-black/30 text-white p-2 rounded-full backdrop-blur-md"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div id="viewStatusBadge" class="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur">סטטוס</div>
+        </div>
+        
+        <div class="p-6 flex-1 overflow-y-auto">
+            <h2 id="viewTitle" class="text-2xl font-black text-slate-800 mb-1 leading-tight"></h2>
+            <div class="flex items-center gap-2 mb-4 text-sm text-slate-500 font-medium">
+                <span id="viewDate" class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded"></span>
+                <span>•</span>
+                <span id="viewOwner"></span>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xs font-black text-slate-400 uppercase mb-2">תיאור</h3>
+                <p id="viewDesc" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl"></p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <h3 class="text-xs font-black text-slate-400 uppercase mb-3 flex items-center gap-2"><i data-lucide="list-todo" class="w-3 h-3"></i> משימות</h3>
+                <div id="viewTasks" class="space-y-3"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     // --- הגדרות ---
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
+    
+    // *** שים כאן את הקישור לסקריפט המעודכן (עם הגרסה החדשה) ***
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 
     let events = [];
     let currentUser = localStorage.getItem('batyamUser') || "";
     let currentMonth = new Date();
+    let currentImageBase64 = "";
 
     // --- אתחול וכניסה ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -191,13 +265,15 @@
         const name = document.getElementById('usernameInput').value.trim();
         if (name) {
             localStorage.setItem('batyamUser', name);
-            
-            // בקשת רשות לפושים
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-            
+            if (Notification.permission !== "granted") Notification.requestPermission();
             enterApp(name);
+        }
+    }
+
+    function logout() {
+        if(confirm("להתנתק?")) {
+            localStorage.removeItem('batyamUser');
+            location.reload();
         }
     }
 
@@ -220,6 +296,7 @@
                 renderList();
                 renderCalendar();
                 renderMyTasks();
+                document.getElementById('totalEvents').innerText = events.length;
                 if(manual) document.getElementById('loader').classList.add('hidden');
             }});
         } catch(e) { console.error(e); }
@@ -227,110 +304,105 @@
 
     // --- תצוגות ---
     function switchView(viewName) {
-        // הסתרת הכל
         document.getElementById('listViewContainer').classList.add('hidden');
         document.getElementById('calendarView').classList.add('hidden');
         document.getElementById('tasksView').classList.add('hidden');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-        // הצגת הנבחר
         if(viewName === 'list') document.getElementById('listViewContainer').classList.remove('hidden');
         if(viewName === 'calendar') { document.getElementById('calendarView').classList.remove('hidden'); renderCalendar(); }
         if(viewName === 'tasks') document.getElementById('tasksView').classList.remove('hidden');
 
-        document.getElementById('btn-' + viewName).classList.add('active');
+        if(document.getElementById('btn-' + viewName)) document.getElementById('btn-' + viewName).classList.add('active');
     }
 
     // 1. רשימה ראשית
     function renderList() {
         const list = document.getElementById('listView');
         list.innerHTML = events.length ? '' : '<p class="text-center text-slate-400 py-10">אין אירועים</p>';
-        
-        // מיון לפי תאריך (מהקרוב לרחוק)
-        const sorted = [...events].sort((a,b) => (a.Date || '2099') > (b.Date || '2099') ? 1 : -1);
+        const sorted = [...events].reverse(); // החדש ביותר למעלה
 
-        sorted.forEach(e => {
-            const title = e.Title || e[1];
+        sorted.forEach((e, idx) => {
+            // התאמה לעמודות אקסל (שמות או אינדקסים)
+            const title = e.Title || e[1] || 'ללא שם';
             const date = e.Date || e[2] || '';
             const owner = e.Owner || e[3] || '-';
+            const status = e.Status || e[5] || 'חדש';
             
-            // עיצוב שונה אם זה אני האחראי
             const isMine = owner.includes(currentUser);
-            const borderColor = isMine ? 'border-r-green-500' : 'border-r-blue-500';
+            const statusColor = status === 'בוצע' ? 'bg-green-100 text-green-700' : (status === 'בטיפול' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700');
 
             list.innerHTML += `
-                <div class="card p-4 flex items-center gap-4 ${borderColor} border-r-4">
-                    <div class="w-12 h-12 bg-slate-50 rounded-2xl flex flex-col items-center justify-center font-bold text-slate-600 text-xs border border-slate-100">
+                <div onclick="openViewModal(${events.indexOf(e)})" class="card p-4 flex items-center gap-4 border-l-4 ${isMine ? 'border-l-green-500' : 'border-l-transparent'}">
+                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex flex-col items-center justify-center font-bold text-slate-600 text-xs border border-slate-100 shadow-sm shrink-0">
                         <span class="text-lg leading-none">${date.split('-')[2] || date.split('/')[0] || '?'}</span>
+                        <span class="text-[9px] uppercase mt-0.5 opacity-60">החודש</span>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800">${title}</h3>
-                        <div class="flex justify-between items-center mt-1">
-                            <span class="text-xs text-slate-400">👤 ${owner}</span>
-                            ${isMine ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">שלי</span>' : ''}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="font-bold text-slate-800 truncate text-base">${title}</h3>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusColor}">${status}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 font-medium">👤 ${owner}</span>
+                            ${isMine ? '<span class="text-[10px] bg-green-50 text-green-600 px-1.5 rounded font-bold">שלי</span>' : ''}
                         </div>
                     </div>
                 </div>`;
         });
     }
 
-    // 2. המשימות שלי (My Tasks)
+    // 2. המשימות שלי
     function renderMyTasks() {
         const list = document.getElementById('myTasksList');
-        const myEvents = events.filter(e => (e.Owner || "").includes(currentUser));
+        const myEvents = events.filter(e => (e.Owner || e[3] || "").includes(currentUser));
         
         document.getElementById('taskBadge').classList.toggle('hidden', myEvents.length === 0);
-
-        list.innerHTML = myEvents.length ? '' : '<p class="text-center text-slate-400 py-10">אין לך משימות פתוחות 🎉</p>';
+        list.innerHTML = myEvents.length ? '' : '<div class="text-center py-10"><p class="text-4xl mb-2">🎉</p><p class="text-slate-400 font-medium">אין משימות פתוחות!</p></div>';
         
         myEvents.forEach(e => {
-            const tasks = (e.Tasks || e[5] || "").split('|').filter(t => t);
+            const tasksStr = e.Tasks || e[6] || "";
+            const tasks = tasksStr.split('|').filter(t => t);
+            
             list.innerHTML += `
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between mb-2">
+                    <div class="flex justify-between mb-3 border-b border-slate-50 pb-2">
                         <h3 class="font-bold text-slate-800">${e.Title || e[1]}</h3>
-                        <span class="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded">${e.Date}</span>
+                        <span class="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded">${e.Date || e[2]}</span>
                     </div>
                     <div class="space-y-2">
-                        ${tasks.length ? tasks.map(t => `<div class="flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" class="w-4 h-4"> ${t}</div>`).join('') : '<span class="text-xs text-slate-300">אין פירוט משימות</span>'}
+                        ${tasks.length ? tasks.map(t => `<div class="flex items-center gap-2 text-sm text-slate-600 bg-slate-50 p-2 rounded"><input type="checkbox" class="w-4 h-4 accent-green-500"> ${t}</div>`).join('') : '<span class="text-xs text-slate-300">אין משימות מוגדרות</span>'}
                     </div>
                 </div>
             `;
         });
     }
 
-    // 3. לוח שנה (Calendar)
+    // 3. לוח שנה
     function renderCalendar() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-        
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
-        
         document.getElementById('calMonthTitle').innerText = currentMonth.toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
 
-        const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+        const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
 
-        // משבצות ריקות
-        for (let i = 0; i < firstDay; i++) {
-            grid.innerHTML += `<div class="bg-transparent"></div>`;
-        }
+        for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
 
-        // ימים
         for (let d = 1; d <= daysInMonth; d++) {
-            // בדיקת אירועים ביום זה
-            // הפורמט באקסל הוא בדרך כלל YYYY-MM-DD
-            const checkDate = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            
-            const dayEvents = events.filter(e => (e.Date || "").includes(checkDate) || (e.Date || "").includes(`${d}/${month+1}`));
-            
-            const eventsHtml = dayEvents.map(e => `<div class="cal-event">${e.Title || e[1]}</div>`).join('');
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; // YYYY-MM-DD
+            const dayEvents = events.filter(e => (e.Date || "").includes(dateStr) || (e.Date || "").includes(`${d}/${month+1}`));
+            const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
 
             grid.innerHTML += `
-                <div class="cal-day">
-                    <span class="font-bold text-slate-400">${d}</span>
-                    <div class="flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
+                <div class="cal-day ${isToday ? 'today' : ''}">
+                    <span class="font-bold text-slate-400 block mb-1">${d}</span>
+                    <div class="flex flex-col gap-0.5 overflow-hidden">
+                        ${dayEvents.map(e => `<div onclick="openViewModal(${events.indexOf(e)})" class="cal-event cursor-pointer">${e.Title || e[1]}</div>`).join('')}
+                    </div>
                 </div>`;
         }
     }
@@ -340,11 +412,62 @@
         renderCalendar();
     }
 
-    // --- הוספת משימות במודאל ---
+    // --- לוגיקה למודאלים ---
     function addNewTaskLine() {
         const div = document.createElement('div');
-        div.innerHTML = `<input type="text" class="task-input w-full p-2 bg-white border border-slate-200 rounded-lg text-sm mb-2" placeholder="משימה...">`;
+        div.innerHTML = `
+            <div class="flex gap-2">
+                <input type="text" class="task-input w-full p-2 bg-white border border-slate-200 rounded-lg text-sm" placeholder="משימה...">
+                <button onclick="this.parentElement.parentElement.remove()" class="text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>`;
         document.getElementById('newTasksList').appendChild(div);
+        lucide.createIcons();
+    }
+
+    function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(e.target.result.length > 50000) {
+                    alert("התמונה גדולה מדי! אנא בחר תמונה קטנה יותר.");
+                    return;
+                }
+                currentImageBase64 = e.target.result;
+                document.getElementById('imgStatus').innerText = "תמונה נבחרה ✅";
+                document.getElementById('imgStatus').classList.add('text-green-600');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function openViewModal(idx) {
+        const e = events[idx];
+        document.getElementById('viewTitle').innerText = e.Title || e[1];
+        document.getElementById('viewDate').innerText = e.Date || e[2];
+        document.getElementById('viewOwner').innerText = e.Owner || e[3];
+        document.getElementById('viewDesc').innerText = e.Description || e[4] || "אין תיאור";
+        document.getElementById('viewStatusBadge').innerText = e.Status || e[5] || "חדש";
+        
+        // Image
+        const img = e.Image || e[7];
+        if(img && img.startsWith('data:image')) {
+            document.getElementById('viewImage').src = img;
+            document.getElementById('viewImage').classList.remove('hidden');
+            document.getElementById('viewImagePlaceholder').classList.add('hidden');
+        } else {
+            document.getElementById('viewImage').classList.add('hidden');
+            document.getElementById('viewImagePlaceholder').classList.remove('hidden');
+        }
+
+        // Tasks
+        const tasksStr = e.Tasks || e[6] || "";
+        const container = document.getElementById('viewTasks');
+        container.innerHTML = tasksStr ? tasksStr.split('|').map(t => `
+            <div class="flex items-center gap-2 text-sm text-slate-700 bg-slate-50 p-2 rounded">
+                <input type="checkbox" class="accent-blue-500 w-4 h-4"> <span>${t}</span>
+            </div>`).join('') : '<span class="text-slate-400 text-xs">אין משימות</span>';
+
+        document.getElementById('viewModal').classList.remove('hidden');
     }
 
     // --- שמירה ---
@@ -353,14 +476,15 @@
         const date = document.getElementById('inDate').value;
         const owner = document.getElementById('inOwner').value;
         const desc = document.getElementById('inDesc').value;
+        const status = document.getElementById('inStatus').value;
         
-        // איסוף משימות
-        const tasks = Array.from(document.querySelectorAll('.task-input')).map(i => i.value).join('|');
+        const tasks = Array.from(document.querySelectorAll('.task-input')).map(i => i.value).filter(val => val).join('|');
 
         if(!title) return alert("חסר שם");
 
         const btn = document.getElementById('saveBtn');
-        btn.innerHTML = 'שומר...';
+        const originalText = btn.innerText;
+        btn.innerText = 'שומר...';
         btn.disabled = true;
 
         const formData = new URLSearchParams();
@@ -368,7 +492,9 @@
         formData.append('date', date);
         formData.append('owner', owner);
         formData.append('desc', desc);
+        formData.append('status', status);
         formData.append('tasks', tasks);
+        formData.append('image', currentImageBase64);
 
         try {
             await fetch(APPS_SCRIPT_URL, {
@@ -378,27 +504,29 @@
                 body: formData.toString()
             });
 
-            // עדכון אופטימי
-            events.unshift({ "Title": title, "Date": date, "Owner": owner, "Tasks": tasks });
+            // Optimistic Update
+            events.unshift({
+                "Title": title, "Date": date, "Owner": owner, 
+                "Description": desc, "Status": status, "Tasks": tasks, "Image": currentImageBase64
+            });
             renderList();
-            renderMyTasks(); // עדכון מידי של המשימות שלי
+            renderMyTasks();
+            renderCalendar();
 
-            alert("נשמר בהצלחה!");
+            alert("האירוע נשמר בהצלחה!");
             document.getElementById('addModal').classList.add('hidden');
             
-            // ניקוי
+            // Clear inputs
             document.getElementById('inTitle').value = '';
+            document.getElementById('inDesc').value = '';
             document.getElementById('newTasksList').innerHTML = '';
-            
-            // בדיקת פושים
-            if (owner.includes(currentUser) && Notification.permission === "granted") {
-                new Notification("משימה חדשה הוקצתה לך!", { body: title });
-            }
+            currentImageBase64 = "";
+            document.getElementById('imgStatus').innerText = "הוסף תמונה (אופציונלי)";
 
         } catch (e) {
-            alert("תקלה");
+            alert("תקלה בשמירה");
         } finally {
-            btn.innerHTML = 'שמור וסנכרן';
+            btn.innerText = originalText;
             btn.disabled = false;
         }
     }
