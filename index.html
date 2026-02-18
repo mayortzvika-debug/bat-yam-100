@@ -13,11 +13,8 @@
 
 <style>
 /* ══════════════════════════════════════════
-   DESIGN DIRECTION: Municipal Bold — עיצוב
-   עריכתי כבד, פסי צבע, קונטרסט חד, 
-   Serif + Heebo, תחושת עיתון ממשלתי יוקרתי
+   DESIGN & CSS VARIABLES
    ══════════════════════════════════════════ */
-
 :root {
   --ink: #0d1b2a;
   --blue: #0057a8;
@@ -38,13 +35,14 @@ body {
   overscroll-behavior-y: none;
   color: var(--ink);
 }
+
+/* Animations */
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes up   { from { transform: translateY(110%); } to { transform: translateY(0); } }
 @keyframes pop  { from { transform: scale(.82); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
 
-/* ── LOADER ── */
+/* LOADER */
 #ldr {
   position: fixed; inset: 0; background: var(--ink); z-index: 9999;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -60,7 +58,7 @@ body {
 }
 #ldr p { color: rgba(255,255,255,.4); font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
 
-/* ── HERO ── */
+/* HERO SECTION */
 .hero {
   position: relative; height: 240px;
   border-radius: 0 0 32px 32px; overflow: hidden;
@@ -110,7 +108,7 @@ body {
 .hero-sub { color: rgba(255,255,255,.7); font-size: 13px; font-weight: 400; margin-top: 6px; }
 .hero-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
 
-/* ── STAT CARDS ── */
+/* STATS */
 .stats-row { display: flex; gap: 10px; padding: 0 16px; margin: -22px 0 20px; position: relative; z-index: 5; }
 .stat {
   flex: 1; background: var(--card);
@@ -125,7 +123,7 @@ body {
 .stat-num { font-size: 32px; font-weight: 900; color: var(--ink); line-height: 1; }
 .stat-lbl { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: .04em; }
 
-/* ── SECTION HEADER ── */
+/* SECTION HEADER */
 .sec-head {
   display: flex; justify-content: space-between; align-items: center;
   padding: 0 16px; margin-bottom: 14px;
@@ -140,7 +138,7 @@ body {
   background: var(--blue); border-radius: 2px; display: block;
 }
 
-/* ── EVENT CARD ── */
+/* ── EVENT CARD (UPDATED) ── */
 .ecard {
   background: var(--card); border-radius: 18px;
   box-shadow: 0 2px 12px rgba(0,0,0,.06);
@@ -149,35 +147,19 @@ body {
   overflow: hidden; cursor: pointer;
   transition: transform .15s, box-shadow .15s;
   animation: fade .35s ease both;
+  min-height: 90px; /* Ensure height */
 }
 .ecard:active { transform: scale(.975); box-shadow: 0 1px 6px rgba(0,0,0,.07); }
 
-/* Grid responsive layout for cards */
 #eCards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  padding: 0 16px 112px;
+  display: grid; grid-template-columns: 1fr; gap: 10px; padding: 0 16px 112px;
 }
-@media (min-width: 768px) {
-  #eCards { 
-    grid-template-columns: repeat(2, 1fr); 
-    max-width: 900px;
-    margin: 0 auto;
-  }
-}
-@media (min-width: 1200px) {
-  #eCards { 
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 1400px;
-  }
-}
-.ecard-accent {
-  width: 5px; flex-shrink: 0;
-  background: var(--blue);
-}
+@media (min-width: 768px) { #eCards { grid-template-columns: repeat(2, 1fr); max-width: 900px; margin: 0 auto; } }
+
+.ecard-accent { width: 5px; flex-shrink: 0; background: var(--blue); }
 .ecard-accent.mine { background: var(--mint); }
 .ecard-accent.done { background: #d1d5db; }
+
 .ecard-date {
   width: 58px; flex-shrink: 0;
   display: flex; flex-direction: column;
@@ -189,23 +171,36 @@ body {
 .ecard-date .day { font-size: 26px; font-weight: 900; color: var(--ink); line-height: 1; }
 .ecard-date .day.range { font-size: 16px; font-weight: 900; color: var(--blue); line-height: 1.1; }
 .ecard-date .mon { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
-.ecard-body { flex: 1; padding: 14px 14px 14px 12px; min-width: 0; }
-.ecard-title { font-size: 15px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+
+.ecard-body { flex: 1; padding: 14px 14px 14px 12px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+
+/* ── UPDATED TITLE STYLE FOR READABILITY ── */
+.ecard-title {
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--ink); 
+  margin-bottom: 6px;
+  line-height: 1.25;
+  
+  /* Multi-line support */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Max 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal; /* Allow wrap */
+}
+
 .ecard-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ecard-owner { font-size: 11px; color: var(--muted); font-weight: 600; }
 
-/* ── STATUS PILL ── */
-.pill {
-  display: inline-block; padding: 3px 9px; border-radius: 20px;
-  font-size: 10px; font-weight: 700; letter-spacing: .02em;
-  white-space: nowrap;
-}
+/* STATUS PILLS */
+.pill { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
 .pill-new  { background: #dbeafe; color: #1e40af; }
 .pill-wip  { background: #fef3c7; color: #92400e; }
 .pill-done { background: #d1fae5; color: #065f46; }
 .pill-wait { background: #f3f4f6; color: #4b5563; }
 
-/* ── NAV BAR ── */
+/* NAV BAR */
 .nav {
   position: fixed; bottom: 18px; left: 14px; right: 14px;
   background: var(--ink);
@@ -232,39 +227,25 @@ body {
 }
 .nadd:active { transform: translateY(-18px) scale(.9); }
 
-/* ── CALENDAR ── */
+/* CALENDAR */
 .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
 .cal-head { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; text-align: center; font-size: 9px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
-.cday {
-  min-height: 64px; background: var(--card);
-  border-radius: 10px; border: 1px solid var(--border);
-  padding: 4px; overflow: hidden;
-  transition: border-color .15s;
-}
+.cday { min-height: 64px; background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 4px; overflow: hidden; }
 .cday.tod { border: 2px solid var(--blue); background: #eff6ff; }
 .cday.range-day { background: #f0fdf9; border-color: #6ee7d0; }
 .cemp { min-height: 64px; border-radius: 10px; background: rgba(228,233,240,.3); }
 .cnum { font-size: 11px; font-weight: 800; display: block; color: var(--muted); }
-.cnum.tod-num { color: var(--blue); }
-.cev {
-  background: var(--blue); color: white;
-  padding: 2px 4px; border-radius: 4px; margin-top: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  font-size: 8px; font-weight: 700; display: block; cursor: pointer;
-}
+.cev { background: var(--blue); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 8px; font-weight: 700; display: block; cursor: pointer; }
 .cev.mine  { background: var(--mint); }
 .cev.range { background: linear-gradient(90deg, var(--blue), var(--sky)); }
 
-/* ── OVERLAY / SHEET ── */
+/* MODALS */
 .ov {
-  position: fixed; inset: 0;
-  background: rgba(13,27,42,.7);
+  position: fixed; inset: 0; background: rgba(13,27,42,.7);
   display: flex; align-items: flex-end; justify-content: center;
   z-index: 150; backdrop-filter: blur(6px);
 }
-@media (min-width: 768px) {
-  .ov { align-items: center; padding: 20px; }
-}
+@media (min-width: 768px) { .ov { align-items: center; padding: 20px; } }
 .sh {
   background: var(--card); width: 100%; max-width: 480px;
   border-radius: 28px 28px 0 0;
@@ -272,101 +253,40 @@ body {
   animation: up .32s cubic-bezier(.16,1,.3,1);
   box-shadow: 0 -8px 48px rgba(13,27,42,.25);
 }
-@media (min-width: 768px) {
-  .sh { 
-    border-radius: 28px; 
-    max-height: 85vh;
-    animation: pop .32s cubic-bezier(.16,1,.3,1);
-  }
-}
+@media (min-width: 768px) { .sh { border-radius: 28px; max-height: 85vh; animation: pop .32s cubic-bezier(.16,1,.3,1); } }
 .sh-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
-@media (min-width: 768px) {
-  .sh-handle { display: none; }
-}
-.sh-head {
-  padding: 16px 20px;
-  display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
+.sh-head { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .sh-title { font-size: 18px; font-weight: 900; color: var(--ink); }
 
-/* ── LOGIN ── */
-.lw {
-  position: fixed; inset: 0; background: var(--ink);
-  z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px;
-}
-.lb {
-  background: white; border-radius: 28px; padding: 36px 28px;
-  width: 100%; max-width: 360px; text-align: center;
-  animation: pop .38s cubic-bezier(.16,1,.3,1);
-}
+/* LOGIN */
+.lw { position: fixed; inset: 0; background: var(--ink); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.lb { background: white; border-radius: 28px; padding: 36px 28px; width: 100%; max-width: 360px; text-align: center; animation: pop .38s cubic-bezier(.16,1,.3,1); }
 .lb-top { height: 5px; border-radius: 5px 5px 0 0; margin: -36px -28px 32px; background: linear-gradient(90deg,var(--gold),var(--mint),var(--sky)); border-radius: 28px 28px 0 0; }
-.chip {
-  padding: 10px 18px; border-radius: 40px;
-  border: 2px solid var(--border);
-  cursor: pointer; font-weight: 700; font-size: 14px;
-  background: white; transition: all .15s;
-  font-family: 'Heebo', sans-serif; color: var(--ink);
-}
+.chip { padding: 10px 18px; border-radius: 40px; border: 2px solid var(--border); cursor: pointer; font-weight: 700; font-size: 14px; background: white; transition: all .15s; font-family: 'Heebo', sans-serif; color: var(--ink); }
 .chip:hover, .chip.sel { border-color: var(--blue); background: #eff6ff; color: var(--blue); }
 
-/* ── FORM ELEMENTS ── */
-.fld {
-  width: 100%; padding: 12px 14px;
-  background: #f8fafc; border-radius: 12px;
-  border: 1.5px solid var(--border); outline: none;
-  font-family: 'Heebo', sans-serif; font-size: 14px;
-  color: var(--ink); transition: all .2s;
-}
+/* FIELDS */
+.fld { width: 100%; padding: 12px 14px; background: #f8fafc; border-radius: 12px; border: 1.5px solid var(--border); outline: none; font-family: 'Heebo', sans-serif; font-size: 14px; color: var(--ink); transition: all .2s; }
 .fld:focus { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(0,87,168,.1); }
 .fld-lg { font-size: 17px; font-weight: 700; padding: 14px; }
 label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 6px; }
 
-/* ── STATUS BTNS ── */
-.sb {
-  flex: 1; padding: 9px 6px; border-radius: 12px;
-  font-weight: 700; font-size: 12px;
-  border: 2px solid var(--border); background: #f8fafc; color: var(--muted);
-  cursor: pointer; font-family: 'Heebo', sans-serif; transition: all .15s;
-}
+/* STATUS & TASK BTNS */
+.sb { flex: 1; padding: 9px 6px; border-radius: 12px; font-weight: 700; font-size: 12px; border: 2px solid var(--border); background: #f8fafc; color: var(--muted); cursor: pointer; font-family: 'Heebo', sans-serif; transition: all .15s; }
 .sb.active-n { border-color: #93c5fd; background: #dbeafe; color: #1e40af; }
 .sb.active-w { border-color: #fcd34d; background: #fef3c7; color: #92400e; }
 .sb.active-d { border-color: #6ee7b7; background: #d1fae5; color: #065f46; }
 
-/* ── TASK ROW ── */
-.tr {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; background: #f8fafc;
-  border-radius: 10px; border: 1px solid var(--border);
-  transition: all .15s;
-}
+.tr { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8fafc; border-radius: 10px; border: 1px solid var(--border); transition: all .15s; }
 .tr input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
 .tr.done span { text-decoration: line-through; color: var(--muted); }
 
-/* ── CLOSE BTN ── */
-.close-btn {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: #f1f5f9; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
-}
+.close-btn { width: 34px; height: 34px; border-radius: 50%; background: #f1f5f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
 .close-btn:hover { background: #e2e8f0; }
 
-/* ── RANGE BADGE ── */
-.range-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: linear-gradient(90deg,#eff6ff,#f0fdf9);
-  border: 1px solid #bfdbfe; border-radius: 20px;
-  padding: 2px 8px; font-size: 10px; font-weight: 700; color: var(--blue);
-}
+.range-badge { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(90deg,#eff6ff,#f0fdf9); border: 1px solid #bfdbfe; border-radius: 20px; padding: 2px 8px; font-size: 10px; font-weight: 700; color: var(--blue); }
 
-.add-task-btn {
-  color: var(--blue); font-size: 12px; font-weight: 700;
-  background: #eff6ff; border: none; border-radius: 8px;
-  padding: 5px 10px; cursor: pointer;
-  font-family: 'Heebo', sans-serif; transition: background .15s;
-}
+.add-task-btn { color: var(--blue); font-size: 12px; font-weight: 700; background: #eff6ff; border: none; border-radius: 8px; padding: 5px 10px; cursor: pointer; font-family: 'Heebo', sans-serif; transition: background .15s; }
 .add-task-btn:hover { background: #dbeafe; }
 
 .badge { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid var(--ink); }
@@ -376,13 +296,8 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
 </head>
 <body>
 
-<!-- LOADER -->
-<div id="ldr">
-  <div class="ring"></div>
-  <p>BAT YAM 100</p>
-</div>
+<div id="ldr"><div class="ring"></div><p>BAT YAM 100</p></div>
 
-<!-- LOGIN -->
 <div id="lw" class="lw" style="display:none">
   <div class="lb">
     <div class="lb-top"></div>
@@ -391,27 +306,18 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
     <p style="color:var(--muted);font-size:13px;margin-bottom:22px">מי את/ה?</p>
     <div id="lchips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px"></div>
     <input id="lname" type="text" placeholder="שם אחר..." class="fld" style="text-align:center;margin-bottom:14px">
-    <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:.03em">
-      כניסה ←
-    </button>
+    <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:.03em">כניסה ←</button>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none" class="max-w-md mx-auto">
-
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-bg"></div>
     <div class="hero-c">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <button id="btnUser" class="glass-pill">
-          <span class="hero-dot"></span>
-          <span id="uLabel">אורח</span>
-          <i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i>
-        </button>
+        <button id="btnUser" class="glass-pill"><span class="hero-dot"></span><span id="uLabel">אורח</span><i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i></button>
         <div style="display:flex;gap:8px">
-          <button id="btnNotif"  class="glass-ic"><i data-lucide="bell"        style="width:17px;height:17px"></i></button>
+          <button id="btnNotif" class="glass-ic"><i data-lucide="bell" style="width:17px;height:17px"></i></button>
           <button id="btnRefresh" class="glass-ic"><i data-lucide="refresh-cw" style="width:17px;height:17px"></i></button>
         </div>
       </div>
@@ -423,41 +329,21 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
     <div class="hero-stripe"></div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-row">
-    <div class="stat">
-      <div id="stT" class="stat-num">0</div>
-      <div class="stat-lbl">פרויקטים</div>
-    </div>
-    <div class="stat">
-      <div id="stM" class="stat-num">0</div>
-      <div class="stat-lbl">שלי</div>
-    </div>
-    <div class="stat">
-      <div id="stA" class="stat-num">0</div>
-      <div class="stat-lbl">בטיפול</div>
-    </div>
+    <div class="stat"><div id="stT" class="stat-num">0</div><div class="stat-lbl">פרויקטים</div></div>
+    <div class="stat"><div id="stM" class="stat-num">0</div><div class="stat-lbl">שלי</div></div>
+    <div class="stat"><div id="stA" class="stat-num">0</div><div class="stat-lbl">בטיפול</div></div>
   </div>
 
-  <!-- CONTENT -->
   <div style="padding:0 0 0">
-
-    <!-- LIST VIEW -->
     <div id="vList">
-      <div class="sec-head">
-        <span class="sec-title">כל הפרויקטים</span>
-        <span id="countBadge" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
-      </div>
+      <div class="sec-head"><span class="sec-title">כל הפרויקטים</span><span id="countBadge" style="font-size:11px;font-weight:700;color:var(--muted)"></span></div>
       <div id="eCards"></div>
     </div>
 
-    <!-- CALENDAR VIEW -->
     <div id="vCal" style="display:none;padding:0 16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <div>
-          <div class="sec-title" style="margin-bottom:2px">לוח שנה</div>
-          <h2 id="calTit" style="font-size:18px;font-weight:900;color:var(--ink)"></h2>
-        </div>
+        <div><div class="sec-title" style="margin-bottom:2px">לוח שנה</div><h2 id="calTit" style="font-size:18px;font-weight:900;color:var(--ink)"></h2></div>
         <div style="display:flex;gap:8px">
           <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i></button>
           <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-left"  style="width:16px;height:16px;color:var(--ink)"></i></button>
@@ -467,62 +353,35 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
       <div id="calG" class="cal-grid" style="padding-bottom:112px"></div>
     </div>
 
-    <!-- TASKS VIEW -->
     <div id="vTasks" style="display:none">
       <div class="sec-head" style="padding-top:4px">
         <span class="sec-title">משימות פתוחות</span>
-        <select id="tFilter" style="font-size:11px;font-weight:700;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer">
-          <option value="">כולם</option>
-        </select>
+        <select id="tFilter" style="font-size:11px;font-weight:700;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer"><option value="">כולם</option></select>
       </div>
       <div id="tCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 112px"></div>
     </div>
-
   </div>
 
-  <!-- NAV -->
   <div class="nav">
-    <button id="nb-list"  class="nb on"><i data-lucide="home"         style="width:20px;height:20px"></i><span>בית</span></button>
+    <button id="nb-list"  class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
     <button id="nb-tasks" class="nb" style="position:relative"><i data-lucide="check-square" style="width:20px;height:20px"></i><span>משימות</span><span id="tbadge" class="badge" style="display:none"></span></button>
     <button id="nb-add"   class="nadd"><i data-lucide="plus" style="width:26px;height:26px"></i></button>
-    <button id="nb-cal"   class="nb"><i data-lucide="calendar"        style="width:20px;height:20px"></i><span>לוח שנה</span></button>
-    <button id="nb-set"   class="nb"><i data-lucide="user"            style="width:20px;height:20px"></i><span>פרופיל</span></button>
+    <button id="nb-cal"   class="nb"><i data-lucide="calendar" style="width:20px;height:20px"></i><span>לוח שנה</span></button>
+    <button id="nb-set"   class="nb"><i data-lucide="user" style="width:20px;height:20px"></i><span>פרופיל</span></button>
   </div>
 </div>
 
-<!-- ═══ ADD MODAL ═══ -->
 <div id="mAdd" class="ov" style="display:none">
   <div class="sh" style="height:91vh">
     <div class="sh-handle"></div>
-    <div class="sh-head">
-      <span class="sh-title">פרויקט חדש</span>
-      <button id="mAddClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
-    </div>
+    <div class="sh-head"><span class="sh-title">פרויקט חדש</span><button id="mAddClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button></div>
     <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:18px" class="sh-hide">
-
-      <div>
-        <label class="lbl">שם האירוע *</label>
-        <input id="inT" type="text" class="fld fld-lg" placeholder="שם האירוע...">
-      </div>
-
+      <div><label class="lbl">שם האירוע *</label><input id="inT" type="text" class="fld fld-lg" placeholder="שם האירוע..."></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label class="lbl">תאריך התחלה</label>
-          <input id="inD" type="date" class="fld">
-        </div>
-        <div>
-          <label class="lbl">תאריך סיום (אופציונלי)</label>
-          <input id="inDEnd" type="date" class="fld">
-        </div>
+        <div><label class="lbl">תאריך התחלה</label><input id="inD" type="date" class="fld"></div>
+        <div><label class="lbl">תאריך סיום (אופציונלי)</label><input id="inDEnd" type="date" class="fld"></div>
       </div>
-
-      <div>
-        <label class="lbl">אחראי</label>
-        <select id="inO" class="fld">
-          <option value="">בחר אחראי...</option>
-        </select>
-      </div>
-
+      <div><label class="lbl">אחראי</label><select id="inO" class="fld"><option value="">בחר אחראי...</option></select></div>
       <div>
         <label class="lbl">סטטוס</label>
         <div id="sBtns" style="display:flex;gap:8px">
@@ -532,12 +391,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         </div>
         <input type="hidden" id="inS" value="חדש">
       </div>
-
-      <div>
-        <label class="lbl">תיאור</label>
-        <textarea id="inDesc" rows="3" class="fld" style="resize:none" placeholder="תיאור, הערות..."></textarea>
-      </div>
-
+      <div><label class="lbl">תיאור</label><textarea id="inDesc" rows="3" class="fld" style="resize:none" placeholder="תיאור, הערות..."></textarea></div>
       <div style="background:#f8fafc;padding:16px;border-radius:14px;border:1.5px solid var(--border)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <label class="lbl" style="margin:0">משימות</label>
@@ -545,62 +399,40 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         </div>
         <div id="tList" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
-
       <label style="display:flex;align-items:center;gap:12px;padding:14px;border:2px dashed var(--border);border-radius:14px;cursor:pointer;transition:border-color .2s">
         <input type="file" id="inImg" style="display:none" accept="image/*">
         <i data-lucide="image-plus" style="width:20px;height:20px;color:var(--muted);flex-shrink:0"></i>
-        <div>
-          <span id="imgSt" style="font-size:13px;font-weight:700;color:var(--muted);display:block">הוסף תמונה</span>
-          <span style="font-size:10px;color:#cbd5e1">עד ~37KB</span>
-        </div>
+        <div><span id="imgSt" style="font-size:13px;font-weight:700;color:var(--muted);display:block">הוסף תמונה</span><span style="font-size:10px;color:#cbd5e1">עד ~37KB</span></div>
       </label>
-      <div id="imgPW" style="display:none;height:140px;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
-        <img id="imgPE" style="width:100%;height:100%;object-fit:cover">
-      </div>
-
+      <div id="imgPW" style="display:none;height:140px;border-radius:12px;overflow:hidden;border:1px solid var(--border)"><img id="imgPE" style="width:100%;height:100%;object-fit:cover"></div>
     </div>
     <div style="padding:16px;border-top:1.5px solid var(--border);flex-shrink:0">
-      <button id="saveBtn" style="width:100%;background:var(--ink);color:white;padding:16px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;box-shadow:0 4px 18px rgba(13,27,42,.35);letter-spacing:.03em">
-        שמור וסנכרן ←
-      </button>
+      <button id="saveBtn" style="width:100%;background:var(--ink);color:white;padding:16px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;box-shadow:0 4px 18px rgba(13,27,42,.35);letter-spacing:.03em">שמור וסנכרן ←</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ VIEW MODAL ═══ -->
 <div id="mView" class="ov" style="display:none">
   <div class="sh" style="height:88vh">
     <div style="height:180px;position:relative;flex-shrink:0;overflow:hidden;border-radius:28px 28px 0 0">
       <img id="vImg" style="width:100%;height:100%;object-fit:cover;display:none">
-      <div id="vImgPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f9ff,#f8fafc)">
-        <i data-lucide="image" style="width:52px;height:52px;color:#e2e8f0"></i>
-      </div>
+      <div id="vImgPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f9ff,#f8fafc)"><i data-lucide="image" style="width:52px;height:52px;color:#e2e8f0"></i></div>
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(13,27,42,.5))"></div>
-      <button id="mViewClose" style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.35);color:white;padding:8px;border-radius:50%;border:none;cursor:pointer;backdrop-filter:blur(6px)">
-        <i data-lucide="x" style="width:18px;height:18px"></i>
-      </button>
+      <button id="mViewClose" style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.35);color:white;padding:8px;border-radius:50%;border:none;cursor:pointer;backdrop-filter:blur(6px)"><i data-lucide="x" style="width:18px;height:18px"></i></button>
       <div id="vPill" style="position:absolute;bottom:14px;right:16px"></div>
     </div>
-
     <div style="flex:1;overflow-y:auto;padding:20px 20px 10px" class="sh-hide">
       <h2 id="vT" style="font-size:22px;font-weight:900;color:var(--ink);line-height:1.25;margin-bottom:8px;font-family:'Frank Ruhl Libre',serif"></h2>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-        <span id="vDate" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue);background:#eff6ff;padding:4px 10px;border-radius:20px">
-          <i data-lucide="calendar" style="width:12px;height:12px"></i>
-          <span id="vDateTxt"></span>
-        </span>
+        <span id="vDate" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue);background:#eff6ff;padding:4px 10px;border-radius:20px"><i data-lucide="calendar" style="width:12px;height:12px"></i><span id="vDateTxt"></span></span>
         <span id="vOwn" style="font-size:12px;font-weight:600;color:var(--muted)"></span>
       </div>
-
-      <!-- View status -->
       <div id="vsBtns" style="display:flex;gap:8px;margin-bottom:18px">
         <button class="vsb sb" data-v="חדש">חדש</button>
         <button class="vsb sb" data-v="בטיפול">בטיפול</button>
         <button class="vsb sb" data-v="בוצע">בוצע</button>
       </div>
-
       <p id="vDesc" style="font-size:13px;color:#475569;line-height:1.65;background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border)"></p>
-
       <div style="background:#f8fafc;padding:16px;border-radius:14px;border:1.5px solid var(--border)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <span style="font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">משימות</span>
@@ -612,43 +444,26 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
   </div>
 </div>
 
-<!-- ═══ SETTINGS MODAL ═══ -->
 <div id="mSet" class="ov" style="display:none">
   <div class="sh" style="border-radius:28px 28px 0 0;max-height:70vh">
     <div class="sh-handle"></div>
-    <div class="sh-head">
-      <span class="sh-title">פרופיל</span>
-      <button id="mSetClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
-    </div>
+    <div class="sh-head"><span class="sh-title">פרופיל</span><button id="mSetClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button></div>
     <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
       <label class="lbl">בחר משתמש</label>
       <div id="schips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       <input id="sname" type="text" placeholder="שם אחר..." class="fld" style="text-align:center">
-      <button id="btnSwitch" style="width:100%;background:var(--ink);color:white;padding:13px;border-radius:14px;font-weight:900;border:none;cursor:pointer;font-family:'Heebo',sans-serif">
-        החלף משתמש
-      </button>
+      <button id="btnSwitch" style="width:100%;background:var(--ink);color:white;padding:13px;border-radius:14px;font-weight:900;border:none;cursor:pointer;font-family:'Heebo',sans-serif">החלף משתמש</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════
-   CONFIG
-   ══════════════════════════════════════════ */
 const CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
 const POST = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
 
-/* ══════════════════════════════════════════
-   STATE
-   ══════════════════════════════════════════ */
-let events = [], me = localStorage.getItem('batyam_user') || '';
-let calY = new Date().getFullYear(), calM = new Date().getMonth();
-let img64 = '', viewIdx = -1;
+let events=[], me=localStorage.getItem('batyam_user')||'', calY=new Date().getFullYear(), calM=new Date().getMonth(), img64='', viewIdx=-1;
 
-/* ══════════════════════════════════════════
-   BOOT
-   ══════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   wire();
@@ -656,68 +471,47 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function showLogin() { hide('ldr'); showFlex('lw'); buildChips('lchips'); }
-function boot()      { id('uLabel').textContent = me; show('app'); loadData(); }
+function boot() { id('uLabel').textContent = me; show('app'); loadData(); }
 
-/* ══════════════════════════════════════════
-   EVENT WIRING — all addEventListener
-   ══════════════════════════════════════════ */
 function wire() {
-  id('lbtn').onclick   = doLogin;
+  id('lbtn').onclick = doLogin;
   id('lname').onkeydown = e => { if(e.key==='Enter') doLogin(); };
-
-  id('nb-list').onclick  = () => sv('List');
-  id('nb-cal').onclick   = () => sv('Cal');
+  id('nb-list').onclick = () => sv('List');
+  id('nb-cal').onclick = () => sv('Cal');
   id('nb-tasks').onclick = () => sv('Tasks');
-  id('nb-add').onclick   = openAdd;
-  id('nb-set').onclick   = openSet;
-  id('btnUser').onclick  = openSet;
+  id('nb-add').onclick = openAdd;
+  id('nb-set').onclick = openSet;
+  id('btnUser').onclick = openSet;
   id('btnRefresh').onclick = () => loadData(true);
   id('btnNotif').onclick = askNotif;
-
-  id('mAddClose').onclick  = closeAdd;
+  id('mAddClose').onclick = closeAdd;
   id('btnAddTask').onclick = () => addRow('tList');
-  id('saveBtn').onclick    = save;
-  id('inImg').onchange     = handleImg;
-
+  id('saveBtn').onclick = save;
+  id('inImg').onchange = handleImg;
   id('sBtns').onclick = e => {
     const b = e.target.closest('.sb'); if(!b || !b.dataset.v) return;
     id('inS').value = b.dataset.v;
-    id('sBtns').querySelectorAll('.sb').forEach(x => { x.className='sb'; });
+    id('sBtns').querySelectorAll('.sb').forEach(x => x.className='sb');
     const cls = {חדש:'sb active-n',בטיפול:'sb active-w',בוצע:'sb active-d'};
     b.className = cls[b.dataset.v] || 'sb';
   };
-
-  id('mViewClose').onclick  = () => hide('mView');
+  id('mViewClose').onclick = () => hide('mView');
   id('btnVAddTask').onclick = () => addRow('vtList');
-  id('vsBtns').onclick = e => {
-    const b = e.target.closest('.vsb'); if(b) changeSt(b.dataset.v);
-  };
-
+  id('vsBtns').onclick = e => { const b = e.target.closest('.vsb'); if(b) changeSt(b.dataset.v); };
   id('mSetClose').onclick = () => hide('mSet');
   id('btnSwitch').onclick = doSwitch;
-  id('tFilter').onchange  = renderTasks;
+  id('tFilter').onchange = renderTasks;
   id('calP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCal(); };
   id('calN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renderCal(); };
-
-  ['mAdd','mView','mSet'].forEach(x => {
-    id(x).onclick = e => { if(e.target.id===x) hide(x); };
-  });
+  ['mAdd','mView','mSet'].forEach(x => { id(x).onclick = e => { if(e.target.id===x) hide(x); }; });
 }
 
-/* ══════════════════════════════════════════
-   HELPERS
-   ══════════════════════════════════════════ */
 const id = x => document.getElementById(x);
-function show(x)    { id(x).style.display = 'block'; }
-function hide(x)    { id(x).style.display = 'none';  }
-function showFlex(x){ id(x).style.display = 'flex';  }
-function showOv(x)  { id(x).style.display = 'flex'; lucide.createIcons(); }
+function show(x){ id(x).style.display = 'block'; }
+function hide(x){ id(x).style.display = 'none'; }
+function showFlex(x){ id(x).style.display = 'flex'; }
+function showOv(x){ id(x).style.display = 'flex'; lucide.createIcons(); }
 
-/* ══════════════════════════════════════════
-   DATE UTILS — תומך בתאריכים מתמשכים
-   D/M/YYYY, DD/MM/YYYY, YYYY-MM-DD
-   טווח: D/M/YYYY-D/M/YYYY  או  D/M-D/M/YYYY
-   ══════════════════════════════════════════ */
 function parseSingle(s) {
   if(!s) return null; s = s.trim();
   let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
@@ -726,64 +520,39 @@ function parseSingle(s) {
   if(m) return new Date(+m[1], +m[2]-1, +m[3]);
   return null;
 }
-
 function parseEventDate(raw) {
-  // מחזיר: { start: Date, end: Date|null, isRange: bool }
   if(!raw) return { start:null, end:null, isRange:false };
   raw = raw.trim();
-
-  // ניסיון לפצל בטווח: מחפש '-' שמפריד בין שני תאריכים
-  // פורמטים: "30/7/2026-3/8/2026" או "26/7/2026-30/8/2026"
   const rangeMatch = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
-  if(rangeMatch) {
-    return { start: parseSingle(rangeMatch[1]), end: parseSingle(rangeMatch[2]), isRange: true };
-  }
-
-  // תאריך בודד
+  if(rangeMatch) return { start: parseSingle(rangeMatch[1]), end: parseSingle(rangeMatch[2]), isRange: true };
   const single = parseSingle(raw);
   return { start: single, end: null, isRange: false };
 }
-
 function dateInRange(evRaw, y, m, d) {
   const { start, end, isRange } = parseEventDate(evRaw);
   if(!start) return false;
   const check = new Date(y, m, d);
-  if(isRange && end) {
-    return check >= start && check <= end;
-  }
+  if(isRange && end) return check >= start && check <= end;
   return start.getFullYear()===y && start.getMonth()===m && start.getDate()===d;
 }
-
 function fmtEventDate(raw) {
   const { start, end, isRange } = parseEventDate(raw);
   if(!start) return raw || '';
   const opts = { day:'numeric', month:'long' };
-  if(isRange && end) {
-    const s = start.toLocaleDateString('he-IL', opts);
-    const e = end.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
-    return `${s} – ${e}`;
-  }
+  if(isRange && end) return `${start.toLocaleDateString('he-IL', opts)} – ${end.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' })}`;
   return start.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
 }
-
 function getDisplayDay(raw) {
   const { start, end, isRange } = parseEventDate(raw);
   if(!start) return { day:'?', isRange:false };
-  if(isRange && end) {
-    return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
-  }
+  if(isRange && end) return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
   return { day: String(start.getDate()), isRange:false };
 }
-
 function getMonthLabel(raw) {
   const { start } = parseEventDate(raw);
   if(!start) return '';
   return start.toLocaleDateString('he-IL',{month:'short'});
 }
-
-/* ══════════════════════════════════════════
-   STATUS → PILL CLASS
-   ══════════════════════════════════════════ */
 function pillClass(st) {
   if(!st) return 'pill pill-new';
   if(st.includes('בוצע') || st.includes('תואם')) return 'pill pill-done';
@@ -792,9 +561,6 @@ function pillClass(st) {
   return 'pill pill-new';
 }
 
-/* ══════════════════════════════════════════
-   LOGIN
-   ══════════════════════════════════════════ */
 function buildChips(cid) {
   const c = id(cid); c.innerHTML = '';
   OWNERS.forEach(n => {
@@ -824,9 +590,6 @@ function doSwitch() {
   renderAll(); hide('mSet');
 }
 
-/* ══════════════════════════════════════════
-   DATA
-   ══════════════════════════════════════════ */
 async function loadData(manual=false) {
   if(manual) { id('ldr').style.cssText='position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1'; }
   try {
@@ -834,21 +597,17 @@ async function loadData(manual=false) {
     const t = await r.text();
     Papa.parse(t, { header:true, skipEmptyLines:true, complete: res => {
       events = res.data.filter(e => (e.Title||e.title||'').trim());
-
-      // חלץ בעלים מהגיליון
       events.forEach(e => {
         (e.owner||e.Owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o => {
           if(!OWNERS.includes(o)) OWNERS.push(o);
         });
       });
-
       fillOwnerSelect();
       renderAll();
       hideLoader();
     }});
   } catch(e){ console.error(e); hideLoader(); }
 }
-
 function fillOwnerSelect() {
   const sel = id('inO'), cur = sel.value;
   sel.innerHTML = '<option value="">בחר אחראי...</option>';
@@ -859,22 +618,16 @@ function fillOwnerSelect() {
     sel.appendChild(opt);
   });
 }
-
 function hideLoader() {
   const l = id('ldr');
   l.style.transition = 'opacity .5s';
   l.style.opacity = '0';
   setTimeout(()=>{ l.style.display='none'; }, 520);
 }
-
 function renderAll() {
   renderList(); renderCal(); renderTasks(); updateStats(); buildFilter();
   lucide.createIcons();
 }
-
-/* ══════════════════════════════════════════
-   STATS
-   ══════════════════════════════════════════ */
 function updateStats() {
   id('stT').textContent = events.length;
   id('stM').textContent = events.filter(e=>(e.owner||e.Owner||'').includes(me)).length;
@@ -884,28 +637,20 @@ function updateStats() {
   id('tbadge').style.display = myOpen>0?'block':'none';
 }
 
-/* ══════════════════════════════════════════
-   LIST
-   ══════════════════════════════════════════ */
 function renderList() {
   const c = id('eCards'); c.innerHTML = '';
   if(!events.length){ c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>'; return; }
-  
-  // מיון כרונולוגי לפי תאריך (הכי מוקדם ראשון)
   const sorted = [...events].sort((a, b) => {
-    const aRaw = a.date || a.Date || '';
-    const bRaw = b.date || b.Date || '';
-    const aDate = parseEventDate(aRaw).start;
-    const bDate = parseEventDate(bRaw).start;
+    const aDate = parseEventDate(a.date || a.Date || '').start;
+    const bDate = parseEventDate(b.date || b.Date || '').start;
     if(!aDate && !bDate) return 0;
     if(!aDate) return 1;
     if(!bDate) return -1;
     return aDate - bDate;
   });
-
   const frag = document.createDocumentFragment();
   sorted.forEach((e, loopIdx) => {
-    const origIdx = events.indexOf(e); // שמור את האינדקס המקורי
+    const origIdx = events.indexOf(e);
     const title  = e.Title||e.title||'ללא שם';
     const raw    = e.date||e.Date||'';
     const owner  = e.owner||e.Owner||'-';
@@ -914,20 +659,16 @@ function renderList() {
     const isDone = status.includes('בוצע') || status.includes('תואם');
     const { day, isRange } = getDisplayDay(raw);
     const mon = getMonthLabel(raw);
-
     const div = document.createElement('div');
     div.className = 'ecard';
     div.style.animationDelay = (loopIdx * 0.04) + 's';
-
     const accent = document.createElement('div');
     accent.className = 'ecard-accent' + (isDone?' done':isMine?' mine':'');
     div.appendChild(accent);
-
     const dateBox = document.createElement('div');
     dateBox.className = 'ecard-date';
     dateBox.innerHTML = `<span class="day${isRange?' range':''}">${day}</span><span class="mon">${mon}</span>`;
     div.appendChild(dateBox);
-
     const body = document.createElement('div');
     body.className = 'ecard-body';
     body.innerHTML = `
@@ -945,71 +686,44 @@ function renderList() {
   lucide.createIcons();
 }
 
-/* ══════════════════════════════════════════
-   CALENDAR — תומך בתאריכים מתמשכים
-   ══════════════════════════════════════════ */
 function renderCal() {
   const g = id('calG'); g.innerHTML = '';
   id('calTit').textContent = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
-
-  const firstDay    = new Date(calY,calM,1).getDay();
+  const firstDay = new Date(calY,calM,1).getDay();
   const daysInMonth = new Date(calY,calM+1,0).getDate();
-  const today       = new Date();
-
-  for(let i=0;i<firstDay;i++){
-    const b=document.createElement('div'); b.className='cemp'; g.appendChild(b);
-  }
-
+  const today = new Date();
+  for(let i=0;i<firstDay;i++){ const b=document.createElement('div'); b.className='cemp'; g.appendChild(b); }
   for(let d=1;d<=daysInMonth;d++){
     const isToday = d===today.getDate()&&calM===today.getMonth()&&calY===today.getFullYear();
     const cell = document.createElement('div');
     cell.className = 'cday' + (isToday?' tod':'');
-
     const num = document.createElement('span');
     num.className = 'cnum' + (isToday?' tod-num':'');
     num.textContent = d;
     cell.appendChild(num);
-
-    // בדוק כל אירוע — כולל טווחים
     events.forEach((e, idx) => {
       const raw = e.date||e.Date||'';
       if(!dateInRange(raw, calY, calM, d)) return;
-
       const isMine = (e.owner||e.Owner||'').includes(me);
       const { isRange } = parseEventDate(raw);
-
       const ev = document.createElement('span');
       ev.className = 'cev' + (isMine?' mine':'') + (isRange?' range':'');
       ev.textContent = e.Title||e.title||'—';
       ev.onclick = evt => { evt.stopPropagation(); openView(idx); };
       cell.appendChild(ev);
-
-      // סמן יום כ-range-day אם הוא חלק מטווח (לא רק ראשון)
       const { start } = parseEventDate(raw);
-      if(isRange && start && !(start.getDate()===d && start.getMonth()===calM && start.getFullYear()===calY)) {
-        cell.classList.add('range-day');
-      }
+      if(isRange && start && !(start.getDate()===d && start.getMonth()===calM && start.getFullYear()===calY)) { cell.classList.add('range-day'); }
     });
-
     g.appendChild(cell);
   }
 }
 
-/* ══════════════════════════════════════════
-   TASKS
-   ══════════════════════════════════════════ */
 function buildFilter() {
   const sel=id('tFilter'), cur=sel.value;
   const owners=[...new Set(events.map(e=>(e.owner||e.Owner||'').trim()).filter(Boolean))];
   sel.innerHTML='<option value="">כולם</option>';
-  owners.forEach(o=>{
-    const opt=document.createElement('option');
-    opt.value=o; opt.textContent=o;
-    if(o===cur) opt.selected=true;
-    sel.appendChild(opt);
-  });
+  owners.forEach(o=>{ const opt=document.createElement('option'); opt.value=o; opt.textContent=o; if(o===cur) opt.selected=true; sel.appendChild(opt); });
 }
-
 function renderTasks() {
   const c=id('tCards'); c.innerHTML='';
   const filter=id('tFilter').value;
@@ -1019,29 +733,17 @@ function renderTasks() {
     if(filter&&!(e.owner||e.Owner||'').includes(filter)) return false;
     return true;
   });
-  if(!open.length){
-    c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--muted);font-weight:600">אין משימות פתוחות!</p></div>';
-    return;
-  }
+  if(!open.length){ c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--muted);font-weight:600">אין משימות פתוחות!</p></div>'; return; }
   const frag=document.createDocumentFragment();
   open.forEach(e=>{
     const idx=events.indexOf(e), isMine=(e.owner||e.Owner||'').includes(me);
     const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
     const card=document.createElement('div');
-    card.className='ecard';
-    card.style.flexDirection='column';
-    card.style.cursor='default';
-
+    card.className='ecard'; card.style.flexDirection='column'; card.style.cursor='default';
     const top=document.createElement('div');
     top.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:14px 14px 10px;border-bottom:1px solid var(--border)';
-    top.innerHTML=`
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="ecard-accent ${isMine?'mine':''}" style="width:3px;height:20px;border-radius:2px;flex-shrink:0"></div>
-        <h3 style="font-weight:700;color:var(--ink);font-size:13px">${e.Title||e.title||'—'}</h3>
-      </div>
-      <span style="font-size:11px;color:var(--muted);font-weight:600">👤 ${e.owner||e.Owner||'-'}</span>`;
+    top.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><div class="ecard-accent ${isMine?'mine':''}" style="width:3px;height:20px;border-radius:2px;flex-shrink:0"></div><h3 style="font-weight:700;color:var(--ink);font-size:13px">${e.Title||e.title||'—'}</h3></div><span style="font-size:11px;color:var(--muted);font-weight:600">👤 ${e.owner||e.Owner||'-'}</span>`;
     card.appendChild(top);
-
     const tw=document.createElement('div'); tw.style.cssText='padding:10px 14px;display:flex;flex-direction:column;gap:7px';
     if(tasks.length){
       tasks.forEach(t=>{
@@ -1051,11 +753,8 @@ function renderTasks() {
         const sp=document.createElement('span'); sp.style.fontSize='13px'; sp.textContent=t;
         row.appendChild(cb); row.appendChild(sp); tw.appendChild(row);
       });
-    } else {
-      tw.innerHTML='<span style="font-size:11px;color:#cbd5e1;padding:4px 0">אין משימות מפורטות</span>';
-    }
+    } else { tw.innerHTML='<span style="font-size:11px;color:#cbd5e1;padding:4px 0">אין משימות מפורטות</span>'; }
     card.appendChild(tw);
-
     const foot=document.createElement('div');
     foot.style.cssText='padding:8px 14px 12px;display:flex;justify-content:flex-end';
     const ob=document.createElement('button');
@@ -1068,135 +767,73 @@ function renderTasks() {
   c.appendChild(frag);
 }
 
-/* ══════════════════════════════════════════
-   VIEW MODAL
-   ══════════════════════════════════════════ */
 function openView(idx) {
   const e=events[idx]; if(!e) return;
   viewIdx=idx;
-  id('vT').textContent   = e.Title||e.title||'';
+  id('vT').textContent = e.Title||e.title||'';
   id('vDateTxt').textContent = fmtEventDate(e.date||e.Date||'');
   id('vOwn').textContent = '👤 ' + (e.owner||e.Owner||'—');
   id('vDesc').textContent = e.Description||e.description||'אין תיאור';
-
   const st = e.status||e.Status||'חדש';
   refreshVSt(st);
-
   const imgSrc=e.Image||e.image||'';
   if(imgSrc.startsWith('data:image')){ id('vImg').src=imgSrc; id('vImg').style.display='block'; id('vImgPH').style.display='none'; }
   else { id('vImg').style.display='none'; id('vImgPH').style.display='flex'; }
-
   const tl=id('vtList'); tl.innerHTML='';
   const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
   if(tasks.length){
     tasks.forEach((t, taskIdx) => {
-      const row=document.createElement('div'); 
-      row.className='tr';
-      row.style.position = 'relative';
-      
-      const cb=document.createElement('input'); 
-      cb.type='checkbox';
+      const row=document.createElement('div'); row.className='tr'; row.style.position='relative';
+      const cb=document.createElement('input'); cb.type='checkbox';
       cb.onchange=()=>{
         row.classList.toggle('done',cb.checked);
-        // אם סומן, הצג כפתור מחיקה
         if(cb.checked) {
           setTimeout(() => {
-            const wasChecked = cb.checked;
-            if(wasChecked) {
-              const confirmDel = confirm('למחוק משימה זו?');
-              if(confirmDel) {
-                // מחק מהרשימה
-                const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '').split('|').filter(t=>t.trim());
-                currentTasks.splice(taskIdx, 1);
-                events[viewIdx].tasks = currentTasks.join('|');
-                events[viewIdx].Tasks = currentTasks.join('|');
-                row.remove();
-              } else {
-                cb.checked = false;
-                row.classList.remove('done');
-              }
-            }
+            if(cb.checked && confirm('למחוק משימה זו?')) {
+              const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '').split('|').filter(t=>t.trim());
+              currentTasks.splice(taskIdx, 1);
+              events[viewIdx].tasks = currentTasks.join('|');
+              events[viewIdx].Tasks = currentTasks.join('|');
+              row.remove();
+            } else { cb.checked=false; row.classList.remove('done'); }
           }, 800);
         }
       };
-      
-      const sp=document.createElement('span'); 
-      sp.style.fontSize='13px'; 
-      sp.textContent=t;
-      row.appendChild(cb); 
-      row.appendChild(sp); 
-      tl.appendChild(row);
+      const sp=document.createElement('span'); sp.style.fontSize='13px'; sp.textContent=t;
+      row.appendChild(cb); row.appendChild(sp); tl.appendChild(row);
     });
-  } else {
-    tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
-  }
+  } else { tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>'; }
   showOv('mView');
 }
 
 function refreshVSt(st) {
   const map={חדש:'active-n',בטיפול:'active-w',בוצע:'active-d'};
-  document.querySelectorAll('.vsb').forEach(b=>{
-    b.className='vsb sb'+(b.dataset.v===st?' '+map[b.dataset.v]:'');
-  });
-  const pill=id('vPill');
-  pill.innerHTML=`<span class="${pillClass(st)}">${st}</span>`;
+  document.querySelectorAll('.vsb').forEach(b=>{ b.className='vsb sb'+(b.dataset.v===st?' '+map[b.dataset.v]:''); });
+  const pill=id('vPill'); pill.innerHTML=`<span class="${pillClass(st)}">${st}</span>`;
 }
-
 function changeSt(st) {
   if(viewIdx<0) return;
-  
-  // עדכן מקומית
-  events[viewIdx].status=st; 
-  events[viewIdx].Status=st;
-  
-  // עדכן UI
-  refreshVSt(st); 
-  updateStats(); 
-  renderList();
-  
-  // הצג הודעת הצלחה קטנה
-  const pill = id('vPill');
-  const oldHTML = pill.innerHTML;
+  events[viewIdx].status=st; events[viewIdx].Status=st;
+  refreshVSt(st); updateStats(); renderList();
+  const pill = id('vPill'); const oldHTML = pill.innerHTML;
   pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${st}</span>`;
-  
-  // שלח עדכון לשרת (fire and forget)
   const e = events[viewIdx];
-  const body = new URLSearchParams({
-    action: 'update',
-    title: e.Title || e.title || '',
-    status: st
-  });
-  fetch(POST, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: body.toString()
-  }).catch(err => console.error('Status update error:', err));
-  
-  // החזר את הפיל למצב רגיל אחרי שנייה
-  setTimeout(() => {
-    pill.innerHTML = oldHTML;
-  }, 1000);
+  const body = new URLSearchParams({ action: 'update', title: e.Title || e.title || '', status: st });
+  fetch(POST, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: body.toString() }).catch(err => console.error(err));
+  setTimeout(() => { pill.innerHTML = oldHTML; }, 1000);
 }
 
-/* ══════════════════════════════════════════
-   ADD MODAL
-   ══════════════════════════════════════════ */
 function openAdd() { fillOwnerSelect(); showOv('mAdd'); }
 function closeAdd(){ hide('mAdd'); }
 
 function addRow(cid) {
   const c = id(cid);
   const row = document.createElement('div');
-  row.className = 'tr';
-  row.style.background = 'white';
-
+  row.className = 'tr'; row.style.background = 'white';
   const inp = document.createElement('input');
   inp.type = 'text'; inp.placeholder = 'כתוב משימה...';
   inp.className = 'task-inp';
   inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
-  
-  // אפשר Enter להוסיף משימה חדשה
   inp.addEventListener('keydown', e => {
     if(e.key === 'Enter' && inp.value.trim()) {
       e.preventDefault();
@@ -1204,7 +841,6 @@ function addRow(cid) {
       id(btnId).click();
     }
   });
-
   const del = document.createElement('button');
   del.type = 'button';
   del.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;flex-shrink:0;display:flex;align-items:center;line-height:1;transition:color .15s';
@@ -1212,12 +848,9 @@ function addRow(cid) {
   del.onclick = () => row.remove();
   del.onmouseenter = () => { del.style.color = '#dc2626'; };
   del.onmouseleave = () => { del.style.color = '#fca5a5'; };
-
   row.appendChild(inp); row.appendChild(del);
   c.appendChild(row);
   lucide.createIcons(); 
-  
-  // מיקוד אוטומטי עם עיכוב קצר כדי לאפשר לאנימציות להסתיים
   setTimeout(() => inp.focus(), 50);
 }
 
@@ -1234,35 +867,28 @@ function handleImg() {
 }
 
 async function save() {
-  const title  = id('inT').value.trim();
+  const title = id('inT').value.trim();
   const dStart = id('inD').value;
-  const dEnd   = id('inDEnd').value;
-  const owner  = id('inO').value;
-  const desc   = id('inDesc').value.trim();
+  const dEnd = id('inDEnd').value;
+  const owner = id('inO').value;
+  const desc = id('inDesc').value.trim();
   const status = id('inS').value;
-  const tasks  = [...id('tList').querySelectorAll('.task-inp')]
-                   .map(x=>x.value.trim()).filter(Boolean).join('|');
-
+  const tasks = [...id('tList').querySelectorAll('.task-inp')].map(x=>x.value.trim()).filter(Boolean).join('|');
   if(!title){ alert('נא להזין שם אירוע'); return; }
-
-  // בנה תאריך — אם יש טווח, פורמט: D/M/YYYY-D/M/YYYY
   let dateVal = dStart;
   if(dStart && dEnd) {
     const s = parseSingle(dStart.split('-').reverse().join('/')) || new Date(dStart);
-    const e = parseSingle(dEnd.split('-').reverse().join('/'))   || new Date(dEnd);
+    const e = parseSingle(dEnd.split('-').reverse().join('/')) || new Date(dEnd);
     const fmt = d => `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
     dateVal = `${fmt(s)}-${fmt(e)}`;
   } else if(dStart) {
     const s = new Date(dStart);
     dateVal = `${s.getDate()}/${s.getMonth()+1}/${s.getFullYear()}`;
   }
-
   const btn=id('saveBtn'); btn.textContent='שומר...'; btn.disabled=true;
-
   const body=new URLSearchParams({title,date:dateVal,owner,desc,status,tasks,image:img64});
   try { await fetch(POST,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}); }
   catch(e){ console.error(e); }
-
   events.unshift({Title:title,date:dateVal,Date:dateVal,owner,Owner:owner,Description:desc,status,Status:status,tasks,Tasks:tasks,Image:img64});
   renderAll(); closeAdd(); resetForm();
   setTimeout(()=>loadData(),4000);
@@ -1278,9 +904,6 @@ function resetForm(){
   img64='';
 }
 
-/* ══════════════════════════════════════════
-   VIEW SWITCH
-   ══════════════════════════════════════════ */
 function sv(name){
   ['List','Cal','Tasks'].forEach(v=>{
     id('v'+v).style.display='none';
@@ -1290,9 +913,7 @@ function sv(name){
   const nb=id('nb-'+name.toLowerCase()); if(nb) nb.classList.add('on');
 }
 
-function askNotif(){
-  Notification.requestPermission().then(p=>alert(p==='granted'?'🔔 התראות הופעלו!':'לא אושר'));
-}
+function askNotif(){ Notification.requestPermission().then(p=>alert(p==='granted'?'🔔 התראות הופעלו!':'לא אושר')); }
 </script>
 </body>
 </html>
