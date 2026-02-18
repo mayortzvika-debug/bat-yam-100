@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -5,8 +6,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Bat Yam 100</title>
 
-  <!-- favicon (אותו שם בתיקיה) -->
-  <link rel="icon" href="favicon.ico" />
+  <!-- Favicon + PWA -->
+  <link rel="icon" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <meta name="theme-color" content="#0d1b2a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bat Yam 100" />
+  <link rel="manifest" href="manifest.webmanifest" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -51,14 +58,12 @@
     }
     #ldr p{color:rgba(255,255,255,.45); font-size:10px; font-weight:800; letter-spacing:.2em; text-transform:uppercase}
 
-/* FORCE: top section should NOT stick */
-.topWrap{
-  position: relative !important;
-  top: auto !important;
-  z-index: auto !important;
-  background: transparent !important;
-}
-
+    /* ❗️הבאנר והפס הניווט לא “דביקים”: גוללים והם נעלמים */
+    .topWrap{
+      position:relative;
+      background:linear-gradient(180deg, rgba(13,27,42,1) 0%, rgba(13,27,42,1) 65%, rgba(13,27,42,.0) 100%);
+      padding-bottom:10px;
+    }
 
     .hero{
       position:relative; height:220px;
@@ -186,19 +191,22 @@
     .pill-done{background:#d1fae5;color:#065f46}
     .pill-wait{background:#f3f4f6;color:#4b5563}
 
+    /* ✅ שורת הכפתורים: רקע כהה (יפה גם על לבן) */
     .navTop{
       margin:6px 14px 0;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.16);
+      background:rgba(13,27,42,.82);
+      border:1px solid rgba(255,255,255,.14);
       backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
       border-radius:22px;
       display:flex; gap:8px; justify-content:space-between; align-items:center;
       padding:6px;
+      box-shadow:0 8px 26px rgba(13,27,42,.22);
     }
     .nb{
       flex:1;
       padding:10px 10px; border-radius:18px;
-      color:rgba(255,255,255,.62);
+      color:rgba(255,255,255,.72);
       display:flex; flex-direction:column; align-items:center; gap:3px;
       font-size:9px; font-weight:900; letter-spacing:.04em;
       background:none; border:none; cursor:pointer;
@@ -299,28 +307,6 @@
       display:none;
       max-width:92vw;
     }
-
-    /* Calendar event labels */
-    .cal-ev{
-      margin-top:4px;
-      font-size:9px;
-      font-weight:900;
-      color:var(--ink);
-      background:#fff7e6;
-      border:1px solid #ffe3b3;
-      border-radius:8px;
-      padding:2px 6px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      line-height:1.25;
-    }
-    .cal-more{
-      margin-top:4px;
-      font-size:9px;
-      font-weight:900;
-      color:var(--muted);
-    }
   </style>
 </head>
 
@@ -356,10 +342,14 @@
 
       <div class="navTop containerWide">
         <button id="nb-list" class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
+
+        <!-- ✅ כאן האייקון של משימות הוא favicon.png -->
         <button id="nb-tasks" class="nb" style="position:relative">
-          <i data-lucide="check-square" style="width:20px;height:20px"></i><span>משימות</span>
+          <img src="favicon.png" alt="tasks" style="width:20px;height:20px;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))">
+          <span>משימות</span>
           <span id="tbadge" class="badge" style="display:none"></span>
         </button>
+
         <button id="nb-add" class="nbAdd"><i data-lucide="plus" style="width:24px;height:24px"></i></button>
         <button id="nb-cal" class="nb"><i data-lucide="calendar" style="width:20px;height:20px"></i><span>לוח שנה</span></button>
         <button id="nb-set" class="nb"><i data-lucide="user" style="width:20px;height:20px"></i><span>פרופיל</span></button>
@@ -430,14 +420,21 @@
     let activeEvent = null;
     let viewTaskMode = 'doing'; // doing | done
 
-    // ✅ ברירת מחדל: יוני 2026
-    let calY = 2026;
-    let calM = 5; // 0=Jan ... 5=June
+    // ✅ דיפולט לוח שנה: יוני 2026
+    let calY = 2026, calM = 5; // 0=Jan, 5=June
 
     const $ = (id) => document.getElementById(id);
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
+
+      // ✅ PWA: Service Worker register (GitHub Pages over HTTPS)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        });
+      }
+
       $('uLabel').textContent = me || 'אורח';
 
       bindNav_();
@@ -513,7 +510,7 @@
         const j = await res.json();
         if(!j.ok) throw new Error(j.error || 'Load failed');
 
-        events = (j.rows || []).map(normRow_).filter(x => (x.Title || x.status || x.owner || x.date || x.Description || (x._tasks||[]).length));
+        events = (j.rows || []).map(normRow_);
         renderAll_();
 
         if(forceToast) toast_('עודכן מהשיט ✅');
@@ -589,6 +586,7 @@
       buildTasksFilter_();
       renderTasksHub_();
       updateBadge_();
+      setTabs_();
     }
 
     function renderStats_(){
@@ -603,33 +601,20 @@
     function pillForStatus_(s){
       const v = String(s||'').trim();
       if(!v) return `<span class="pill pill-wait">ללא סטטוס</span>`;
-      if(v.includes('בתהליך') || v.includes('תמחור') || v.includes('חוזים') || v.includes('הזמנת') || v.includes('ממתין')) return `<span class="pill pill-wip">${escapeHtml_(v)}</span>`;
+      if(v.includes('בתהליך') || v.includes('תמחור') || v.includes('חוזים') || v.includes('הזמנת')) return `<span class="pill pill-wip">${escapeHtml_(v)}</span>`;
       if(v.includes('בוצע') || v.includes('הסתיים') || v.includes('סגור')) return `<span class="pill pill-done">${escapeHtml_(v)}</span>`;
       return `<span class="pill pill-wait">${escapeHtml_(v)}</span>`;
-    }
-
-    // ✅ מיון כרונולוגי למסך הבית (תאריך/טווח). בלי תאריך -> סוף
-    function sortKeyTime_(e){
-      const s = String(e.date||'').trim();
-      if(!s) return Number.POSITIVE_INFINITY;
-
-      const rng = parseDateRange_(s);
-      if(rng) return rng.start.getTime();
-
-      const d = parseDate_(s);
-      if(d) return d.getTime();
-
-      return Number.POSITIVE_INFINITY;
     }
 
     function renderCards_(){
       const wrap = $('eCards');
       wrap.innerHTML = '';
 
+      // ✅ מסך פתיחה: סדר כרונולוגי (ללא תאריך בסוף)
       const sorted = [...events].sort((a,b)=>{
-        const ta = sortKeyTime_(a);
-        const tb = sortKeyTime_(b);
-        if(ta !== tb) return ta - tb;
+        const da = parseDate_(String(a.date||''))?.getTime() ?? 9e15;
+        const db = parseDate_(String(b.date||''))?.getTime() ?? 9e15;
+        if(da !== db) return da - db;
         return String(a.Title||'').localeCompare(String(b.Title||''),'he');
       });
 
@@ -666,8 +651,7 @@
       const s = String(raw||'').trim();
       if(!s) return { dayTxt:'—', monTxt:'תאריך', isRange:false };
 
-      const rng = parseDateRange_(s);
-      if(rng){
+      if(s.includes('-') && s.match(/\d{1,2}\/\d{1,2}\/\d{4}.*-\d{1,2}\/\d{1,2}\/\d{4}/)){
         return { dayTxt:'טווח', monTxt:'תאריכים', isRange:true };
       }
 
@@ -682,51 +666,16 @@
     function parseDate_(s){
       if(!s) return null;
 
-      // ISO / Date string
       let d = new Date(s);
       if(!isNaN(d.getTime())) return d;
 
-      // m/d/yyyy or d/m/yyyy ambiguity:
-      // אם החלק הראשון >12 זה בטוח יום/חודש
-      let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      const m = String(s).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
       if(m){
-        const a = parseInt(m[1],10);
-        const b = parseInt(m[2],10);
-        const yy = parseInt(m[3],10);
-
-        let dd, mm;
-        if(a > 12){ dd = a; mm = b-1; }
-        else if(b > 12){ dd = b; mm = a-1; }
-        else {
-          // אצלך רוב התאריכים הם m/d/yyyy (7/30/2026)
-          dd = b; mm = a-1;
-        }
-
+        const dd = parseInt(m[1],10), mm = parseInt(m[2],10)-1, yy = parseInt(m[3],10);
         d = new Date(yy, mm, dd);
         if(!isNaN(d.getTime())) return d;
       }
-
       return null;
-    }
-
-    function parseDateDMY_(s){
-      const m = String(s||'').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-      if(!m) return null;
-      const dd = parseInt(m[1],10);
-      const mm = parseInt(m[2],10) - 1;
-      const yy = parseInt(m[3],10);
-      const d = new Date(yy, mm, dd);
-      return isNaN(d.getTime()) ? null : d;
-    }
-
-    function parseDateRange_(s){
-      // "26/7/2026-30/8/2026"
-      const parts = String(s||'').trim().split('-');
-      if(parts.length !== 2) return null;
-      const start = parseDateDMY_(parts[0].trim());
-      const end   = parseDateDMY_(parts[1].trim());
-      if(!start || !end) return null;
-      return { start, end };
     }
 
     /* =========================
@@ -736,7 +685,7 @@
       const e = events.find(x => x.ID === id);
       if(!e){ toast_('לא נמצא פרויקט'); return; }
 
-      activeEvent = JSON.parse(JSON.stringify(e)); // clone
+      activeEvent = JSON.parse(JSON.stringify(e));
       activeEvent._tasks = (e._tasks || []).map(t=>({ ...t }));
 
       renderEventModal_();
@@ -945,7 +894,7 @@
     }
 
     /* =========================
-       Tasks hub view (all projects)
+       Tasks hub view
        ========================= */
     function buildTasksFilter_(){
       const sel = $('tFilter');
@@ -996,7 +945,6 @@
       if(!all.length){
         wrap.innerHTML = `<div style="color:var(--muted);font-weight:900;padding:10px 4px">אין משימות בתצוגה הזו</div>`;
         updateBadge_();
-        setTabs_();
         return;
       }
 
@@ -1034,7 +982,7 @@
     }
 
     /* =========================
-       Calendar (✅ titles inside cells + supports ranges)
+       Calendar (shows titles)
        ========================= */
     function renderCalendar_(){
       const title = $('calTit');
@@ -1045,8 +993,7 @@
       title.textContent = monthNames[calM] + ' ' + calY;
 
       const first = new Date(calY, calM, 1);
-      // ב-JS: 0=Sunday..6=Saturday, ולנו יש תצוגה א׳..ש׳, אז זה מתאים כמו שהוא
-      const startDay = first.getDay(); 
+      const startDay = (first.getDay()+6)%7;
       const daysInMonth = new Date(calY, calM+1, 0).getDate();
 
       grid.innerHTML='';
@@ -1054,35 +1001,14 @@
       for(let i=0;i<startDay;i++){
         grid.appendChild(dayCell_('', false, []));
       }
-
       for(let d=1; d<=daysInMonth; d++){
-        const dateObj = new Date(calY, calM, d);
-        const hits = eventsForDay_(dateObj);
+        const hits = events.filter(e=>{
+          const ed = parseDate_(String(e.date||''));
+          if(!ed) return false;
+          return ed.getFullYear()===calY && ed.getMonth()===calM && ed.getDate()===d;
+        });
         grid.appendChild(dayCell_(String(d), true, hits));
       }
-    }
-
-    function eventsForDay_(dateObj){
-      const y = dateObj.getFullYear();
-      const m = dateObj.getMonth();
-      const d = dateObj.getDate();
-
-      return events.filter(e=>{
-        const raw = String(e.date||'').trim();
-        if(!raw) return false;
-
-        const rng = parseDateRange_(raw);
-        if(rng){
-          const start = new Date(rng.start.getFullYear(), rng.start.getMonth(), rng.start.getDate());
-          const end   = new Date(rng.end.getFullYear(), rng.end.getMonth(), rng.end.getDate());
-          const cur   = new Date(y, m, d);
-          return cur >= start && cur <= end;
-        }
-
-        const ed = parseDate_(raw);
-        if(!ed) return false;
-        return ed.getFullYear()===y && ed.getMonth()===m && ed.getDate()===d;
-      }).sort((a,b)=> sortKeyTime_(a)-sortKeyTime_(b));
     }
 
     function dayCell_(label, inMonth, hits){
@@ -1090,7 +1016,7 @@
       div.style.background = inMonth ? 'white' : 'transparent';
       div.style.border = inMonth ? '1px solid var(--border)' : '1px solid transparent';
       div.style.borderRadius = '12px';
-      div.style.minHeight = '56px';
+      div.style.minHeight = '62px';
       div.style.padding = '6px';
       div.style.fontWeight = '900';
       div.style.fontSize = '11px';
@@ -1099,32 +1025,24 @@
       div.style.cursor = hits && hits.length ? 'pointer' : 'default';
       div.style.overflow='hidden';
 
-      // מספר היום
-      const top = document.createElement('div');
-      top.textContent = label;
-      top.style.fontSize = '11px';
-      top.style.fontWeight = '900';
-      div.appendChild(top);
+      const day = document.createElement('div');
+      day.textContent = label;
+      div.appendChild(day);
 
       if(hits && hits.length){
-        // מציגים עד 2 כותרות
-        const maxShow = 2;
-        hits.slice(0,maxShow).forEach(ev=>{
-          const tag = document.createElement('div');
-          tag.className = 'cal-ev';
-          tag.title = ev.Title || '';
-          tag.textContent = ev.Title || '(ללא כותרת)';
-          div.appendChild(tag);
-        });
+        const t = document.createElement('div');
+        t.style.marginTop = '4px';
+        t.style.fontSize = '9px';
+        t.style.fontWeight = '900';
+        t.style.color = 'var(--muted)';
+        t.style.lineHeight = '1.15';
+        t.style.display = '-webkit-box';
+        t.style.webkitBoxOrient = 'vertical';
+        t.style.webkitLineClamp = '2';
+        t.style.overflow = 'hidden';
+        t.textContent = hits.map(x => x.Title).filter(Boolean).slice(0,2).join(' · ');
+        div.appendChild(t);
 
-        if(hits.length > maxShow){
-          const more = document.createElement('div');
-          more.className = 'cal-more';
-          more.textContent = `+${hits.length - maxShow} עוד`;
-          div.appendChild(more);
-        }
-
-        // נקודה קטנה כמו קודם
         const dot = document.createElement('div');
         dot.style.position='absolute';
         dot.style.bottom='6px';
@@ -1137,7 +1055,6 @@
 
         div.addEventListener('click', ()=> openEvent_(hits[0].ID));
       }
-
       return div;
     }
 
