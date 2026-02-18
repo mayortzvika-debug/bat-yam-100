@@ -151,6 +151,27 @@ body {
   animation: fade .35s ease both;
 }
 .ecard:active { transform: scale(.975); box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+
+/* Grid responsive layout for cards */
+#eCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 0 16px 112px;
+}
+@media (min-width: 768px) {
+  #eCards { 
+    grid-template-columns: repeat(2, 1fr); 
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+@media (min-width: 1200px) {
+  #eCards { 
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1400px;
+  }
+}
 .ecard-accent {
   width: 5px; flex-shrink: 0;
   background: var(--blue);
@@ -241,6 +262,9 @@ body {
   display: flex; align-items: flex-end; justify-content: center;
   z-index: 150; backdrop-filter: blur(6px);
 }
+@media (min-width: 768px) {
+  .ov { align-items: center; padding: 20px; }
+}
 .sh {
   background: var(--card); width: 100%; max-width: 480px;
   border-radius: 28px 28px 0 0;
@@ -248,7 +272,17 @@ body {
   animation: up .32s cubic-bezier(.16,1,.3,1);
   box-shadow: 0 -8px 48px rgba(13,27,42,.25);
 }
+@media (min-width: 768px) {
+  .sh { 
+    border-radius: 28px; 
+    max-height: 85vh;
+    animation: pop .32s cubic-bezier(.16,1,.3,1);
+  }
+}
 .sh-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+@media (min-width: 768px) {
+  .sh-handle { display: none; }
+}
 .sh-head {
   padding: 16px 20px;
   display: flex; justify-content: space-between; align-items: center;
@@ -414,7 +448,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         <span class="sec-title">כל הפרויקטים</span>
         <span id="countBadge" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
       </div>
-      <div id="eCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 112px"></div>
+      <div id="eCards"></div>
     </div>
 
     <!-- CALENDAR VIEW -->
@@ -856,8 +890,22 @@ function updateStats() {
 function renderList() {
   const c = id('eCards'); c.innerHTML = '';
   if(!events.length){ c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>'; return; }
+  
+  // מיון כרונולוגי לפי תאריך (הכי מוקדם ראשון)
+  const sorted = [...events].sort((a, b) => {
+    const aRaw = a.date || a.Date || '';
+    const bRaw = b.date || b.Date || '';
+    const aDate = parseEventDate(aRaw).start;
+    const bDate = parseEventDate(bRaw).start;
+    if(!aDate && !bDate) return 0;
+    if(!aDate) return 1;
+    if(!bDate) return -1;
+    return aDate - bDate;
+  });
+
   const frag = document.createDocumentFragment();
-  [...events].map((e,i)=>({e,i})).reverse().forEach(({e,i},loopIdx) => {
+  sorted.forEach((e, loopIdx) => {
+    const origIdx = events.indexOf(e); // שמור את האינדקס המקורי
     const title  = e.Title||e.title||'ללא שם';
     const raw    = e.date||e.Date||'';
     const owner  = e.owner||e.Owner||'-';
@@ -890,7 +938,7 @@ function renderList() {
         ${isRange?`<span class="range-badge"><i data-lucide="calendar-range" style="width:10px;height:10px"></i> טווח</span>`:''}
       </div>`;
     div.appendChild(body);
-    div.addEventListener('click', ()=>openView(i));
+    div.addEventListener('click', ()=>openView(origIdx));
     frag.appendChild(div);
   });
   c.appendChild(frag);
@@ -1041,12 +1089,43 @@ function openView(idx) {
   const tl=id('vtList'); tl.innerHTML='';
   const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
   if(tasks.length){
-    tasks.forEach(t=>{
-      const row=document.createElement('div'); row.className='tr';
-      const cb=document.createElement('input'); cb.type='checkbox';
-      cb.onchange=()=>row.classList.toggle('done',cb.checked);
-      const sp=document.createElement('span'); sp.style.fontSize='13px'; sp.textContent=t;
-      row.appendChild(cb); row.appendChild(sp); tl.appendChild(row);
+    tasks.forEach((t, taskIdx) => {
+      const row=document.createElement('div'); 
+      row.className='tr';
+      row.style.position = 'relative';
+      
+      const cb=document.createElement('input'); 
+      cb.type='checkbox';
+      cb.onchange=()=>{
+        row.classList.toggle('done',cb.checked);
+        // אם סומן, הצג כפתור מחיקה
+        if(cb.checked) {
+          setTimeout(() => {
+            const wasChecked = cb.checked;
+            if(wasChecked) {
+              const confirmDel = confirm('למחוק משימה זו?');
+              if(confirmDel) {
+                // מחק מהרשימה
+                const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '').split('|').filter(t=>t.trim());
+                currentTasks.splice(taskIdx, 1);
+                events[viewIdx].tasks = currentTasks.join('|');
+                events[viewIdx].Tasks = currentTasks.join('|');
+                row.remove();
+              } else {
+                cb.checked = false;
+                row.classList.remove('done');
+              }
+            }
+          }, 800);
+        }
+      };
+      
+      const sp=document.createElement('span'); 
+      sp.style.fontSize='13px'; 
+      sp.textContent=t;
+      row.appendChild(cb); 
+      row.appendChild(sp); 
+      tl.appendChild(row);
     });
   } else {
     tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
@@ -1065,8 +1144,39 @@ function refreshVSt(st) {
 
 function changeSt(st) {
   if(viewIdx<0) return;
-  events[viewIdx].status=st; events[viewIdx].Status=st;
-  refreshVSt(st); updateStats(); renderList();
+  
+  // עדכן מקומית
+  events[viewIdx].status=st; 
+  events[viewIdx].Status=st;
+  
+  // עדכן UI
+  refreshVSt(st); 
+  updateStats(); 
+  renderList();
+  
+  // הצג הודעת הצלחה קטנה
+  const pill = id('vPill');
+  const oldHTML = pill.innerHTML;
+  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${st}</span>`;
+  
+  // שלח עדכון לשרת (fire and forget)
+  const e = events[viewIdx];
+  const body = new URLSearchParams({
+    action: 'update',
+    title: e.Title || e.title || '',
+    status: st
+  });
+  fetch(POST, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: body.toString()
+  }).catch(err => console.error('Status update error:', err));
+  
+  // החזר את הפיל למצב רגיל אחרי שנייה
+  setTimeout(() => {
+    pill.innerHTML = oldHTML;
+  }, 1000);
 }
 
 /* ══════════════════════════════════════════
@@ -1084,17 +1194,31 @@ function addRow(cid) {
   const inp = document.createElement('input');
   inp.type = 'text'; inp.placeholder = 'כתוב משימה...';
   inp.className = 'task-inp';
-  inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);width:0';
+  inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
+  
+  // אפשר Enter להוסיף משימה חדשה
+  inp.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && inp.value.trim()) {
+      e.preventDefault();
+      const btnId = cid === 'tList' ? 'btnAddTask' : 'btnVAddTask';
+      id(btnId).click();
+    }
+  });
 
   const del = document.createElement('button');
   del.type = 'button';
-  del.style.cssText = 'background:none;border:none;cursor:pointer;padding:2px;color:#fca5a5;flex-shrink:0;display:flex;align-items:center;line-height:1';
+  del.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;flex-shrink:0;display:flex;align-items:center;line-height:1;transition:color .15s';
   del.innerHTML = '<i data-lucide="x" style="width:16px;height:16px"></i>';
   del.onclick = () => row.remove();
+  del.onmouseenter = () => { del.style.color = '#dc2626'; };
+  del.onmouseleave = () => { del.style.color = '#fca5a5'; };
 
   row.appendChild(inp); row.appendChild(del);
   c.appendChild(row);
-  lucide.createIcons(); inp.focus();
+  lucide.createIcons(); 
+  
+  // מיקוד אוטומטי עם עיכוב קצר כדי לאפשר לאנימציות להסתיים
+  setTimeout(() => inp.focus(), 50);
 }
 
 function handleImg() {
