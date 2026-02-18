@@ -1,577 +1,564 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Bat Yam 100</title>
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bat Yam 100</title>
 
-<style>
-:root{
-  --ink:#0d1b2a; --blue:#0057a8; --sky:#2196f3; --gold:#f5a623; --mint:#00b89c;
-  --bg:#f4f6f9; --card:#ffffff; --border:#e4e9f0; --muted:#7a8899;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:var(--bg); font-family:'Heebo',sans-serif; color:var(--ink);
-  padding-bottom:24px; -webkit-tap-highlight-color:transparent; overscroll-behavior-y:none;
-}
+  <!-- FAVICON (שים בתיקייה favicon.ico + אופציונלי favicon.png) -->
+  <link rel="icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon.png">
 
-@keyframes spin { to{transform:rotate(360deg)} }
-@keyframes up { from{transform:translateY(110%)} to{transform:translateY(0)} }
-@keyframes pop { from{transform:scale(.82);opacity:0} to{transform:scale(1);opacity:1} }
-@keyframes fade { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-/* LOADER */
-#ldr{
-  position:fixed; inset:0; background:var(--ink); z-index:9999;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  transition:opacity .5s;
-}
-#ldr .ring{
-  width:60px;height:60px;border:3px solid rgba(255,255,255,.12);
-  border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:18px;
-}
-#ldr p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet" />
 
-/* HERO */
-.hero{
-  position:relative;height:240px;border-radius:0 0 32px 32px;overflow:hidden;background:var(--ink);
-  box-shadow:0 20px 48px -12px rgba(13,27,42,.6);
-}
-.hero-bg{background-image:url('baner.jpg');background-size:cover;background-position:center;position:absolute;inset:0;opacity:.55}
-.hero-stripe{
-  position:absolute;bottom:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,var(--gold) 0%,var(--mint) 50%,var(--sky) 100%);
-}
-.hero-c{
-  position:relative;z-index:2;padding:22px 20px;height:100%;
-  display:flex;flex-direction:column;justify-content:space-between;
-}
-.glass-pill{
-  background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.22);color:white;border-radius:40px;
-  display:inline-flex;align-items:center;gap:7px;padding:7px 14px;font-size:12px;font-weight:700;
-  cursor:pointer;transition:all .18s;
-}
-.glass-pill:active{transform:scale(.92);background:rgba(255,255,255,.28)}
-.glass-ic{
-  background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.22);color:white;border-radius:50%;
-  width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;
-}
-.glass-ic:active{transform:scale(.9)}
+  <style>
+    :root{
+      --ink:#0d1b2a;
+      --blue:#0057a8;
+      --sky:#2196f3;
+      --gold:#f5a623;
+      --mint:#00b89c;
+      --bg:#f4f6f9;
+      --card:#ffffff;
+      --border:#e4e9f0;
+      --muted:#7a8899;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg);
+      font-family:'Heebo',sans-serif;
+      color:var(--ink);
+      -webkit-tap-highlight-color:transparent;
+      overscroll-behavior-y:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes up{from{transform:translateY(110%)}to{transform:translateY(0)}}
+    @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+    @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-.hero-title{
-  font-size:42px;font-weight:900;color:white;line-height:.95;letter-spacing:-1px;
-  text-shadow:0 2px 16px rgba(0,0,0,.4);
-}
-.hero-city{font-family:'Bebas Neue','Heebo',sans-serif; letter-spacing:1.2px;}
-.hero-100{font-family:'Frank Ruhl Libre',serif; color:var(--gold);}
-.hero-sub{color:rgba(255,255,255,.7);font-size:13px;font-weight:400;margin-top:6px}
-.hero-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+    /* LOADER */
+    #ldr{
+      position:fixed;inset:0;background:var(--ink);z-index:9999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      transition:opacity .5s;
+    }
+    #ldr .ring{
+      width:60px;height:60px;border:3px solid rgba(255,255,255,.12);
+      border-top-color:var(--gold);border-radius:50%;
+      animation:spin 1s linear infinite;margin-bottom:18px;
+    }
+    #ldr p{color:rgba(255,255,255,.4);font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase}
 
-/* APP WIDTH */
-#app{max-width:1100px;margin:0 auto;}
-@media (max-width: 420px){ #app{max-width:unset;margin:0 auto;} }
+    /* HERO */
+    .hero{
+      position:relative;height:220px;
+      border-radius:0 0 28px 28px;overflow:hidden;background:var(--ink);
+      box-shadow:0 18px 40px -12px rgba(13,27,42,.6);
+    }
+    .hero-bg{
+      background-image:url('baner.jpg');
+      background-size:cover;background-position:center;
+      position:absolute;inset:0;opacity:.55;
+    }
+    .hero-stripe{
+      position:absolute;bottom:0;left:0;right:0;height:4px;
+      background:linear-gradient(90deg,var(--gold) 0%,var(--mint) 50%,var(--sky) 100%);
+    }
+    .hero-c{
+      position:relative;z-index:2;padding:18px 18px;
+      height:100%;display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .glass-pill{
+      background:rgba(255,255,255,.14);
+      backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.22);
+      color:white;border-radius:40px;
+      display:inline-flex;align-items:center;gap:7px;
+      padding:7px 14px;font-size:12px;font-weight:900;
+      cursor:pointer;transition:all .18s;
+    }
+    .glass-pill:active{transform:scale(.94);background:rgba(255,255,255,.28)}
+    .glass-ic{
+      background:rgba(255,255,255,.14);
+      backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.22);
+      color:white;border-radius:50%;
+      width:38px;height:38px;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all .18s;
+    }
+    .glass-ic:active{transform:scale(.92)}
+    /* שינוי פונט BAT-YAM */
+    .hero-title{
+      font-family:'Heebo',sans-serif;
+      font-size:40px;font-weight:900;color:white;
+      line-height:.95;letter-spacing:-1px;
+      text-shadow:0 2px 16px rgba(0,0,0,.35);
+    }
+    .hero-title span{
+      font-family:'Frank Ruhl Libre',serif;
+      color:var(--gold);
+      letter-spacing:-1px;
+    }
+    .hero-sub{color:rgba(255,255,255,.72);font-size:13px;font-weight:400;margin-top:6px}
+    .hero-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
 
-/* STATS */
-.stats-row{
-  display:flex;gap:10px;padding:0 16px;margin:-22px 0 12px;position:relative;z-index:5;flex-wrap:wrap;
-}
-.stat{
-  flex:1;min-width:160px;background:var(--card);border-radius:16px;padding:14px 12px;
-  box-shadow:0 4px 20px rgba(0,0,0,.08);border-top:3px solid transparent;animation:fade .4s ease both;
-}
-.stat:nth-child(1){border-top-color:var(--blue)}
-.stat:nth-child(2){border-top-color:var(--mint);animation-delay:.08s}
-.stat:nth-child(3){border-top-color:var(--gold);animation-delay:.16s}
-.stat-num{font-size:32px;font-weight:900;color:var(--ink);line-height:1}
-.stat-lbl{font-size:10px;font-weight:700;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+    /* STATS */
+    .stats-row{
+      display:flex;gap:10px;padding:0 16px;margin:-18px 0 10px;position:relative;z-index:5;
+    }
+    .stat{
+      flex:1;background:var(--card);
+      border-radius:16px;padding:12px 12px;
+      box-shadow:0 4px 18px rgba(0,0,0,.08);
+      border-top:3px solid transparent;
+      animation:fade .4s ease both;
+    }
+    .stat:nth-child(1){border-top-color:var(--blue)}
+    .stat:nth-child(2){border-top-color:var(--mint);animation-delay:.08s}
+    .stat:nth-child(3){border-top-color:var(--gold);animation-delay:.16s}
+    .stat-num{font-size:30px;font-weight:900;line-height:1}
+    .stat-lbl{font-size:10px;font-weight:900;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
 
-/* SECTION HEADER */
-.sec-head{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:14px}
-.sec-title{
-  font-size:13px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:8px;
-  text-transform:uppercase;letter-spacing:.06em;
-}
-.sec-title::before{content:'';width:3px;height:16px;background:var(--blue);border-radius:2px;display:block}
+    /* TOP NAV — צמוד למעלה */
+    .nav{
+      position:sticky;top:0;z-index:50;
+      margin:10px 14px 10px;
+      background:var(--ink);
+      padding:8px 10px;border-radius:18px;
+      display:flex;justify-content:space-between;align-items:center;
+      box-shadow:0 12px 28px -8px rgba(13,27,42,.45);
+    }
+    .nb{
+      padding:10px 12px;border-radius:14px;
+      color:rgba(255,255,255,.45);
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+      font-size:9px;font-weight:900;letter-spacing:.04em;
+      background:none;border:none;cursor:pointer;
+      transition:all .2s;text-transform:uppercase;
+    }
+    .nb.on{color:white;background:rgba(255,255,255,.12)}
+    .nadd{
+      background:var(--gold);
+      color:var(--ink);padding:12px;border-radius:16px;
+      box-shadow:0 6px 18px rgba(245,166,35,.45);
+      border:3px solid var(--ink);
+      cursor:pointer;transition:all .18s;
+    }
+    .nadd:active{transform:scale(.92)}
+    .badge{position:absolute;top:6px;right:6px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid var(--ink);}
 
-/* EVENT CARD */
-.ecard{
-  background:var(--card);border-radius:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);
-  border:1px solid var(--border);display:flex;align-items:stretch;overflow:hidden;cursor:pointer;
-  transition:transform .15s, box-shadow .15s;animation:fade .35s ease both;
-}
-.ecard:active{transform:scale(.975);box-shadow:0 1px 6px rgba(0,0,0,.07)}
+    /* SECTION HEADER */
+    .sec-head{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin:10px 0 12px}
+    .sec-title{
+      font-size:12px;font-weight:900;color:var(--ink);
+      display:flex;align-items:center;gap:8px;
+      text-transform:uppercase;letter-spacing:.06em;
+    }
+    .sec-title::before{content:'';width:3px;height:16px;background:var(--blue);border-radius:2px;display:block}
 
-#eCards{
-  display:grid;grid-template-columns:1fr;gap:10px;padding:0 16px 28px;
-}
-@media (min-width: 900px){
-  #eCards{grid-template-columns:repeat(2,1fr);max-width:1100px;margin:0 auto;}
-}
-@media (min-width: 1250px){
-  #eCards{grid-template-columns:repeat(3,1fr);max-width:1100px;}
-}
+    /* EVENT CARD */
+    #eCards{display:grid;grid-template-columns:1fr;gap:10px;padding:0 16px 22px}
+    @media(min-width:900px){
+      #app{max-width:1100px!important}
+      #eCards{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(min-width:1300px){
+      #eCards{grid-template-columns:repeat(3,1fr)}
+    }
+    .ecard{
+      background:var(--card);border-radius:18px;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+      display:flex;align-items:stretch;overflow:hidden;cursor:pointer;
+      transition:transform .15s, box-shadow .15s;
+      animation:fade .35s ease both;
+    }
+    .ecard:active{transform:scale(.98);box-shadow:0 1px 7px rgba(0,0,0,.07)}
+    .ecard-accent{width:5px;flex-shrink:0;background:var(--blue)}
+    .ecard-accent.mine{background:var(--mint)}
+    .ecard-accent.done{background:#d1d5db}
+    .ecard-date{
+      width:60px;flex-shrink:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:12px 0;border-left:1px solid var(--border);background:#fafbfc;
+    }
+    .ecard-date .day{font-size:24px;font-weight:900;line-height:1}
+    .ecard-date .day.range{font-size:15px;font-weight:900;color:var(--blue)}
+    .ecard-date .mon{font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase;margin-top:2px}
+    .ecard-body{flex:1;padding:12px 12px 12px 10px;min-width:0}
+    .ecard-title{font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+    .ecard-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .ecard-owner{font-size:11px;color:var(--muted);font-weight:700}
 
-.ecard-accent{width:5px;flex-shrink:0;background:var(--blue)}
-.ecard-accent.mine{background:var(--mint)}
-.ecard-accent.done{background:#d1d5db}
-.ecard-date{
-  width:58px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:14px 0;border-left:1px solid var(--border);background:#fafbfc;
-}
-.ecard-date .day{font-size:26px;font-weight:900;color:var(--ink);line-height:1}
-.ecard-date .day.range{font-size:16px;font-weight:900;color:var(--blue);line-height:1.1}
-.ecard-date .mon{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-top:2px}
-.ecard-body{flex:1;padding:14px 14px 14px 12px;min-width:0}
-.ecard-title{font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}
-.ecard-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.ecard-owner{font-size:11px;color:var(--muted);font-weight:600}
+    /* STATUS PILL */
+    .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:900;letter-spacing:.02em;white-space:nowrap}
+    .pill-new{background:#dbeafe;color:#1e40af}
+    .pill-wip{background:#fef3c7;color:#92400e}
+    .pill-done{background:#d1fae5;color:#065f46}
+    .pill-wait{background:#f3f4f6;color:#4b5563}
 
-/* STATUS PILL */
-.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
-.pill-new{background:#dbeafe;color:#1e40af}
-.pill-wip{background:#fef3c7;color:#92400e}
-.pill-done{background:#d1fae5;color:#065f46}
-.pill-wait{background:#f3f4f6;color:#4b5563}
+    /* TASK ROW */
+    .tr{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;background:#f8fafc;
+      border-radius:10px;border:1px solid var(--border);
+      transition:all .15s;
+    }
+    .tr input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+    .tr.done span{text-decoration:line-through;color:var(--muted)}
 
-/* NAV — STICKY UNDER HERO */
-.nav{
-  position:sticky; top:12px;
-  margin:-18px 14px 14px;
-  background:var(--ink); padding:6px 10px; border-radius:28px;
-  display:flex; justify-content:space-between; align-items:center;
-  box-shadow:0 16px 48px -8px rgba(13,27,42,.55);
-  z-index:40;
-}
-.nb{
-  padding:10px 13px;border-radius:20px;color:rgba(255,255,255,.4);
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  font-size:9px;font-weight:700;letter-spacing:.04em;background:none;border:none;cursor:pointer;
-  transition:all .2s;text-transform:uppercase;
-}
-.nb.on{color:white;background:rgba(255,255,255,.12)}
-.nadd{
-  background:var(--gold);color:var(--ink);padding:14px;border-radius:22px;
-  box-shadow:0 6px 24px rgba(245,166,35,.5);
-  border:4px solid var(--ink);
-  cursor:pointer;transition:all .18s;
-  transform:none;
-}
-.nadd:active{transform:scale(.9)}
+    /* OVERLAY / SHEET */
+    .ov{
+      position:fixed;inset:0;background:rgba(13,27,42,.7);
+      display:flex;align-items:flex-end;justify-content:center;
+      z-index:150;backdrop-filter:blur(6px);
+    }
+    @media(min-width:900px){.ov{align-items:center;padding:20px}}
+    .sh{
+      background:var(--card);width:100%;max-width:520px;
+      border-radius:28px 28px 0 0;
+      display:flex;flex-direction:column;max-height:92vh;
+      animation:up .32s cubic-bezier(.16,1,.3,1);
+      box-shadow:0 -8px 48px rgba(13,27,42,.25);
+    }
+    @media(min-width:900px){.sh{border-radius:28px;max-height:85vh}}
+    .sh-head{
+      padding:16px 18px;display:flex;justify-content:space-between;align-items:center;
+      border-bottom:1px solid var(--border);flex-shrink:0;
+    }
+    .sh-title{font-size:18px;font-weight:900}
+    .sh-hide::-webkit-scrollbar{display:none}
+    .sh-hide{-ms-overflow-style:none;scrollbar-width:none}
 
-/* CALENDAR */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-head{
-  display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;
-  font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;
-}
-.cday{min-height:64px;background:var(--card);border-radius:10px;border:1px solid var(--border);padding:4px;overflow:hidden;transition:border-color .15s}
-.cday.tod{border:2px solid var(--blue);background:#eff6ff}
-.cday.range-day{background:#f0fdf9;border-color:#6ee7d0}
-.cemp{min-height:64px;border-radius:10px;background:rgba(228,233,240,.3)}
-.cnum{font-size:11px;font-weight:800;display:block;color:var(--muted)}
-.cnum.tod-num{color:var(--blue)}
-.cev{
-  background:var(--blue);color:white;padding:2px 4px;border-radius:4px;margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8px;font-weight:700;display:block;cursor:pointer;
-}
-.cev.mine{background:var(--mint)}
-.cev.range{background:linear-gradient(90deg,var(--blue),var(--sky))}
+    /* FORM */
+    .fld{
+      width:100%;padding:12px 14px;background:#f8fafc;border-radius:12px;
+      border:1.5px solid var(--border);outline:none;
+      font-family:'Heebo',sans-serif;font-size:14px;color:var(--ink);
+      transition:all .2s;
+    }
+    .fld:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,168,.1)}
+    .fld-lg{font-size:16px;font-weight:900;padding:14px}
+    label.lbl{font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px}
+    .sb{
+      flex:1;padding:9px 6px;border-radius:12px;font-weight:900;font-size:12px;
+      border:2px solid var(--border);background:#f8fafc;color:var(--muted);
+      cursor:pointer;font-family:'Heebo',sans-serif;transition:all .15s;
+    }
+    .sb.active-n{border-color:#93c5fd;background:#dbeafe;color:#1e40af}
+    .sb.active-w{border-color:#fcd34d;background:#fef3c7;color:#92400e}
+    .sb.active-d{border-color:#6ee7b7;background:#d1fae5;color:#065f46}
+    .close-btn{
+      width:34px;height:34px;border-radius:50%;
+      background:#f1f5f9;border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .add-task-btn{
+      color:var(--blue);font-size:12px;font-weight:900;
+      background:#eff6ff;border:none;border-radius:8px;
+      padding:6px 10px;cursor:pointer;font-family:'Heebo',sans-serif;
+    }
 
-/* OVERLAY / SHEET */
-.ov{position:fixed;inset:0;background:rgba(13,27,42,.7);display:flex;align-items:flex-end;justify-content:center;z-index:150;backdrop-filter:blur(6px)}
-@media (min-width: 768px){ .ov{align-items:center;padding:20px} }
-.sh{
-  background:var(--card);width:100%;max-width:540px;border-radius:28px 28px 0 0;
-  display:flex;flex-direction:column;max-height:92vh;animation:up .32s cubic-bezier(.16,1,.3,1);
-  box-shadow:0 -8px 48px rgba(13,27,42,.25);
-}
-@media (min-width: 768px){ .sh{border-radius:28px;max-height:85vh;animation:pop .32s cubic-bezier(.16,1,.3,1)} }
-.sh-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
-@media (min-width: 768px){ .sh-handle{display:none} }
-.sh-head{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0}
-.sh-title{font-size:18px;font-weight:900;color:var(--ink)}
-.sh-hide::-webkit-scrollbar{display:none}
-.sh-hide{-ms-overflow-style:none;scrollbar-width:none}
-
-/* LOGIN */
-.lw{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
-.lb{background:white;border-radius:28px;padding:36px 28px;width:100%;max-width:360px;text-align:center;animation:pop .38s cubic-bezier(.16,1,.3,1)}
-.lb-top{height:5px;margin:-36px -28px 32px;background:linear-gradient(90deg,var(--gold),var(--mint),var(--sky));border-radius:28px 28px 0 0}
-.chip{
-  padding:10px 18px;border-radius:40px;border:2px solid var(--border);cursor:pointer;font-weight:700;font-size:14px;
-  background:white;transition:all .15s;font-family:'Heebo',sans-serif;color:var(--ink);
-}
-.chip:hover,.chip.sel{border-color:var(--blue);background:#eff6ff;color:var(--blue)}
-
-/* FORM */
-.fld{
-  width:100%;padding:12px 14px;background:#f8fafc;border-radius:12px;border:1.5px solid var(--border);outline:none;
-  font-family:'Heebo',sans-serif;font-size:14px;color:var(--ink);transition:all .2s;
-}
-.fld:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,87,168,.1)}
-.fld-lg{font-size:17px;font-weight:700;padding:14px}
-label.lbl{
-  font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;
-}
-
-/* STATUS BTNS */
-.sb{
-  flex:1;padding:9px 6px;border-radius:12px;font-weight:700;font-size:12px;
-  border:2px solid var(--border);background:#f8fafc;color:var(--muted);
-  cursor:pointer;font-family:'Heebo',sans-serif;transition:all .15s;
-}
-.sb.active-n{border-color:#93c5fd;background:#dbeafe;color:#1e40af}
-.sb.active-w{border-color:#fcd34d;background:#fef3c7;color:#92400e}
-.sb.active-d{border-color:#6ee7b7;background:#d1fae5;color:#065f46}
-
-/* TASK ROW */
-.tr{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);
-  transition:all .15s;
-}
-.tr input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
-.tr.done span{text-decoration:line-through;color:var(--muted)}
-
-/* CLOSE */
-.close-btn{
-  width:34px;height:34px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:background .15s;
-}
-.close-btn:hover{background:#e2e8f0}
-
-/* RANGE BADGE */
-.range-badge{
-  display:inline-flex;align-items:center;gap:4px;background:linear-gradient(90deg,#eff6ff,#f0fdf9);
-  border:1px solid #bfdbfe;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--blue);
-}
-.add-task-btn{
-  color:var(--blue);font-size:12px;font-weight:700;background:#eff6ff;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;
-  font-family:'Heebo',sans-serif;transition:background .15s;
-}
-.add-task-btn:hover{background:#dbeafe}
-.badge{position:absolute;top:5px;right:5px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid var(--ink)}
-</style>
+    /* LOGIN */
+    .lw{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
+    .lb{background:white;border-radius:28px;padding:34px 26px;width:100%;max-width:360px;text-align:center;animation:pop .38s cubic-bezier(.16,1,.3,1)}
+    .lb-top{height:5px;margin:-34px -26px 26px;background:linear-gradient(90deg,var(--gold),var(--mint),var(--sky));border-radius:28px 28px 0 0}
+    .chip{
+      padding:10px 18px;border-radius:40px;border:2px solid var(--border);
+      cursor:pointer;font-weight:900;font-size:14px;background:white;
+      transition:all .15s;color:var(--ink);
+    }
+    .chip.sel{border-color:var(--blue);background:#eff6ff;color:var(--blue)}
+  </style>
 </head>
 
 <body>
-<!-- LOADER -->
-<div id="ldr">
-  <div class="ring"></div>
-  <p>BAT YAM 100</p>
-</div>
-
-<!-- LOGIN -->
-<div id="lw" class="lw" style="display:none">
-  <div class="lb">
-    <div class="lb-top"></div>
-    <div style="font-size:36px;margin-bottom:12px">🏙️</div>
-    <h2 style="font-size:24px;font-weight:900;color:var(--ink);margin-bottom:4px;font-family:'Frank Ruhl Libre',serif">BAT YAM 100</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:22px">מי את/ה?</p>
-    <div id="lchips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px"></div>
-    <input id="lname" type="text" placeholder="שם אחר..." class="fld" style="text-align:center;margin-bottom:14px">
-    <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:.03em">
-      כניסה ←
-    </button>
+  <!-- LOADER -->
+  <div id="ldr">
+    <div class="ring"></div>
+    <p>BAT YAM 100</p>
   </div>
-</div>
 
-<!-- APP -->
-<div id="app" style="display:none">
+  <!-- LOGIN -->
+  <div id="lw" class="lw" style="display:none">
+    <div class="lb">
+      <div class="lb-top"></div>
+      <div style="font-size:36px;margin-bottom:12px">🏙️</div>
+      <h2 style="font-size:24px;font-weight:900;color:var(--ink);margin-bottom:4px;font-family:'Frank Ruhl Libre',serif">BAT YAM 100</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px">מי את/ה?</p>
+      <div id="lchips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px"></div>
+      <input id="lname" type="text" placeholder="שם אחר..." class="fld" style="text-align:center;margin-bottom:14px">
+      <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:.03em">
+        כניסה ←
+      </button>
+    </div>
+  </div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-c">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <button id="btnUser" class="glass-pill">
-          <span class="hero-dot"></span>
-          <span id="uLabel">אורח</span>
-          <i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i>
-        </button>
-        <div style="display:flex;gap:8px">
-          <button id="btnNotif" class="glass-ic"><i data-lucide="bell" style="width:17px;height:17px"></i></button>
-          <button id="btnRefresh" class="glass-ic"><i data-lucide="refresh-cw" style="width:17px;height:17px"></i></button>
+  <!-- APP -->
+  <div id="app" style="display:none" class="max-w-5xl mx-auto">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-c">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <button id="btnUser" class="glass-pill">
+            <span class="hero-dot"></span>
+            <span id="uLabel">אורח</span>
+            <i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i>
+          </button>
+          <div style="display:flex;gap:8px">
+            <button id="btnRefresh" class="glass-ic"><i data-lucide="refresh-cw" style="width:17px;height:17px"></i></button>
+          </div>
+        </div>
+        <div>
+          <div class="hero-title">BAT YAM<br><span>100</span></div>
+          <p class="hero-sub">ניהול פרויקטים עירוני · 2026</p>
         </div>
       </div>
-      <div>
-        <div class="hero-title">
-          <span class="hero-city">BAT YAM</span><br>
-          <span class="hero-100">100</span>
-        </div>
-        <p class="hero-sub">ניהול פרויקטים עירוני · 2026</p>
+      <div class="hero-stripe"></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat">
+        <div id="stT" class="stat-num">0</div>
+        <div class="stat-lbl">פרויקטים</div>
+      </div>
+      <div class="stat">
+        <div id="stM" class="stat-num">0</div>
+        <div class="stat-lbl">שלי</div>
+      </div>
+      <div class="stat">
+        <div id="stA" class="stat-num">0</div>
+        <div class="stat-lbl">בטיפול</div>
       </div>
     </div>
-    <div class="hero-stripe"></div>
-  </div>
 
-  <!-- NAV (sticky under hero) -->
-  <div class="nav">
-    <button id="nb-list"  class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
-    <button id="nb-tasks" class="nb" style="position:relative">
-      <i data-lucide="check-square" style="width:20px;height:20px"></i><span>משימות</span>
-      <span id="tbadge" class="badge" style="display:none"></span>
-    </button>
-    <button id="nb-add" class="nadd"><i data-lucide="plus" style="width:26px;height:26px"></i></button>
-    <button id="nb-cal" class="nb"><i data-lucide="calendar" style="width:20px;height:20px"></i><span>לוח שנה</span></button>
-    <button id="nb-set" class="nb"><i data-lucide="user" style="width:20px;height:20px"></i><span>פרופיל</span></button>
-  </div>
+    <!-- TOP NAV -->
+    <div class="nav">
+      <button id="nb-list" class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
+      <button id="nb-tasks" class="nb" style="position:relative">
+        <i data-lucide="check-square" style="width:20px;height:20px"></i><span>משימות</span>
+        <span id="tbadge" class="badge" style="display:none"></span>
+      </button>
+      <button id="nb-add" class="nadd"><i data-lucide="plus" style="width:24px;height:24px"></i></button>
+      <button id="nb-done" class="nb"><i data-lucide="badge-check" style="width:20px;height:20px"></i><span>בוצעו</span></button>
+      <button id="nb-set" class="nb"><i data-lucide="user" style="width:20px;height:20px"></i><span>פרופיל</span></button>
+    </div>
 
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stat"><div id="stT" class="stat-num">0</div><div class="stat-lbl">פרויקטים</div></div>
-    <div class="stat"><div id="stM" class="stat-num">0</div><div class="stat-lbl">שלי</div></div>
-    <div class="stat"><div id="stA" class="stat-num">0</div><div class="stat-lbl">בטיפול</div></div>
-  </div>
-
-  <!-- CONTENT -->
-  <div>
     <!-- LIST VIEW -->
     <div id="vList">
       <div class="sec-head">
         <span class="sec-title">כל הפרויקטים</span>
-        <span id="countBadge" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
+        <span id="countBadge" style="font-size:11px;font-weight:900;color:var(--muted)"></span>
       </div>
       <div id="eCards"></div>
     </div>
 
-    <!-- CALENDAR VIEW -->
-    <div id="vCal" style="display:none;padding:0 16px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <div>
-          <div class="sec-title" style="margin-bottom:2px">לוח שנה</div>
-          <h2 id="calTit" style="font-size:18px;font-weight:900;color:var(--ink)"></h2>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
-            <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i>
-          </button>
-          <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
-            <i data-lucide="chevron-left" style="width:16px;height:16px;color:var(--ink)"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cal-head"><div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div></div>
-      <div id="calG" class="cal-grid" style="padding-bottom:24px"></div>
-    </div>
-
-    <!-- TASKS VIEW -->
+    <!-- TASKS OPEN VIEW -->
     <div id="vTasks" style="display:none">
-      <div class="sec-head" style="padding-top:4px">
-        <span class="sec-title">משימות</span>
-        <select id="tFilter" style="font-size:11px;font-weight:700;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer">
+      <div class="sec-head">
+        <span class="sec-title">משימות בביצוע</span>
+        <select id="tFilter" style="font-size:11px;font-weight:900;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer">
           <option value="">כולם</option>
         </select>
       </div>
-      <div id="tCards" style="display:flex;flex-direction:column;gap:12px;padding:0 16px 24px"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ADD MODAL -->
-<div id="mAdd" class="ov" style="display:none">
-  <div class="sh" style="height:91vh">
-    <div class="sh-handle"></div>
-    <div class="sh-head">
-      <span class="sh-title">פרויקט חדש</span>
-      <button id="mAddClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
+      <div id="tCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 22px"></div>
     </div>
 
-    <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:18px" class="sh-hide">
-      <div>
-        <label class="lbl">שם האירוע *</label>
-        <input id="inT" type="text" class="fld fld-lg" placeholder="שם האירוע...">
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label class="lbl">תאריך התחלה</label>
-          <input id="inD" type="date" class="fld">
-        </div>
-        <div>
-          <label class="lbl">תאריך סיום (אופציונלי)</label>
-          <input id="inDEnd" type="date" class="fld">
-        </div>
-      </div>
-
-      <div>
-        <label class="lbl">אחראי</label>
-        <select id="inO" class="fld">
-          <option value="">בחר אחראי...</option>
+    <!-- TASKS DONE VIEW -->
+    <div id="vDone" style="display:none">
+      <div class="sec-head">
+        <span class="sec-title">משימות שבוצעו</span>
+        <select id="dFilter" style="font-size:11px;font-weight:900;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer">
+          <option value="">כולם</option>
         </select>
       </div>
+      <div id="dCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 22px"></div>
+    </div>
+  </div>
 
-      <div>
-        <label class="lbl">סטטוס</label>
-        <div id="sBtns" style="display:flex;gap:8px">
-          <button class="sb active-n" data-v="חדש">חדש</button>
-          <button class="sb" data-v="בטיפול">בטיפול</button>
-          <button class="sb" data-v="בוצע">בוצע</button>
-        </div>
-        <input type="hidden" id="inS" value="חדש">
+  <!-- ADD MODAL -->
+  <div id="mAdd" class="ov" style="display:none">
+    <div class="sh" style="height:92vh">
+      <div class="sh-head">
+        <span class="sh-title">פרויקט חדש</span>
+        <button id="mAddClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
       </div>
 
-      <div>
-        <label class="lbl">תיאור</label>
-        <textarea id="inDesc" rows="3" class="fld" style="resize:none" placeholder="תיאור, הערות..."></textarea>
-      </div>
-
-      <div style="background:#f8fafc;padding:16px;border-radius:14px;border:1.5px solid var(--border)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <label class="lbl" style="margin:0">משימות</label>
-          <button id="btnAddTask" class="add-task-btn">+ הוסף משימה</button>
-        </div>
-        <div id="tList" style="display:flex;flex-direction:column;gap:8px"></div>
-        <div style="font-size:10px;color:#94a3b8;margin-top:8px">טיפ: סמן ✓ כדי להעביר ל"הסתיימו".</div>
-      </div>
-
-      <label style="display:flex;align-items:center;gap:12px;padding:14px;border:2px dashed var(--border);border-radius:14px;cursor:pointer;transition:border-color .2s">
-        <input type="file" id="inImg" style="display:none" accept="image/*">
-        <i data-lucide="image-plus" style="width:20px;height:20px;color:var(--muted);flex-shrink:0"></i>
+      <div style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:16px" class="sh-hide">
         <div>
-          <span id="imgSt" style="font-size:13px;font-weight:700;color:var(--muted);display:block">הוסף תמונה</span>
-          <span style="font-size:10px;color:#cbd5e1">עד ~37KB</span>
+          <label class="lbl">שם הפרויקט *</label>
+          <input id="inT" type="text" class="fld fld-lg" placeholder="שם הפרויקט...">
         </div>
-      </label>
-      <div id="imgPW" style="display:none;height:140px;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
-        <img id="imgPE" style="width:100%;height:100%;object-fit:cover">
-      </div>
-    </div>
 
-    <div style="padding:16px;border-top:1.5px solid var(--border);flex-shrink:0">
-      <button id="saveBtn" style="width:100%;background:var(--ink);color:white;padding:16px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;box-shadow:0 4px 18px rgba(13,27,42,.35);letter-spacing:.03em">
-        שמור וסנכרן ←
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW MODAL -->
-<div id="mView" class="ov" style="display:none">
-  <div class="sh" style="height:88vh">
-    <div style="height:180px;position:relative;flex-shrink:0;overflow:hidden;border-radius:28px 28px 0 0">
-      <img id="vImg" style="width:100%;height:100%;object-fit:cover;display:none">
-      <div id="vImgPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f9ff,#f8fafc)">
-        <i data-lucide="image" style="width:52px;height:52px;color:#e2e8f0"></i>
-      </div>
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(13,27,42,.5))"></div>
-      <button id="mViewClose" style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.35);color:white;padding:8px;border-radius:50%;border:none;cursor:pointer;backdrop-filter:blur(6px)">
-        <i data-lucide="x" style="width:18px;height:18px"></i>
-      </button>
-      <div id="vPill" style="position:absolute;bottom:14px;right:16px"></div>
-    </div>
-
-    <div style="flex:1;overflow-y:auto;padding:20px 20px 10px" class="sh-hide">
-      <h2 id="vT" style="font-size:22px;font-weight:900;color:var(--ink);line-height:1.25;margin-bottom:8px;font-family:'Frank Ruhl Libre',serif"></h2>
-
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-        <span id="vDate" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue);background:#eff6ff;padding:4px 10px;border-radius:20px">
-          <i data-lucide="calendar" style="width:12px;height:12px"></i>
-          <span id="vDateTxt"></span>
-        </span>
-        <span id="vOwn" style="font-size:12px;font-weight:600;color:var(--muted)"></span>
-      </div>
-
-      <div id="vsBtns" style="display:flex;gap:8px;margin-bottom:18px">
-        <button class="vsb sb" data-v="חדש">חדש</button>
-        <button class="vsb sb" data-v="בטיפול">בטיפול</button>
-        <button class="vsb sb" data-v="בוצע">בוצע</button>
-      </div>
-
-      <p id="vDesc" style="font-size:13px;color:#475569;line-height:1.65;background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border)"></p>
-
-      <div style="background:#f8fafc;padding:16px;border-radius:14px;border:1.5px solid var(--border)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <span style="font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">משימות</span>
-          <button id="btnVAddTask" class="add-task-btn">+ הוסף</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="lbl">תאריך התחלה</label>
+            <input id="inD" type="date" class="fld">
+          </div>
+          <div>
+            <label class="lbl">תאריך סיום (אופציונלי)</label>
+            <input id="inDEnd" type="date" class="fld">
+          </div>
         </div>
-        <div id="vtList" style="display:flex;flex-direction:column;gap:8px"></div>
 
-        <button id="btnSaveTasks" style="margin-top:12px;width:100%;background:var(--ink);color:white;padding:12px;border-radius:12px;font-weight:900;border:none;cursor:pointer;font-family:'Heebo',sans-serif">
-          שמור משימות ←
+        <div>
+          <label class="lbl">אחראי</label>
+          <select id="inO" class="fld">
+            <option value="">בחר אחראי...</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="lbl">סטטוס</label>
+          <div id="sBtns" style="display:flex;gap:8px">
+            <button class="sb active-n" data-v="חדש">חדש</button>
+            <button class="sb" data-v="בטיפול">בטיפול</button>
+            <button class="sb" data-v="בוצע">בוצע</button>
+          </div>
+          <input type="hidden" id="inS" value="חדש">
+        </div>
+
+        <div>
+          <label class="lbl">תיאור</label>
+          <textarea id="inDesc" rows="3" class="fld" style="resize:none" placeholder="תיאור, הערות..."></textarea>
+        </div>
+
+        <div style="background:#f8fafc;padding:14px;border-radius:14px;border:1.5px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label class="lbl" style="margin:0">משימות</label>
+            <button id="btnAddTask" class="add-task-btn">+ הוסף משימה</button>
+          </div>
+          <div id="tList" style="display:flex;flex-direction:column;gap:8px"></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">
+            טיפ: סמן משימה כבוצעה מתוך “פתח פרויקט”.
+          </div>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:12px;padding:14px;border:2px dashed var(--border);border-radius:14px;cursor:pointer">
+          <input type="file" id="inImg" style="display:none" accept="image/*">
+          <i data-lucide="image-plus" style="width:20px;height:20px;color:var(--muted)"></i>
+          <div>
+            <span id="imgSt" style="font-size:13px;font-weight:900;color:var(--muted);display:block">הוסף תמונה</span>
+            <span style="font-size:10px;color:#cbd5e1">עד ~37KB</span>
+          </div>
+        </label>
+
+        <div id="imgPW" style="display:none;height:140px;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+          <img id="imgPE" style="width:100%;height:100%;object-fit:cover">
+        </div>
+      </div>
+
+      <div style="padding:14px;border-top:1.5px solid var(--border)">
+        <button id="saveBtn" style="width:100%;background:var(--ink);color:white;padding:16px;border-radius:14px;font-weight:900;font-size:15px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;box-shadow:0 4px 18px rgba(13,27,42,.35)">
+          שמור ←
         </button>
-        <div id="tasksSavedHint" style="display:none;margin-top:8px;font-size:11px;color:#16a34a;font-weight:700">✓ נשמר</div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- SETTINGS MODAL -->
-<div id="mSet" class="ov" style="display:none">
-  <div class="sh" style="border-radius:28px 28px 0 0;max-height:70vh">
-    <div class="sh-handle"></div>
-    <div class="sh-head">
-      <span class="sh-title">פרופיל</span>
-      <button id="mSetClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
-    </div>
-    <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
-      <label class="lbl">בחר משתמש</label>
-      <div id="schips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-      <input id="sname" type="text" placeholder="שם אחר..." class="fld" style="text-align:center">
-      <button id="btnSwitch" style="width:100%;background:var(--ink);color:white;padding:13px;border-radius:14px;font-weight:900;border:none;cursor:pointer;font-family:'Heebo',sans-serif">
-        החלף משתמש
-      </button>
+  <!-- VIEW MODAL -->
+  <div id="mView" class="ov" style="display:none">
+    <div class="sh" style="height:90vh">
+      <div class="sh-head">
+        <span class="sh-title" id="vHead">פרויקט</span>
+        <button id="mViewClose" class="close-btn"><i data-lucide="x" style="width:17px;height:17px;color:var(--muted)"></i></button>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px" class="sh-hide">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div>
+            <div id="vT" style="font-size:20px;font-weight:900;font-family:'Frank Ruhl Libre',serif"></div>
+            <div id="vMeta" style="margin-top:6px;color:var(--muted);font-size:12px;font-weight:700"></div>
+          </div>
+          <div id="vPill"></div>
+        </div>
+
+        <div id="vsBtns" style="display:flex;gap:8px">
+          <button class="vsb sb" data-v="חדש">חדש</button>
+          <button class="vsb sb" data-v="בטיפול">בטיפול</button>
+          <button class="vsb sb" data-v="בוצע">בוצע</button>
+        </div>
+
+        <div id="vDesc" style="font-size:13px;line-height:1.7;background:#f8fafc;padding:14px;border-radius:12px;border:1px solid var(--border)"></div>
+
+        <div style="background:#f8fafc;padding:14px;border-radius:14px;border:1.5px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span style="font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">משימות</span>
+            <button id="btnVAddTask" class="add-task-btn">+ הוסף</button>
+          </div>
+          <div id="vtList" style="display:flex;flex-direction:column;gap:8px"></div>
+
+          <button id="btnSaveTasks" style="margin-top:12px;width:100%;background:var(--ink);color:white;padding:12px;border-radius:12px;font-weight:900;border:none;cursor:pointer">
+            שמור משימות
+          </button>
+        </div>
+
+        <button id="btnDelete" style="width:100%;background:#fff;color:#dc2626;padding:12px;border-radius:12px;font-weight:900;border:2px solid #fecaca;cursor:pointer">
+          מחק פרויקט
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
-/* =========================
-   CONFIG
-   ========================= */
-const CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
-const POST = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
-let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
+/* ===============================
+   CONFIG — כבר עודכן עם ה־URL שלך ✅
+   =============================== */
+const API = "https://script.google.com/macros/s/AKfycbw5px8YbyPnu2ZBhMXYS2i-mf9uebsDAXe4NFNIusfP7veYOw11qD84AOH68o0HSRZK3g/exec";
 
-/* =========================
-   STATE
-   ========================= */
+let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
 let events = [];
 let me = localStorage.getItem('batyam_user') || '';
-let calY = new Date().getFullYear(), calM = new Date().getMonth();
-let img64 = '', viewIdx = -1;
+let img64 = '';
+let viewIdx = -1;
 
-/* =========================
-   BOOT
-   ========================= */
 window.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   wire();
   me ? boot() : showLogin();
 });
 
-function showLogin(){ hide('ldr'); showFlex('lw'); buildChips('lchips'); }
-function boot(){ id('uLabel').textContent = me; show('app'); loadData(); }
+const id = x => document.getElementById(x);
+function show(x){ id(x).style.display='block'; }
+function hide(x){ id(x).style.display='none'; }
+function showFlex(x){ id(x).style.display='flex'; }
+function showOv(x){ id(x).style.display='flex'; lucide.createIcons(); }
 
-/* =========================
-   WIRING
-   ========================= */
+function showLogin(){ hideLoaderNow(); showFlex('lw'); buildChips('lchips'); }
+function boot(){
+  id('uLabel').textContent = me;
+  show('app');
+  loadData(true);
+  setInterval(() => loadData(true), 30000);
+}
+
 function wire(){
   id('lbtn').onclick = doLogin;
   id('lname').onkeydown = e => { if(e.key==='Enter') doLogin(); };
 
   id('nb-list').onclick  = () => sv('List');
-  id('nb-cal').onclick   = () => sv('Cal');
   id('nb-tasks').onclick = () => sv('Tasks');
+  id('nb-done').onclick  = () => sv('Done');
   id('nb-add').onclick   = openAdd;
   id('nb-set').onclick   = openSet;
-  id('btnUser').onclick  = openSet;
-  id('btnRefresh').onclick = () => loadData(true);
-  id('btnNotif').onclick = askNotif;
 
-  id('mAddClose').onclick  = closeAdd;
+  id('btnUser').onclick    = openSet;
+  id('btnRefresh').onclick = () => loadData(true);
+
+  id('mAddClose').onclick = closeAdd;
   id('btnAddTask').onclick = () => addRow('tList');
-  id('saveBtn').onclick    = save;
-  id('inImg').onchange     = handleImg;
+  id('saveBtn').onclick = saveProject;
+  id('inImg').onchange = handleImg;
 
   id('sBtns').onclick = e => {
     const b = e.target.closest('.sb'); if(!b || !b.dataset.v) return;
@@ -581,59 +568,150 @@ function wire(){
     b.className = cls[b.dataset.v] || 'sb';
   };
 
-  id('mViewClose').onclick  = () => hide('mView');
+  id('mViewClose').onclick = () => hide('mView');
   id('btnVAddTask').onclick = () => addRow('vtList');
-  id('btnSaveTasks').onclick = saveTasksFromView;
+  id('btnSaveTasks').onclick = saveTasksOnly;
+  id('btnDelete').onclick = deleteProject;
 
   id('vsBtns').onclick = e => {
-    const b = e.target.closest('.vsb'); if(b) changeSt(b.dataset.v);
+    const b = e.target.closest('.vsb'); if(!b) return;
+    changeProjectStatus(b.dataset.v);
   };
 
-  id('mSetClose').onclick = () => hide('mSet');
-  id('btnSwitch').onclick = doSwitch;
-  id('tFilter').onchange  = renderTasks;
+  id('tFilter').onchange = renderTasksOpen;
+  id('dFilter').onchange = renderTasksDone;
 
-  id('calP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCal(); };
-  id('calN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renderCal(); };
-
-  ['mAdd','mView','mSet'].forEach(x => {
+  ['mAdd','mView'].forEach(x => {
     id(x).onclick = e => { if(e.target.id===x) hide(x); };
   });
 }
 
-/* =========================
-   HELPERS
-   ========================= */
-const id = x => document.getElementById(x);
-function show(x){ id(x).style.display='block'; }
-function hide(x){ id(x).style.display='none'; }
-function showFlex(x){ id(x).style.display='flex'; }
-function showOv(x){ id(x).style.display='flex'; lucide.createIcons(); }
-
-function uid(){
-  if(crypto && crypto.randomUUID) return crypto.randomUUID();
-  return 'id_' + Math.random().toString(16).slice(2) + '_' + Date.now().toString(16);
+function hideLoaderNow(){ id('ldr').style.display='none'; }
+function hideLoader(){
+  const l = id('ldr');
+  l.style.transition='opacity .5s';
+  l.style.opacity='0';
+  setTimeout(()=>{ l.style.display='none'; }, 520);
 }
 
-function safeStr(v){ return (v ?? '').toString(); }
-
-/* =========================
-   TASKS ENCODING
-   Store in sheet as: "task one|✓ task done|task three"
-   ========================= */
-function parseTasks(raw){
-  return safeStr(raw).split('|').map(t=>t.trim()).filter(Boolean).map(t=>{
-    const done = t.startsWith('✓ ');
-    return { text: done ? t.slice(2) : t, done };
+/* Login/Profile */
+function buildChips(cid){
+  const c = id(cid); c.innerHTML='';
+  OWNERS.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='chip' + (n===me?' sel':'');
+    b.textContent=n;
+    b.onclick=()=>{ c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+    c.appendChild(b);
   });
 }
-function encodeTasks(arr){
-  return arr.map(x => (x.done ? '✓ ' : '') + x.text.trim()).filter(x=>x.trim()).join('|');
+function getChip(cid, iid){
+  const s=document.querySelector(`#${cid} .chip.sel`);
+  return s ? s.textContent : (id(iid)?.value.trim()||'');
+}
+function doLogin(){
+  const n=getChip('lchips','lname');
+  if(!n){ alert('בחר/י שם'); return; }
+  localStorage.setItem('batyam_user', n);
+  me=n;
+  hide('lw');
+  boot();
+}
+function openSet(){
+  const name = prompt('הקלד/י שם משתמש:');
+  if(!name) return;
+  localStorage.setItem('batyam_user', name.trim());
+  me=name.trim();
+  id('uLabel').textContent = me;
+  loadData(true);
 }
 
-/* =========================
-   DATE UTILS (range)
-   ========================= */
+/* Data */
+async function apiGet(){
+  const url = `${API}?action=read&t=${Date.now()}`;
+  const r = await fetch(url, { method:'GET' });
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error || 'API error');
+  return j.rows || [];
+}
+async function apiPost(params){
+  const body = new URLSearchParams(params);
+  const r = await fetch(API, {
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body: body.toString()
+  });
+  const txt = await r.text();
+  try { return JSON.parse(txt); } catch { return { ok:true, raw:txt }; }
+}
+
+function normalizeRow(row){
+  const e = {};
+  e.id    = String(row.ID ?? row.Id ?? row.id ?? '').trim();
+  e.title = String(row.Title ?? row.title ?? '').trim();
+  e.date  = String(row.Date ?? row.date ?? '').trim();
+  e.owner = String(row.Owner ?? row.owner ?? '').trim();
+  e.desc  = String(row.Desc ?? row.Description ?? row.desc ?? '').trim();
+  e.status= String(row.Status ?? row.status ?? 'חדש').trim();
+  e.image = String(row.Image ?? row.image ?? '').trim();
+
+  const tcell = row.TasksJSON ?? row.Tasks ?? row.tasks ?? '[]';
+  e.tasks = parseTasksCell(String(tcell ?? '[]'));
+  return e;
+}
+
+async function loadData(manual=false){
+  if(manual){
+    id('ldr').style.cssText='position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1';
+    id('ldr').style.opacity='1';
+    id('ldr').style.display='flex';
+  }
+  try{
+    const rows = await apiGet();
+    const fresh = rows.map(r => normalizeRow(r)).filter(e => e.title);
+
+    events.length = 0;
+    events.push(...fresh);
+
+    events.forEach(e=>{
+      (e.owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o=>{
+        if(o && !OWNERS.includes(o)) OWNERS.push(o);
+      });
+    });
+
+    fillOwnerSelect();
+    buildFilters();
+    renderAll();
+    hideLoader();
+  }catch(err){
+    console.error(err);
+    hideLoader();
+    alert('שגיאה בטעינת נתונים. בדוק WebApp "Anyone" ושה-URL נכון');
+  }
+}
+
+/* Tasks */
+function parseTasksCell(cell){
+  const s = (cell || '').trim();
+  if(!s) return [];
+  if(s.startsWith('[')){
+    try{
+      const arr = JSON.parse(s);
+      return (Array.isArray(arr) ? arr : []).map(x => ({
+        text: String(x.text || '').trim(),
+        done: !!x.done
+      })).filter(x=>x.text);
+    }catch{
+      return [];
+    }
+  }
+  return s.split('|').map(t=>t.trim()).filter(Boolean).map(t=>({text:t,done:false}));
+}
+function encodeTasks(arr){
+  return JSON.stringify((arr||[]).map(x=>({text:String(x.text||'').trim(), done:!!x.done})).filter(x=>x.text));
+}
+
+/* Date */
 function parseSingle(s){
   if(!s) return null; s=s.trim();
   let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
@@ -645,46 +723,35 @@ function parseSingle(s){
 function parseEventDate(raw){
   if(!raw) return {start:null,end:null,isRange:false};
   raw=raw.trim();
-  const rangeMatch = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
-  if(rangeMatch){
-    return { start: parseSingle(rangeMatch[1]), end: parseSingle(rangeMatch[2]), isRange:true };
-  }
-  const single = parseSingle(raw);
-  return { start: single, end: null, isRange:false };
-}
-function dateInRange(evRaw, y, m, d){
-  const { start, end, isRange } = parseEventDate(evRaw);
-  if(!start) return false;
-  const check = new Date(y,m,d);
-  if(isRange && end) return check>=start && check<=end;
-  return start.getFullYear()===y && start.getMonth()===m && start.getDate()===d;
+  const rm=raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
+  if(rm) return {start:parseSingle(rm[1]), end:parseSingle(rm[2]), isRange:true};
+  const s=parseSingle(raw);
+  return {start:s,end:null,isRange:false};
 }
 function fmtEventDate(raw){
-  const { start, end, isRange } = parseEventDate(raw);
-  if(!start) return raw || '';
-  const opts = { day:'numeric', month:'long' };
+  const {start,end,isRange} = parseEventDate(raw);
+  if(!start) return raw||'';
+  const opts={day:'numeric',month:'long'};
   if(isRange && end){
-    const s = start.toLocaleDateString('he-IL', opts);
-    const e = end.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
+    const s=start.toLocaleDateString('he-IL', opts);
+    const e=end.toLocaleDateString('he-IL', {day:'numeric',month:'long',year:'numeric'});
     return `${s} – ${e}`;
   }
-  return start.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
+  return start.toLocaleDateString('he-IL', {day:'numeric',month:'long',year:'numeric'});
 }
 function getDisplayDay(raw){
-  const { start, end, isRange } = parseEventDate(raw);
-  if(!start) return { day:'?', isRange:false };
-  if(isRange && end) return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
-  return { day: String(start.getDate()), isRange:false };
+  const {start,end,isRange}=parseEventDate(raw);
+  if(!start) return {day:'?',isRange:false};
+  if(isRange && end) return {day:`${start.getDate()}–${end.getDate()}`,isRange:true};
+  return {day:String(start.getDate()),isRange:false};
 }
 function getMonthLabel(raw){
-  const { start } = parseEventDate(raw);
+  const {start}=parseEventDate(raw);
   if(!start) return '';
   return start.toLocaleDateString('he-IL',{month:'short'});
 }
 
-/* =========================
-   PILL CLASS
-   ========================= */
+/* Render */
 function pillClass(st){
   if(!st) return 'pill pill-new';
   if(st.includes('בוצע') || st.includes('תואם')) return 'pill pill-done';
@@ -693,186 +760,63 @@ function pillClass(st){
   return 'pill pill-new';
 }
 
-/* =========================
-   LOGIN
-   ========================= */
-function buildChips(cid){
-  const c=id(cid); c.innerHTML='';
-  OWNERS.forEach(n=>{
-    const b=document.createElement('button');
-    b.className='chip' + (n===me?' sel':'');
-    b.textContent=n;
-    b.onclick=()=>{ c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
-    c.appendChild(b);
-  });
-}
-function getChip(cid, iid){
-  const s=document.querySelector(`#${cid} .chip.sel`);
-  return s ? s.textContent : (id(iid)?.value.trim() || '');
-}
-function doLogin(){
-  const n=getChip('lchips','lname');
-  if(!n){ alert('בחר/י שם'); return; }
-  localStorage.setItem('batyam_user', n); me=n;
-  hide('lw'); boot();
-}
-function openSet(){ buildChips('schips'); showOv('mSet'); }
-function doSwitch(){
-  const n=getChip('schips','sname');
-  if(!n){ alert('בחר שם'); return; }
-  localStorage.setItem('batyam_user', n); me=n;
-  id('uLabel').textContent=n;
-  renderAll(); hide('mSet');
-}
-
-/* =========================
-   DATA
-   ========================= */
-async function loadData(manual=false){
-  if(manual){
-    id('ldr').style.cssText='position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1';
-    id('ldr').style.display='flex';
-  }
-  try{
-    const r=await fetch(CSV+'&t='+Date.now());
-    const t=await r.text();
-    Papa.parse(t,{
-      header:true, skipEmptyLines:true,
-      complete: res=>{
-        const rows = res.data || [];
-        events = rows
-          .filter(e => (e.Title||e.title||'').toString().trim())
-          .map(e => normalizeRow(e));
-
-        // owners from sheet
-        events.forEach(e=>{
-          safeStr(e.owner).split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o=>{
-            if(!OWNERS.includes(o)) OWNERS.push(o);
-          });
-        });
-
-        fillOwnerSelect();
-        renderAll();
-        hideLoader();
-      }
-    });
-  }catch(err){
-    console.error(err);
-    hideLoader();
-  }
-}
-
-function normalizeRow(e){
-  // your sheet columns: ID, Title, Date, Owner, Desc, Status, Tasks, Image
-  const idv = (e.ID || e.Id || e.id || '').toString().trim();
-  const title = (e.Title || e.title || '').toString();
-  const date  = (e.Date || e.date || '').toString();
-  const owner = (e.Owner || e.owner || '').toString();
-  const desc  = (e.Desc || e.Description || e.description || e.desc || '').toString();
-  const status= (e.Status || e.status || 'חדש').toString() || 'חדש';
-  const tasks = (e.Tasks || e.tasks || '').toString();
-  const img   = (e.Image || e.image || '').toString();
-
-  return {
-    ID: idv, id: idv,
-    Title: title, title,
-    Date: date, date,
-    Owner: owner, owner,
-    Description: desc, Desc: desc, desc,
-    Status: status, status,
-    Tasks: tasks, tasks,
-    Image: img, image: img
-  };
-}
-
-function fillOwnerSelect(){
-  const sel=id('inO'), cur=sel.value;
-  sel.innerHTML='<option value="">בחר אחראי...</option>';
-  OWNERS.forEach(o=>{
-    const opt=document.createElement('option');
-    opt.value=o; opt.textContent=o;
-    if(o===cur) opt.selected=true;
-    sel.appendChild(opt);
-  });
-}
-
-function hideLoader(){
-  const l=id('ldr');
-  l.style.transition='opacity .5s';
-  l.style.opacity='0';
-  setTimeout(()=>{ l.style.display='none'; }, 520);
-}
-
 function renderAll(){
   renderList();
-  renderCal();
-  buildFilter();
-  renderTasks();
+  renderTasksOpen();
+  renderTasksDone();
   updateStats();
   lucide.createIcons();
 }
-
-/* =========================
-   STATS
-   ========================= */
 function updateStats(){
   id('stT').textContent = events.length;
-  id('stM').textContent = events.filter(e=>safeStr(e.owner).includes(me)).length;
-
-  id('stA').textContent = events.filter(e=>{
-    const s=safeStr(e.status);
-    return s.includes('טיפול')||s.includes('חוזים')||s.includes('הזמנה')||s.includes('תהליך');
-  }).length;
-
+  id('stM').textContent = events.filter(e => (e.owner||'').includes(me)).length;
+  id('stA').textContent = events.filter(e => (e.status||'').includes('טיפול') || (e.status||'').includes('תהליך') || (e.status||'').includes('הזמנה')).length;
   id('countBadge').textContent = events.length + ' פרויקטים';
-
-  // badge = if I have any OPEN tasks (not done)
-  let myOpenTasks = 0;
+  const myOpenTasks = countMyOpenTasks();
+  id('tbadge').style.display = myOpenTasks > 0 ? 'block' : 'none';
+}
+function countMyOpenTasks(){
+  let cnt=0;
   events.forEach(e=>{
-    if(!safeStr(e.owner).includes(me)) return;
-    const arr = parseTasks(e.tasks);
-    myOpenTasks += arr.filter(x=>!x.done).length;
+    if(!(e.owner||'').includes(me)) return;
+    e.tasks.forEach(t=>{ if(!t.done) cnt++; });
   });
-  id('tbadge').style.display = myOpenTasks>0 ? 'block' : 'none';
+  return cnt;
 }
 
-/* =========================
-   LIST
-   ========================= */
 function renderList(){
-  const c=id('eCards'); c.innerHTML='';
+  const c = id('eCards'); c.innerHTML='';
   if(!events.length){
-    c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>';
+    c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:900">אין פרויקטים עדיין</p>';
     return;
   }
-
   const sorted=[...events].sort((a,b)=>{
-    const aDate = parseEventDate(a.date).start;
-    const bDate = parseEventDate(b.date).start;
-    if(!aDate && !bDate) return 0;
-    if(!aDate) return 1;
-    if(!bDate) return -1;
-    return aDate - bDate;
+    const ad=parseEventDate(a.date).start;
+    const bd=parseEventDate(b.date).start;
+    if(!ad && !bd) return 0;
+    if(!ad) return 1;
+    if(!bd) return -1;
+    return ad - bd;
   });
 
   const frag=document.createDocumentFragment();
   sorted.forEach((e, loopIdx)=>{
     const origIdx = events.indexOf(e);
-    const title  = e.Title||'ללא שם';
-    const raw    = e.date||'';
-    const owner  = e.owner||'-';
-    const status = e.status||'חדש';
+    const title=e.title||'ללא שם';
+    const raw=e.date||'';
+    const owner=e.owner||'-';
+    const status=e.status||'חדש';
     const isMine = owner.includes(me);
     const isDone = status.includes('בוצע') || status.includes('תואם');
-    const { day, isRange } = getDisplayDay(raw);
-    const mon = getMonthLabel(raw);
+    const {day,isRange}=getDisplayDay(raw);
+    const mon=getMonthLabel(raw);
 
     const div=document.createElement('div');
     div.className='ecard';
     div.style.animationDelay=(loopIdx*0.04)+'s';
 
     const accent=document.createElement('div');
-    accent.className='ecard-accent' + (isDone?' done':isMine?' mine':'');
+    accent.className='ecard-accent' + (isDone?' done': isMine?' mine':'');
     div.appendChild(accent);
 
     const dateBox=document.createElement('div');
@@ -887,83 +831,266 @@ function renderList(){
       <div class="ecard-meta">
         <span class="${pillClass(status)}">${escapeHtml(status)}</span>
         <span class="ecard-owner">👤 ${escapeHtml(owner)}${isMine?' · <b style="color:var(--mint)">שלי</b>':''}</span>
-        ${isRange?`<span class="range-badge"><i data-lucide="calendar-range" style="width:10px;height:10px"></i> טווח</span>`:''}
       </div>`;
     div.appendChild(body);
 
-    div.addEventListener('click', ()=>openView(origIdx));
+    div.onclick=()=>openView(origIdx);
     frag.appendChild(div);
   });
 
   c.appendChild(frag);
+}
+
+function buildFilters(){
+  const owners=[...new Set(events.map(e=>(e.owner||'').trim()).filter(Boolean))];
+  const tf=id('tFilter'), df=id('dFilter');
+  const curT=tf.value, curD=df.value;
+
+  tf.innerHTML='<option value="">כולם</option>';
+  df.innerHTML='<option value="">כולם</option>';
+
+  owners.forEach(o=>{
+    const a=document.createElement('option');
+    a.value=o; a.textContent=o;
+    if(o===curT) a.selected=true;
+    tf.appendChild(a);
+
+    const b=document.createElement('option');
+    b.value=o; b.textContent=o;
+    if(o===curD) b.selected=true;
+    df.appendChild(b);
+  });
+}
+
+function renderTasksOpen(){
+  const c=id('tCards'); c.innerHTML='';
+  const filter=id('tFilter').value;
+
+  const blocks=[];
+  events.forEach((e, idx)=>{
+    if(filter && !(e.owner||'').includes(filter)) return;
+    const openTasks = e.tasks.filter(t=>!t.done);
+    if(!openTasks.length) return;
+    blocks.push({e,idx, tasks:openTasks});
+  });
+
+  if(!blocks.length){
+    c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--muted);font-weight:900">אין משימות בביצוע!</p></div>';
+    return;
+  }
+
+  const frag=document.createDocumentFragment();
+  blocks.forEach(b=>{
+    frag.appendChild(taskCard(b.e, b.idx, b.tasks));
+  });
+  c.appendChild(frag);
+}
+
+function renderTasksDone(){
+  const c=id('dCards'); c.innerHTML='';
+  const filter=id('dFilter').value;
+
+  const blocks=[];
+  events.forEach((e, idx)=>{
+    if(filter && !(e.owner||'').includes(filter)) return;
+    const doneTasks = e.tasks.filter(t=>t.done);
+    if(!doneTasks.length) return;
+    blocks.push({e,idx, tasks:doneTasks});
+  });
+
+  if(!blocks.length){
+    c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">✅</div><p style="color:var(--muted);font-weight:900">אין משימות שבוצעו עדיין</p></div>';
+    return;
+  }
+
+  const frag=document.createDocumentFragment();
+  blocks.forEach(b=>{
+    frag.appendChild(taskCard(b.e, b.idx, b.tasks));
+  });
+  c.appendChild(frag);
+}
+
+function taskCard(e, idx, tasks){
+  const card=document.createElement('div');
+  card.className='ecard';
+  card.style.flexDirection='column';
+  card.style.cursor='default';
+
+  const top=document.createElement('div');
+  top.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:14px 14px 10px;border-bottom:1px solid var(--border)';
+  top.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="ecard-accent ${(e.owner||'').includes(me)?'mine':''}" style="width:3px;height:20px;border-radius:2px;flex-shrink:0"></div>
+      <h3 style="font-weight:900;color:var(--ink);font-size:13px">${escapeHtml(e.title||'—')}</h3>
+    </div>
+    <span style="font-size:11px;color:var(--muted);font-weight:900">👤 ${escapeHtml(e.owner||'-')}</span>
+  `;
+  card.appendChild(top);
+
+  const tw=document.createElement('div');
+  tw.style.cssText='padding:10px 14px;display:flex;flex-direction:column;gap:7px';
+
+  tasks.forEach(t=>{
+    const row=document.createElement('div');
+    row.className='tr' + (t.done?' done':'');
+    const cb=document.createElement('input');
+    cb.type='checkbox';
+    cb.checked=!!t.done;
+    cb.disabled=true;
+    const sp=document.createElement('span');
+    sp.style.fontSize='13px';
+    sp.style.fontWeight='900';
+    sp.textContent=t.text;
+    row.appendChild(cb); row.appendChild(sp);
+    tw.appendChild(row);
+  });
+
+  card.appendChild(tw);
+
+  const foot=document.createElement('div');
+  foot.style.cssText='padding:8px 14px 12px;display:flex;justify-content:flex-end';
+  const ob=document.createElement('button');
+  ob.style.cssText='font-size:11px;font-weight:900;color:var(--blue);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:Heebo,sans-serif';
+  ob.textContent='פתח פרויקט ←';
+  ob.onclick=()=>openView(idx);
+  foot.appendChild(ob);
+  card.appendChild(foot);
+
+  return card;
+}
+
+/* View */
+function openView(idx){
+  const e=events[idx]; if(!e) return;
+  viewIdx=idx;
+  id('vT').textContent = e.title || '';
+  id('vMeta').textContent = `📅 ${fmtEventDate(e.date||'')} · 👤 ${e.owner||'—'}`;
+  id('vDesc').textContent = e.desc || 'אין תיאור';
+  refreshVSt(e.status || 'חדש');
+  renderViewTasks();
+  showOv('mView');
+}
+
+function refreshVSt(st){
+  const map={חדש:'active-n',בטיפול:'active-w',בוצע:'active-d'};
+  document.querySelectorAll('.vsb').forEach(b=>{
+    b.className='vsb sb' + (b.dataset.v===st ? ' '+(map[b.dataset.v]||'') : '');
+  });
+  id('vPill').innerHTML = `<span class="${pillClass(st)}">${escapeHtml(st)}</span>`;
+}
+
+function renderViewTasks(){
+  const e = events[viewIdx];
+  const tl = id('vtList');
+  tl.innerHTML = '';
+
+  const arr = e.tasks || [];
+  if(!arr.length){
+    tl.innerHTML = '<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
+    return;
+  }
+
+  const open = arr.filter(x => !x.done);
+  const done = arr.filter(x => x.done);
+
+  const makeHeader = (txt, count) => {
+    const h = document.createElement('div');
+    h.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin:10px 2px 6px';
+    h.innerHTML = `
+      <div style="font-weight:900;color:var(--ink);font-size:11px;letter-spacing:.04em;text-transform:uppercase">${txt}</div>
+      <div style="font-size:11px;color:var(--muted);font-weight:900">${count}</div>
+    `;
+    return h;
+  };
+
+  const makeRow = (t, index) => {
+    const row = document.createElement('div');
+    row.className='tr' + (t.done?' done':'');
+    row.style.background='white';
+
+    const cb=document.createElement('input');
+    cb.type='checkbox';
+    cb.checked=!!t.done;
+    cb.onchange=()=>{
+      t.done = cb.checked;
+      renderViewTasks();
+    };
+
+    const sp=document.createElement('span');
+    sp.style.fontSize='13px';
+    sp.style.fontWeight='900';
+    sp.textContent=t.text;
+
+    const del=document.createElement('button');
+    del.type='button';
+    del.style.cssText='margin-right:auto;background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;display:flex;align-items:center';
+    del.innerHTML='<i data-lucide="trash-2" style="width:16px;height:16px"></i>';
+    del.onclick=()=>{
+      events[viewIdx].tasks.splice(index,1);
+      renderViewTasks();
+    };
+
+    row.appendChild(cb); row.appendChild(sp); row.appendChild(del);
+    return row;
+  };
+
+  if(open.length){
+    tl.appendChild(makeHeader('משימות בביצוע', open.length));
+    open.forEach(t=>{
+      const idx = events[viewIdx].tasks.indexOf(t);
+      tl.appendChild(makeRow(t, idx));
+    });
+  }
+
+  if(done.length){
+    tl.appendChild(makeHeader('משימות שבוצעו', done.length));
+    done.forEach(t=>{
+      const idx = events[viewIdx].tasks.indexOf(t);
+      tl.appendChild(makeRow(t, idx));
+    });
+  }
+
   lucide.createIcons();
 }
 
-function escapeHtml(s){
-  return safeStr(s)
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
+async function saveTasksOnly(){
+  if(viewIdx<0) return;
+  const e=events[viewIdx];
+  const res = await apiPost({ action:'update', id: e.id, tasks_json: encodeTasks(e.tasks) });
+  if(!res.ok){ alert('שגיאה בשמירת משימות'); return; }
+  await loadData(true);
+  alert('✅ משימות נשמרו');
 }
 
-/* =========================
-   CALENDAR
-   ========================= */
-function renderCal(){
-  const g=id('calG'); g.innerHTML='';
-  id('calTit').textContent = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+async function changeProjectStatus(st){
+  if(viewIdx<0) return;
+  const e=events[viewIdx];
+  e.status = st;
+  refreshVSt(st);
 
-  const firstDay=new Date(calY,calM,1).getDay();
-  const daysInMonth=new Date(calY,calM+1,0).getDate();
-  const today=new Date();
-
-  for(let i=0;i<firstDay;i++){
-    const b=document.createElement('div'); b.className='cemp'; g.appendChild(b);
-  }
-
-  for(let d=1;d<=daysInMonth;d++){
-    const isToday = d===today.getDate()&&calM===today.getMonth()&&calY===today.getFullYear();
-    const cell=document.createElement('div');
-    cell.className='cday' + (isToday?' tod':'');
-
-    const num=document.createElement('span');
-    num.className='cnum' + (isToday?' tod-num':'');
-    num.textContent=d;
-    cell.appendChild(num);
-
-    events.forEach((e, idx)=>{
-      const raw=e.date||'';
-      if(!dateInRange(raw, calY, calM, d)) return;
-
-      const isMine = safeStr(e.owner).includes(me);
-      const { isRange } = parseEventDate(raw);
-
-      const ev=document.createElement('span');
-      ev.className='cev' + (isMine?' mine':'') + (isRange?' range':'');
-      ev.textContent = e.Title||'—';
-      ev.onclick = evt => { evt.stopPropagation(); openView(idx); };
-      cell.appendChild(ev);
-
-      const { start } = parseEventDate(raw);
-      if(isRange && start && !(start.getDate()===d && start.getMonth()===calM && start.getFullYear()===calY)){
-        cell.classList.add('range-day');
-      }
-    });
-
-    g.appendChild(cell);
-  }
+  const res = await apiPost({ action:'update', id: e.id, status: st });
+  if(!res.ok){ alert('שגיאה בעדכון סטטוס'); return; }
+  await loadData(true);
 }
 
-/* =========================
-   TASKS VIEW (OPEN + DONE)
-   ========================= */
-function buildFilter(){
-  const sel=id('tFilter'), cur=sel.value;
-  const owners=[...new Set(events.map(e=>safeStr(e.owner).trim()).filter(Boolean))];
-  sel.innerHTML='<option value="">כולם</option>';
-  owners.forEach(o=>{
+async function deleteProject(){
+  if(viewIdx<0) return;
+  const e=events[viewIdx];
+  if(!confirm('למחוק את הפרויקט?')) return;
+  const res = await apiPost({ action:'delete', id: e.id });
+  if(!res.ok){ alert('שגיאה במחיקה'); return; }
+  hide('mView');
+  await loadData(true);
+}
+
+/* Add */
+function openAdd(){ fillOwnerSelect(); showOv('mAdd'); }
+function closeAdd(){ hide('mAdd'); }
+
+function fillOwnerSelect(){
+  const sel=id('inO'), cur=sel.value;
+  sel.innerHTML='<option value="">בחר אחראי...</option>';
+  OWNERS.forEach(o=>{
     const opt=document.createElement('option');
     opt.value=o; opt.textContent=o;
     if(o===cur) opt.selected=true;
@@ -971,274 +1098,17 @@ function buildFilter(){
   });
 }
 
-function renderTasks(){
-  const c=id('tCards'); c.innerHTML='';
-  const filter=id('tFilter').value;
-
-  // flatten tasks per event
-  const items = [];
-  events.forEach((e, idx)=>{
-    if(filter && !safeStr(e.owner).includes(filter)) return;
-    const arr = parseTasks(e.tasks);
-    arr.forEach((t, ti)=>{
-      items.push({
-        evIdx: idx,
-        taskIdx: ti,
-        text: t.text,
-        done: t.done,
-        title: e.Title || '—',
-        owner: e.owner || '-',
-        isMine: safeStr(e.owner).includes(me)
-      });
-    });
-  });
-
-  const open = items.filter(x=>!x.done);
-  const done = items.filter(x=>x.done);
-
-  if(!open.length && !done.length){
-    c.innerHTML = '<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">📝</div><p style="color:var(--muted);font-weight:600">אין משימות עדיין</p></div>';
-    return;
-  }
-
-  // section builder
-  const sec = (title, count) => {
-    const w=document.createElement('div');
-    w.style.cssText='display:flex;justify-content:space-between;align-items:center;margin:8px 2px 0';
-    w.innerHTML = `
-      <div style="font-weight:900;color:var(--ink);font-size:12px;letter-spacing:.04em;text-transform:uppercase">${title}</div>
-      <div style="font-size:11px;color:var(--muted);font-weight:800">${count}</div>`;
-    return w;
-  };
-
-  const card = (item, isDoneSection=false) => {
-    const wrap=document.createElement('div');
-    wrap.className='ecard';
-    wrap.style.cursor='default';
-    wrap.style.flexDirection='column';
-
-    const top=document.createElement('div');
-    top.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border)';
-    top.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;min-width:0">
-        <div class="ecard-accent ${item.isMine?'mine':''}" style="width:3px;height:18px;border-radius:2px;flex-shrink:0"></div>
-        <div style="min-width:0">
-          <div style="font-weight:800;color:var(--ink);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.title)}</div>
-          <div style="font-size:11px;color:var(--muted);font-weight:700">👤 ${escapeHtml(item.owner)}</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <label style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:var(--muted)">
-          <input type="checkbox" ${item.done?'checked':''} />
-          ${isDoneSection ? 'בוצע' : 'סמן כבוצע'}
-        </label>
-      </div>
-    `;
-    wrap.appendChild(top);
-
-    const body=document.createElement('div');
-    body.style.cssText='padding:12px 14px;display:flex;align-items:center;gap:10px';
-    body.innerHTML = `<div style="font-size:13px;font-weight:700;color:var(--ink)">${escapeHtml(item.text)}</div>`;
-    wrap.appendChild(body);
-
-    const cb = top.querySelector('input[type=checkbox]');
-    if(isDoneSection){
-      cb.disabled=true;
-      cb.style.cursor='default';
-      cb.style.opacity='0.6';
-    }else{
-      cb.onchange = async () => {
-        await toggleTaskDone(item.evIdx, item.taskIdx, cb.checked);
-      };
-    }
-
-    return wrap;
-  };
-
-  if(open.length){
-    c.appendChild(sec('משימות בטיפול', open.length));
-    open.forEach(it => c.appendChild(card(it, false)));
-  }
-
-  // ✅ תיקון שביקשת: בהסתיימו רואים רק מה שבוצע
-  if(done.length){
-    c.appendChild(sec('הסתיימו', done.length));
-    done.forEach(it => c.appendChild(card(it, true)));
-  }
-}
-
-/* Toggle task and persist to sheet */
-async function toggleTaskDone(evIdx, taskIdx, done){
-  const e = events[evIdx];
-  const arr = parseTasks(e.tasks);
-  if(!arr[taskIdx]) return;
-  arr[taskIdx].done = done;
-
-  const encoded = encodeTasks(arr);
-  e.tasks = encoded; e.Tasks = encoded;
-
-  // update UI fast
-  updateStats();
-  renderTasks();
-
-  // persist
-  await postUpdate({
-    id: e.id || e.ID,
-    tasks: encoded
-  });
-}
-
-/* =========================
-   VIEW MODAL
-   ========================= */
-function openView(idx){
-  const e=events[idx]; if(!e) return;
-  viewIdx=idx;
-
-  id('vT').textContent = e.Title||'';
-  id('vDateTxt').textContent = fmtEventDate(e.date||'');
-  id('vOwn').textContent = '👤 ' + (e.owner||'—');
-  id('vDesc').textContent = e.Description || e.desc || 'אין תיאור';
-
-  refreshVSt(e.status || 'חדש');
-
-  const imgSrc = e.Image || e.image || '';
-  if(imgSrc.startsWith('data:image')){
-    id('vImg').src = imgSrc;
-    id('vImg').style.display='block';
-    id('vImgPH').style.display='none';
-  }else{
-    id('vImg').style.display='none';
-    id('vImgPH').style.display='flex';
-  }
-
-  renderViewTasks();
-  id('tasksSavedHint').style.display='none';
-
-  showOv('mView');
-}
-
-function renderViewTasks(){
-  const e=events[viewIdx];
-  const tl=id('vtList'); tl.innerHTML='';
-
-  const arr = parseTasks(e.tasks);
-  if(!arr.length){
-    tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
-    return;
-  }
-
-  arr.forEach((t, i)=>{
-    const row=document.createElement('div');
-    row.className='tr' + (t.done ? ' done':'');
-    row.style.background='white';
-
-    const cb=document.createElement('input');
-    cb.type='checkbox';
-    cb.checked = !!t.done;
-    cb.onchange = () => {
-      t.done = cb.checked;
-      row.classList.toggle('done', cb.checked);
-    };
-
-    const sp=document.createElement('span');
-    sp.style.fontSize='13px';
-    sp.style.fontWeight='700';
-    sp.textContent = t.text;
-
-    const del=document.createElement('button');
-    del.type='button';
-    del.style.cssText='margin-right:auto;background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;display:flex;align-items:center';
-    del.innerHTML='<i data-lucide="trash-2" style="width:16px;height:16px"></i>';
-    del.onclick = () => {
-      arr.splice(i,1);
-      const encoded = encodeTasks(arr);
-      events[viewIdx].tasks = encoded;
-      events[viewIdx].Tasks = encoded;
-      renderViewTasks();
-    };
-
-    row.appendChild(cb);
-    row.appendChild(sp);
-    row.appendChild(del);
-    tl.appendChild(row);
-  });
-
-  lucide.createIcons();
-}
-
-async function saveTasksFromView(){
-  if(viewIdx < 0) return;
-
-  // build from current DOM
-  const rows = [...id('vtList').querySelectorAll('.tr')];
-  const arr = rows.map(r=>{
-    const cb = r.querySelector('input[type=checkbox]');
-    const text = (r.querySelector('span')?.textContent || '').trim();
-    return { text, done: cb ? cb.checked : false };
-  }).filter(x=>x.text);
-
-  const encoded = encodeTasks(arr);
-  const e = events[viewIdx];
-  e.tasks = encoded; e.Tasks = encoded;
-
-  updateStats();
-  renderTasks(); // so it immediately reflects in "בטיפול/הסתיימו"
-
-  await postUpdate({ id: e.id || e.ID, tasks: encoded });
-
-  id('tasksSavedHint').style.display='block';
-  setTimeout(()=>id('tasksSavedHint').style.display='none', 1200);
-}
-
-function refreshVSt(st){
-  const map={חדש:'active-n',בטיפול:'active-w',בוצע:'active-d'};
-  document.querySelectorAll('.vsb').forEach(b=>{
-    b.className='vsb sb' + (b.dataset.v===st ? (' ' + (map[b.dataset.v]||'')) : '');
-  });
-  id('vPill').innerHTML = `<span class="${pillClass(st)}">${escapeHtml(st)}</span>`;
-}
-
-async function changeSt(st){
-  if(viewIdx<0) return;
-  const e=events[viewIdx];
-  e.status=st; e.Status=st;
-
-  refreshVSt(st);
-  updateStats();
-  renderList();
-
-  // persist status update by ID
-  await postUpdate({ id: e.id || e.ID, status: st });
-
-  // small feedback
-  const pill=id('vPill');
-  const oldHTML=pill.innerHTML;
-  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${escapeHtml(st)}</span>`;
-  setTimeout(()=>{ pill.innerHTML=oldHTML; }, 900);
-}
-
-/* =========================
-   ADD MODAL
-   ========================= */
-function openAdd(){ fillOwnerSelect(); showOv('mAdd'); }
-function closeAdd(){ hide('mAdd'); }
-
 function addRow(cid){
   const c=id(cid);
   const row=document.createElement('div');
   row.className='tr';
   row.style.background='white';
 
-  // checkbox = mark done (so it goes to completed)
-  const cb=document.createElement('input');
-  cb.type='checkbox';
-
   const inp=document.createElement('input');
   inp.type='text';
   inp.placeholder='כתוב משימה...';
   inp.className='task-inp';
-  inp.style.cssText='flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0;font-weight:700';
+  inp.style.cssText='flex:1;background:transparent;border:none;outline:none;font-size:13px;font-weight:900;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
 
   inp.addEventListener('keydown', e=>{
     if(e.key==='Enter' && inp.value.trim()){
@@ -1250,39 +1120,29 @@ function addRow(cid){
 
   const del=document.createElement('button');
   del.type='button';
-  del.style.cssText='background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;flex-shrink:0;display:flex;align-items:center;line-height:1;transition:color .15s';
+  del.style.cssText='background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;display:flex;align-items:center';
   del.innerHTML='<i data-lucide="x" style="width:16px;height:16px"></i>';
   del.onclick=()=>row.remove();
-  del.onmouseenter=()=>{del.style.color='#dc2626'};
-  del.onmouseleave=()=>{del.style.color='#fca5a5'};
 
-  row.appendChild(cb);
-  row.appendChild(inp);
-  row.appendChild(del);
+  row.appendChild(inp); row.appendChild(del);
   c.appendChild(row);
-
   lucide.createIcons();
-  setTimeout(()=>inp.focus(), 50);
+  setTimeout(()=>inp.focus(), 40);
 }
 
 function handleImg(){
   const f=id('inImg').files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload = ev=>{
-    if(ev.target.result.length>50000){
-      alert('התמונה גדולה מדי — עד ~37KB');
-      id('inImg').value='';
-      return;
-    }
+  r.onload=ev=>{
+    if(ev.target.result.length>50000){ alert('התמונה גדולה מדי — עד ~37KB'); id('inImg').value=''; return; }
     img64=ev.target.result;
     id('imgSt').textContent='✅ תמונה נבחרה';
-    id('imgPE').src=img64;
-    id('imgPW').style.display='block';
+    id('imgPE').src=img64; id('imgPW').style.display='block';
   };
   r.readAsDataURL(f);
 }
 
-async function save(){
+async function saveProject(){
   const title=id('inT').value.trim();
   const dStart=id('inD').value;
   const dEnd=id('inDEnd').value;
@@ -1290,69 +1150,49 @@ async function save(){
   const desc=id('inDesc').value.trim();
   const status=id('inS').value;
 
-  // tasks from add modal list
-  const taskRows = [...id('tList').querySelectorAll('.tr')];
-  const taskArr = taskRows.map(r=>{
-    const cb=r.querySelector('input[type=checkbox]');
-    const tx=(r.querySelector('.task-inp')?.value||'').trim();
-    return { text: tx, done: cb ? cb.checked : false };
-  }).filter(x=>x.text);
-  const tasks = encodeTasks(taskArr);
+  const tasks = [...id('tList').querySelectorAll('.task-inp')]
+    .map(x=>x.value.trim()).filter(Boolean)
+    .map(t=>({text:t,done:false}));
 
-  if(!title){ alert('נא להזין שם אירוע'); return; }
+  if(!title){ alert('נא להזין שם פרויקט'); return; }
 
-  // date format
-  let dateVal = dStart;
+  let dateVal = '';
   if(dStart && dEnd){
-    const s=new Date(dStart);
-    const e=new Date(dEnd);
-    const fmt = d => `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-    dateVal = `${fmt(s)}-${fmt(e)}`;
-  }else if(dStart){
+    const s=new Date(dStart), e=new Date(dEnd);
+    dateVal = `${s.getDate()}/${s.getMonth()+1}/${s.getFullYear()}-${e.getDate()}/${e.getMonth()+1}/${e.getFullYear()}`;
+  } else if(dStart){
     const s=new Date(dStart);
     dateVal = `${s.getDate()}/${s.getMonth()+1}/${s.getFullYear()}`;
-  }else{
-    dateVal = '';
   }
 
-  const newId = uid();
+  const btn=id('saveBtn');
+  btn.textContent='שומר...';
+  btn.disabled=true;
 
-  const btn=id('saveBtn'); btn.textContent='שומר...'; btn.disabled=true;
-
-  // persist create
-  await postCreate({
-    id: newId,
-    title, date: dateVal, owner,
-    desc, status, tasks,
-    image: img64
+  const res = await apiPost({
+    action:'create',
+    title,
+    date: dateVal,
+    owner,
+    desc,
+    status,
+    tasks_json: encodeTasks(tasks),
+    image: img64 || ''
   });
 
-  // optimistic add
-  events.unshift({
-    ID:newId,id:newId,
-    Title:title,title,
-    Date:dateVal,date:dateVal,
-    Owner:owner,owner,
-    Description:desc,Desc:desc,desc,
-    Status:status,status,
-    Tasks:tasks,tasks,
-    Image:img64,image:img64
-  });
+  btn.textContent='שמור ←';
+  btn.disabled=false;
 
-  renderAll();
+  if(!res.ok){ alert('שגיאה בשמירה. בדוק WebApp + הרשאות'); return; }
+
   closeAdd();
   resetForm();
-
-  // refresh from sheet
-  setTimeout(()=>loadData(true), 900);
-
-  btn.textContent='שמור וסנכרן ←'; btn.disabled=false;
+  await loadData(true);
 }
 
 function resetForm(){
   ['inT','inD','inDEnd','inDesc'].forEach(x=>id(x).value='');
-  id('inO').value='';
-  id('inS').value='חדש';
+  id('inO').value=''; id('inS').value='חדש';
   id('tList').innerHTML='';
   id('inImg').value='';
   id('imgSt').textContent='הוסף תמונה';
@@ -1361,57 +1201,26 @@ function resetForm(){
   img64='';
 }
 
-/* =========================
-   SERVER CALLS (Apps Script)
-   IMPORTANT: Your doPost expects e.parameter + action.
-   ========================= */
-async function postCreate(payload){
-  const body = new URLSearchParams({ action:'create', ...payload });
-  try{
-    await fetch(POST,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body: body.toString()
-    });
-  }catch(err){ console.error('Create error:', err); }
-}
-
-async function postUpdate(payload){
-  const body = new URLSearchParams({ action:'update', ...payload });
-  try{
-    await fetch(POST,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body: body.toString()
-    });
-  }catch(err){ console.error('Update error:', err); }
-}
-
-/* =========================
-   VIEW SWITCH
-   ========================= */
+/* View switch */
 function sv(name){
-  ['List','Cal','Tasks'].forEach(v=>{
+  ['List','Tasks','Done'].forEach(v=>{
     id('v'+v).style.display='none';
-    const nb=id('nb-'+v.toLowerCase()); if(nb) nb.classList.remove('on');
+    const nb=id('nb-'+v.toLowerCase());
+    if(nb) nb.classList.remove('on');
   });
   id('v'+name).style.display='block';
-  const nb=id('nb-'+name.toLowerCase()); if(nb) nb.classList.add('on');
+  const nb=id('nb-'+name.toLowerCase());
+  if(nb) nb.classList.add('on');
 }
 
-/* =========================
-   NOTIFICATIONS
-   ========================= */
-function askNotif(){
-  if(!('Notification' in window)){
-    alert('הדפדפן לא תומך בהתראות');
-    return;
-  }
-  Notification.requestPermission().then(p=>{
-    alert(p==='granted' ? '🔔 התראות הופעלו!' : 'לא אושר');
-  });
+/* Small */
+function escapeHtml(s){
+  return String(s||'')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
 }
 </script>
 </body>
