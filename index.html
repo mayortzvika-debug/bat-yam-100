@@ -2,212 +2,255 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bat Yam 100</title>
-
 <link rel="icon" href="favicon.ico">
 
-<script src="https://cdn.tailwindcss.com"></script>
-
 <style>
-body{font-family:Heebo,sans-serif;background:#f4f6f9;margin:0}
-.header{background:#0d1b2a;color:white;padding:18px}
-.container{max-width:1200px;margin:auto;padding:15px}
-.card{background:white;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.06);cursor:pointer}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.day{background:white;border-radius:10px;padding:6px;min-height:70px;border:1px solid #e4e9f0}
-.day-title{font-weight:900;font-size:12px}
-.event-title{font-size:10px;color:#0057a8;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tabs button{padding:8px 14px;border-radius:10px;border:1px solid #ccc;font-weight:800}
-.tabs .active{background:#0057a8;color:white}
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f2f4f8;
+}
+
+.header{
+    background:#0c1f35;
+    color:white;
+    padding:20px 40px;
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.nav{
+    padding:15px 40px;
+    background:white;
+    border-bottom:1px solid #ddd;
+}
+
+.nav button{
+    margin-left:10px;
+    padding:8px 16px;
+    border-radius:20px;
+    border:none;
+    cursor:pointer;
+    background:#e6e9ef;
+    font-weight:700;
+}
+
+.nav button:hover{
+    background:#0057a8;
+    color:white;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    margin-bottom:12px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-title{
+    font-weight:900;
+    font-size:18px;
+}
+
+.card-date{
+    font-size:13px;
+    color:#555;
+}
+
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+}
+
+.day{
+    background:white;
+    padding:8px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    min-height:90px;
+}
+
+.day-number{
+    font-weight:900;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.event{
+    font-size:11px;
+    color:#0057a8;
+    font-weight:700;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.tabs{
+    margin-bottom:15px;
+}
+
+.tabs button{
+    padding:8px 14px;
+    margin-left:8px;
+    border-radius:20px;
+    border:none;
+    background:#ddd;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.tabs .active{
+    background:#0057a8;
+    color:white;
+}
+
+/* Responsive */
+@media (max-width:768px){
+    .calendar-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .header{
+        font-size:22px;
+        padding:15px;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-<h1 style="margin:0;font-size:28px;font-weight:900;font-family:'Frank Ruhl Libre',serif">BAT YAM 100</h1>
+<div class="header">BAT YAM 100</div>
+
+<div class="nav">
+    <button onclick="showView('home')">בית</button>
+    <button onclick="showView('calendar')">לוח שנה</button>
+    <button onclick="showView('tasks')">משימות</button>
 </div>
 
 <div class="container">
-
-<div style="display:flex;gap:10px;margin-bottom:15px">
-<button onclick="showView('home')">בית</button>
-<button onclick="showView('calendar')">לוח שנה</button>
-<button onclick="showView('tasks')">משימות</button>
-</div>
-
-<div id="homeView"></div>
-<div id="calendarView" style="display:none"></div>
-<div id="tasksView" style="display:none"></div>
-
+    <div id="homeView"></div>
+    <div id="calendarView" style="display:none"></div>
+    <div id="tasksView" style="display:none"></div>
 </div>
 
 <script>
-
 const BASE = "https://script.google.com/macros/s/AKfycbz1nTdeJO9wI4RgUBExrD2KEZnKbVp19IlJVFnxGEzWRfJpldH83-G158ymHgK_Pm_Lwg/exec";
 
 let events=[];
 let calYear=2026;
 let calMonth=5; // יוני
 
-function showView(v){
-document.getElementById('homeView').style.display=v==='home'?'':'none';
-document.getElementById('calendarView').style.display=v==='calendar'?'':'none';
-document.getElementById('tasksView').style.display=v==='tasks'?'':'none';
+function showView(view){
+    document.getElementById('homeView').style.display=view==='home'?'block':'none';
+    document.getElementById('calendarView').style.display=view==='calendar'?'block':'none';
+    document.getElementById('tasksView').style.display=view==='tasks'?'block':'none';
 }
 
 async function loadData(){
-const res=await fetch(BASE+"?action=list");
-const data=await res.json();
-if(data.ok){
-events=data.rows.map(e=>normalize(e));
-renderHome();
-renderCalendar();
-renderTasks();
-}
-}
-
-function normalize(e){
-let tasks=[];
-if(e.tasks){
-try{
-tasks=JSON.parse(e.tasks);
-}catch{
-tasks=e.tasks.split(/\n|,/).map(t=>({text:t.trim(),done:false})).filter(t=>t.text);
-}
-}
-return {...e,_tasks:tasks};
+    const res=await fetch(BASE+"?action=list");
+    const data=await res.json();
+    if(data.ok){
+        events=data.rows;
+        renderHome();
+        renderCalendar();
+        renderTasks();
+    }
 }
 
-/* ================= HOME ================= */
-
-function getStartDate(s){
-if(!s) return null;
-if(s.includes("-")){
-s=s.split("-")[0];
-}
-let d=new Date(s);
-if(isNaN(d)){
-let m=s.match(/(\d+)\/(\d+)\/(\d+)/);
-if(m) d=new Date(m[3],m[2]-1,m[1]);
-}
-return isNaN(d)?null:d;
+function parseDate(dateStr){
+    if(!dateStr) return null;
+    if(dateStr.includes("-")){
+        dateStr=dateStr.split("-")[0];
+    }
+    let d=new Date(dateStr);
+    if(isNaN(d)){
+        let match=dateStr.match(/(\d+)\/(\d+)\/(\d+)/);
+        if(match){
+            d=new Date(match[3],match[2]-1,match[1]);
+        }
+    }
+    return isNaN(d)?null:d;
 }
 
 function renderHome(){
-let sorted=[...events].sort((a,b)=>{
-let da=getStartDate(a.date);
-let db=getStartDate(b.date);
-if(!da) return 1;
-if(!db) return -1;
-return da-db;
-});
-let html="";
-sorted.forEach(e=>{
-html+=`<div class="card">
-<div style="font-weight:900">${e.Title||''}</div>
-<div style="font-size:12px;color:#555">${e.date||''}</div>
-</div>`;
-});
-document.getElementById('homeView').innerHTML=html;
+    let sorted=[...events].sort((a,b)=>{
+        let da=parseDate(a.date);
+        let db=parseDate(b.date);
+        if(!da) return 1;
+        if(!db) return -1;
+        return da-db;
+    });
+
+    let html="";
+    sorted.forEach(e=>{
+        html+=`
+        <div class="card">
+            <div class="card-title">${e.Title||''}</div>
+            <div class="card-date">${e.date||''}</div>
+        </div>`;
+    });
+
+    document.getElementById('homeView').innerHTML=html;
 }
 
-/* ================= CALENDAR ================= */
-
 function sameDay(a,b){
-return a.getFullYear()==b.getFullYear()&&
-a.getMonth()==b.getMonth()&&
-a.getDate()==b.getDate();
+    return a.getFullYear()==b.getFullYear() &&
+           a.getMonth()==b.getMonth() &&
+           a.getDate()==b.getDate();
 }
 
 function renderCalendar(){
+    let monthNames=["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 
-let monthNames=["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
-let html=`<h2>${monthNames[calMonth]} ${calYear}</h2>`;
-html+=`<div class="calendar-grid">`;
+    let html=`<h2>${monthNames[calMonth]} ${calYear}</h2>`;
+    html+=`<div class="calendar-grid">`;
 
-let first=new Date(calYear,calMonth,1);
-let start=first.getDay();
-let last=new Date(calYear,calMonth+1,0);
+    let first=new Date(calYear,calMonth,1);
+    let start=first.getDay();
+    let last=new Date(calYear,calMonth+1,0);
 
-for(let i=0;i<start;i++){
-html+=`<div></div>`;
+    for(let i=0;i<start;i++){
+        html+=`<div></div>`;
+    }
+
+    for(let d=1; d<=last.getDate(); d++){
+        let dayDate=new Date(calYear,calMonth,d);
+        let hits=events.filter(e=>{
+            let sd=parseDate(e.date);
+            return sd && sameDay(sd,dayDate);
+        });
+
+        html+=`<div class="day">
+            <div class="day-number">${d}</div>`;
+
+        hits.slice(0,3).forEach(ev=>{
+            html+=`<div class="event">${ev.Title}</div>`;
+        });
+
+        html+=`</div>`;
+    }
+
+    html+=`</div>`;
+    document.getElementById('calendarView').innerHTML=html;
 }
-
-for(let d=1;d<=last.getDate();d++){
-let dayDate=new Date(calYear,calMonth,d);
-let hits=events.filter(e=>{
-let sd=getStartDate(e.date);
-return sd && sameDay(sd,dayDate);
-});
-
-html+=`<div class="day">
-<div class="day-title">${d}</div>`;
-
-hits.slice(0,3).forEach(ev=>{
-html+=`<div class="event-title">${ev.Title}</div>`;
-});
-
-if(hits.length>3){
-html+=`<div style="font-size:9px;color:#777">+${hits.length-3} נוספים</div>`;
-}
-
-html+=`</div>`;
-}
-
-html+=`</div>`;
-
-document.getElementById('calendarView').innerHTML=html;
-}
-
-/* ================= TASKS ================= */
 
 function renderTasks(){
-
-let doing=[];
-let done=[];
-
-events.forEach(e=>{
-(e._tasks||[]).forEach(t=>{
-if(t.done) done.push({event:e.Title,task:t.text});
-else doing.push({event:e.Title,task:t.text});
-});
-});
-
-let html=`<div class="tabs">
-<button id="tabDoing" class="active" onclick="switchTab('doing')">בביצוע</button>
-<button id="tabDone" onclick="switchTab('done')">בוצעו</button>
-</div>
-<div id="taskList"></div>`;
-
-document.getElementById('tasksView').innerHTML=html;
-
-window.taskCache={doing,done};
-switchTab('doing');
+    let html="<div class='tabs'></div>";
+    document.getElementById('tasksView').innerHTML=html;
 }
-
-function switchTab(type){
-document.getElementById('tabDoing').classList.remove('active');
-document.getElementById('tabDone').classList.remove('active');
-if(type==='doing') document.getElementById('tabDoing').classList.add('active');
-if(type==='done') document.getElementById('tabDone').classList.add('active');
-
-let list=window.taskCache[type];
-let html="";
-list.forEach(t=>{
-html+=`<div class="card">
-<div style="font-weight:900">${t.task}</div>
-<div style="font-size:11px;color:#777">${t.event}</div>
-</div>`;
-});
-document.getElementById('taskList').innerHTML=html;
-}
-
-/* ================= INIT ================= */
 
 loadData();
-
 </script>
 </body>
 </html>
