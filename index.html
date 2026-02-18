@@ -241,6 +241,9 @@ body {
   display: flex; align-items: flex-end; justify-content: center;
   z-index: 150; backdrop-filter: blur(6px);
 }
+@media (min-width: 768px) {
+  .ov { align-items: center; padding: 20px; }
+}
 .sh {
   background: var(--card); width: 100%; max-width: 480px;
   border-radius: 28px 28px 0 0;
@@ -248,7 +251,17 @@ body {
   animation: up .32s cubic-bezier(.16,1,.3,1);
   box-shadow: 0 -8px 48px rgba(13,27,42,.25);
 }
+@media (min-width: 768px) {
+  .sh { 
+    border-radius: 28px; 
+    max-height: 85vh;
+    animation: pop .32s cubic-bezier(.16,1,.3,1);
+  }
+}
 .sh-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+@media (min-width: 768px) {
+  .sh-handle { display: none; }
+}
 .sh-head {
   padding: 16px 20px;
   display: flex; justify-content: space-between; align-items: center;
@@ -414,7 +427,15 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         <span class="sec-title">כל הפרויקטים</span>
         <span id="countBadge" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
       </div>
-      <div id="eCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 112px"></div>
+      <div id="eCards" style="display:grid;grid-template-columns:1fr;gap:10px;padding:0 16px 112px"></div>
+      <style>
+        @media (min-width: 768px) {
+          #eCards { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1024px) {
+          #eCards { grid-template-columns: repeat(3, 1fr); }
+        }
+      </style>
     </div>
 
     <!-- CALENDAR VIEW -->
@@ -856,8 +877,22 @@ function updateStats() {
 function renderList() {
   const c = id('eCards'); c.innerHTML = '';
   if(!events.length){ c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>'; return; }
+  
+  // מיון כרונולוגי לפי תאריך (הכי מוקדם ראשון)
+  const sorted = [...events].sort((a, b) => {
+    const aRaw = a.date || a.Date || '';
+    const bRaw = b.date || b.Date || '';
+    const aDate = parseEventDate(aRaw).start;
+    const bDate = parseEventDate(bRaw).start;
+    if(!aDate && !bDate) return 0;
+    if(!aDate) return 1;
+    if(!bDate) return -1;
+    return aDate - bDate;
+  });
+
   const frag = document.createDocumentFragment();
-  [...events].map((e,i)=>({e,i})).reverse().forEach(({e,i},loopIdx) => {
+  sorted.forEach((e, loopIdx) => {
+    const origIdx = events.indexOf(e); // שמור את האינדקס המקורי
     const title  = e.Title||e.title||'ללא שם';
     const raw    = e.date||e.Date||'';
     const owner  = e.owner||e.Owner||'-';
@@ -890,7 +925,7 @@ function renderList() {
         ${isRange?`<span class="range-badge"><i data-lucide="calendar-range" style="width:10px;height:10px"></i> טווח</span>`:''}
       </div>`;
     div.appendChild(body);
-    div.addEventListener('click', ()=>openView(i));
+    div.addEventListener('click', ()=>openView(origIdx));
     frag.appendChild(div);
   });
   c.appendChild(frag);
@@ -1085,6 +1120,15 @@ function addRow(cid) {
   inp.type = 'text'; inp.placeholder = 'כתוב משימה...';
   inp.className = 'task-inp';
   inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);width:0';
+  
+  // אפשר Enter להוסיף משימה חדשה
+  inp.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && inp.value.trim()) {
+      e.preventDefault();
+      const btnId = cid === 'tList' ? 'btnAddTask' : 'btnVAddTask';
+      id(btnId).click();
+    }
+  });
 
   const del = document.createElement('button');
   del.type = 'button';
@@ -1094,7 +1138,10 @@ function addRow(cid) {
 
   row.appendChild(inp); row.appendChild(del);
   c.appendChild(row);
-  lucide.createIcons(); inp.focus();
+  lucide.createIcons(); 
+  
+  // מיקוד אוטומטי עם עיכוב קצר כדי לאפשר לאנימציות להסתיים
+  setTimeout(() => inp.focus(), 50);
 }
 
 function handleImg() {
