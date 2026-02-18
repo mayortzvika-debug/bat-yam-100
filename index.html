@@ -6,6 +6,7 @@
 <title>Bat Yam 100</title>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -281,7 +282,10 @@ body {
 .sh-title { font-size: 18px; font-weight: 900; color: var(--ink); }
 
 /* ── LOGIN ── */
-.lw { position: fixed; inset: 0; background: var(--ink); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.lw {
+  position: fixed; inset: 0; background: var(--ink);
+  z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px;
+}
 .lb {
   background: white; border-radius: 28px; padding: 36px 28px;
   width: 100%; max-width: 360px; text-align: center;
@@ -346,6 +350,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
   border: 1px solid #bfdbfe; border-radius: 20px;
   padding: 2px 8px; font-size: 10px; font-weight: 700; color: var(--blue);
 }
+
 .add-task-btn {
   color: var(--blue); font-size: 12px; font-weight: 700;
   background: #eff6ff; border: none; border-radius: 8px;
@@ -353,10 +358,43 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
   font-family: 'Heebo', sans-serif; transition: background .15s;
 }
 .add-task-btn:hover { background: #dbeafe; }
-.badge { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid var(--ink); }
 
+.badge { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid var(--ink); }
 .sh-hide::-webkit-scrollbar { display: none; }
 .sh-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─────────────────────────────────────────
+   DESKTOP MODE (מסך מחשב)
+   ───────────────────────────────────────── */
+@media (min-width: 1024px) {
+  body { padding-bottom: 24px; }
+  #app { max-width: 1200px; }
+  .hero { height: 300px; border-radius: 32px; }
+  .stats-row { max-width: 1200px; margin: -22px auto 18px; padding: 0 24px; }
+  #eCards { padding: 0 24px 40px; }
+  #vCal { max-width: 1200px; margin: 0 auto; }
+  #vTasks { max-width: 1200px; margin: 0 auto; }
+
+  /* Nav למעלה במחשב */
+  .nav {
+    position: sticky;
+    top: 16px;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    max-width: 680px;
+    margin: 16px auto 0;
+  }
+  .nadd { transform: translateY(0); }
+  .nadd:active { transform: scale(.92); }
+  .sh { max-width: 560px; }
+}
+
+/* MOBILE MODE */
+@media (max-width: 1023px) {
+  body { padding-bottom: 110px; }
+  #app { max-width: 520px; }
+}
 </style>
 </head>
 
@@ -384,7 +422,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none" class="max-w-md mx-auto">
+<div id="app" style="display:none" class="mx-auto">
 
   <!-- HERO -->
   <div class="hero">
@@ -397,7 +435,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
           <i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i>
         </button>
         <div style="display:flex;gap:8px">
-          <button id="btnNotif"  class="glass-ic"><i data-lucide="bell" style="width:17px;height:17px"></i></button>
+          <button id="btnNotif"  class="glass-ic"><i data-lucide="bell"        style="width:17px;height:17px"></i></button>
           <button id="btnRefresh" class="glass-ic"><i data-lucide="refresh-cw" style="width:17px;height:17px"></i></button>
         </div>
       </div>
@@ -427,6 +465,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
 
   <!-- CONTENT -->
   <div style="padding:0 0 0">
+
     <!-- LIST VIEW -->
     <div id="vList">
       <div class="sec-head">
@@ -444,12 +483,8 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
           <h2 id="calTit" style="font-size:18px;font-weight:900;color:var(--ink)"></h2>
         </div>
         <div style="display:flex;gap:8px">
-          <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
-            <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i>
-          </button>
-          <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
-            <i data-lucide="chevron-left" style="width:16px;height:16px;color:var(--ink)"></i>
-          </button>
+          <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i></button>
+          <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-left"  style="width:16px;height:16px;color:var(--ink)"></i></button>
         </div>
       </div>
       <div class="cal-head"><div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div></div>
@@ -459,13 +494,14 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
     <!-- TASKS VIEW -->
     <div id="vTasks" style="display:none">
       <div class="sec-head" style="padding-top:4px">
-        <span class="sec-title">משימות פתוחות</span>
+        <span class="sec-title">משימות</span>
         <select id="tFilter" style="font-size:11px;font-weight:700;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;outline:none;font-family:'Heebo',sans-serif;color:var(--ink);cursor:pointer">
           <option value="">כולם</option>
         </select>
       </div>
       <div id="tCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 112px"></div>
     </div>
+
   </div>
 
   <!-- NAV -->
@@ -532,6 +568,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
           <button id="btnAddTask" class="add-task-btn">+ הוסף משימה</button>
         </div>
         <div id="tList" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:8px">טיפ: משימות נשמרות כפתוחות (0:משימה). במסך משימות אפשר לסמן ולהעביר ל״הסתיימו״.</div>
       </div>
 
       <label style="display:flex;align-items:center;gap:12px;padding:14px;border:2px dashed var(--border);border-radius:14px;cursor:pointer;transition:border-color .2s">
@@ -580,6 +617,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         <span id="vOwn" style="font-size:12px;font-weight:600;color:var(--muted)"></span>
       </div>
 
+      <!-- View status -->
       <div id="vsBtns" style="display:flex;gap:8px;margin-bottom:18px">
         <button class="vsb sb" data-v="חדש">חדש</button>
         <button class="vsb sb" data-v="בטיפול">בטיפול</button>
@@ -629,9 +667,7 @@ let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','ר�
 /* ══════════════════════════════════════════
    STATE
    ══════════════════════════════════════════ */
-let events = [];
-let idxById = new Map();  // מפת מזהה→אינדקס (ביצועים)
-let me = localStorage.getItem('batyam_user') || '';
+let events = [], me = localStorage.getItem('batyam_user') || '';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let img64 = '', viewIdx = -1;
 
@@ -644,7 +680,7 @@ window.addEventListener('DOMContentLoaded', () => {
   me ? boot() : showLogin();
 });
 
-function showLogin() { hideLoader(true); showFlex('lw'); buildChips('lchips'); }
+function showLogin() { hide('ldr'); showFlex('lw'); buildChips('lchips'); }
 function boot()      { id('uLabel').textContent = me; show('app'); loadData(); }
 
 /* ══════════════════════════════════════════
@@ -663,7 +699,7 @@ function wire() {
   id('btnRefresh').onclick = () => loadData(true);
   id('btnNotif').onclick = askNotif;
 
-  id('mAddClose').onclick  = () => hideOv('mAdd');
+  id('mAddClose').onclick  = closeAdd;
   id('btnAddTask').onclick = () => addRow('tList');
   id('saveBtn').onclick    = save;
   id('inImg').onchange     = handleImg;
@@ -676,32 +712,20 @@ function wire() {
     b.className = cls[b.dataset.v] || 'sb';
   };
 
-  id('mViewClose').onclick  = () => hideOv('mView');
-  id('btnVAddTask').onclick = () => addRow('vtList');
-
+  id('mViewClose').onclick  = () => hide('mView');
+  id('btnVAddTask').onclick = () => addTaskInView();
   id('vsBtns').onclick = e => {
-    const b = e.target.closest('.vsb');
-    if(b && b.dataset.v) changeSt(b.dataset.v);
+    const b = e.target.closest('.vsb'); if(b) changeSt(b.dataset.v);
   };
 
-  id('mSetClose').onclick = () => hideOv('mSet');
+  id('mSetClose').onclick = () => hide('mSet');
   id('btnSwitch').onclick = doSwitch;
-  id('tFilter').onchange  = renderTasks;
-
+  id('tFilter').onchange  = () => { renderTasks(); updateStats(); };
   id('calP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCal(); };
   id('calN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renderCal(); };
 
-  // סגירה בלחיצה על הרקע
   ['mAdd','mView','mSet'].forEach(x => {
-    id(x).onclick = e => { if(e.target.id===x) hideOv(x); };
-  });
-
-  // ESC סוגר מודאל פתוח
-  document.addEventListener('keydown', (e) => {
-    if(e.key !== 'Escape') return;
-    ['mAdd','mView','mSet'].forEach(m => {
-      if(id(m).style.display === 'flex') hideOv(m);
-    });
+    id(x).onclick = e => { if(e.target.id===x) hide(x); };
   });
 }
 
@@ -709,30 +733,43 @@ function wire() {
    HELPERS
    ══════════════════════════════════════════ */
 const id = x => document.getElementById(x);
-function show(x)     { id(x).style.display = 'block'; }
-function hide(x)     { id(x).style.display = 'none';  }
-function showFlex(x) { id(x).style.display = 'flex';  }
+function show(x)    { id(x).style.display = 'block'; }
+function hide(x)    { id(x).style.display = 'none';  }
+function showFlex(x){ id(x).style.display = 'flex';  }
+function showOv(x)  { id(x).style.display = 'flex'; lucide.createIcons(); }
 
-function lockScroll(lock){ document.body.style.overflow = lock ? 'hidden' : ''; }
-
-function showOv(x){
-  id(x).style.display = 'flex';
-  lockScroll(true);
-  lucide.createIcons();
+function evId(e){
+  return (e.ID || e.Id || e.id || '').toString().trim();
+}
+function postUpdate(fields){
+  const body = new URLSearchParams({ action: 'update', ...fields });
+  fetch(POST, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: body.toString()
+  }).catch(err => console.error('Update error:', err));
 }
 
-function hideOv(x){
-  id(x).style.display = 'none';
-  const anyOpen = ['mAdd','mView','mSet'].some(m => id(m).style.display === 'flex');
-  if(!anyOpen) lockScroll(false);
+/* TASKS: נשמרים כ- 0:טקסט | 1:טקסט */
+function parseTasks(raw){
+  return (raw||'')
+    .split('|')
+    .map(x=>x.trim())
+    .filter(Boolean)
+    .map(x=>{
+      const m = x.match(/^([01]):(.*)$/);
+      if(m) return { done: m[1]==='1', text: m[2].trim() };
+      return { done:false, text:x }; // תאימות אחורה
+    });
+}
+function tasksToString(arr){
+  return arr.map(t => `${t.done?1:0}:${t.text}`).join('|');
 }
 
 /* ══════════════════════════════════════════
-   DATE UTILS — תומך בתאריכים מתמשכים
-   D/M/YYYY, DD/MM/YYYY, YYYY-MM-DD
-   טווח:
-   - מלא: 30/7/2026-3/8/2026
-   - קצר: 26/7-30/7/2026  (start בלי שנה)
+   DATE UTILS — תאריכים מתמשכים
+   D/M/YYYY, YYYY-MM-DD, טווח D/M/YYYY-D/M/YYYY
    ══════════════════════════════════════════ */
 function parseSingle(s) {
   if(!s) return null; s = s.trim();
@@ -742,29 +779,16 @@ function parseSingle(s) {
   if(m) return new Date(+m[1], +m[2]-1, +m[3]);
   return null;
 }
-
 function parseEventDate(raw) {
   if(!raw) return { start:null, end:null, isRange:false };
   raw = raw.trim();
-
-  // מלא: DD/MM/YYYY - DD/MM/YYYY
-  let m = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
-  if(m) return { start: parseSingle(m[1]), end: parseSingle(m[2]), isRange: true };
-
-  // קצר: D/M - D/M/YYYY
-  m = raw.match(/^(\d{1,2}\/\d{1,2})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
-  if(m){
-    const end = parseSingle(m[2]);
-    if(!end) return { start:null, end:null, isRange:false };
-    const start = parseSingle(`${m[1]}/${end.getFullYear()}`);
-    return { start, end, isRange: true };
+  const rangeMatch = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
+  if(rangeMatch) {
+    return { start: parseSingle(rangeMatch[1]), end: parseSingle(rangeMatch[2]), isRange: true };
   }
-
-  // תאריך בודד
   const single = parseSingle(raw);
   return { start: single, end: null, isRange: false };
 }
-
 function dateInRange(evRaw, y, m, d) {
   const { start, end, isRange } = parseEventDate(evRaw);
   if(!start) return false;
@@ -772,7 +796,6 @@ function dateInRange(evRaw, y, m, d) {
   if(isRange && end) return check >= start && check <= end;
   return start.getFullYear()===y && start.getMonth()===m && start.getDate()===d;
 }
-
 function fmtEventDate(raw) {
   const { start, end, isRange } = parseEventDate(raw);
   if(!start) return raw || '';
@@ -784,14 +807,12 @@ function fmtEventDate(raw) {
   }
   return start.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
 }
-
 function getDisplayDay(raw) {
   const { start, end, isRange } = parseEventDate(raw);
   if(!start) return { day:'?', isRange:false };
   if(isRange && end) return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
   return { day: String(start.getDate()), isRange:false };
 }
-
 function getMonthLabel(raw) {
   const { start } = parseEventDate(raw);
   if(!start) return '';
@@ -807,35 +828,6 @@ function pillClass(st) {
   if(st.includes('טיפול') || st.includes('חוזים') || st.includes('הזמנה') || st.includes('תהליך')) return 'pill pill-wip';
   if(st.includes('ממתין') || st.includes('תומחר')) return 'pill pill-wait';
   return 'pill pill-new';
-}
-
-/* ══════════════════════════════════════════
-   SYNC QUEUE (אמינות מול no-cors)
-   NOTE: אם ה-Apps Script לא תומך ב-action מסוים, הוא פשוט יתעלם.
-   ══════════════════════════════════════════ */
-function queueSync(payload){
-  const q = JSON.parse(localStorage.getItem('batyam_syncq')||'[]');
-  q.push({payload, ts: Date.now()});
-  localStorage.setItem('batyam_syncq', JSON.stringify(q));
-}
-
-async function flushSyncQueue(){
-  const q = JSON.parse(localStorage.getItem('batyam_syncq')||'[]');
-  if(!q.length) return;
-  const rest = [];
-  for(const item of q){
-    try{
-      await fetch(POST,{
-        method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:item.payload
-      });
-    }catch(e){
-      rest.push(item);
-    }
-  }
-  localStorage.setItem('batyam_syncq', JSON.stringify(rest));
 }
 
 /* ══════════════════════════════════════════
@@ -867,7 +859,7 @@ function doSwitch() {
   if(!n){ alert('בחר שם'); return; }
   localStorage.setItem('batyam_user', n); me = n;
   id('uLabel').textContent = n;
-  renderAll(); hideOv('mSet');
+  renderAll(); hide('mSet');
 }
 
 /* ══════════════════════════════════════════
@@ -875,52 +867,27 @@ function doSwitch() {
    ══════════════════════════════════════════ */
 async function loadData(manual=false) {
   if(manual) {
-    id('ldr').style.cssText = 'position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1';
-    id('ldr').innerHTML = '<div class="ring"></div><p>BAT YAM 100</p>';
-    id('ldr').style.display = 'flex';
+    id('ldr').style.cssText='position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1';
+    show('ldr');
   }
-
   try {
     const r = await fetch(CSV+'&t='+Date.now());
     const t = await r.text();
+    Papa.parse(t, { header:true, skipEmptyLines:true, complete: res => {
+      events = res.data.filter(e => (e.Title||e.title||'').trim());
 
-    Papa.parse(t, {
-      header:true,
-      skipEmptyLines:true,
-      complete: async (res) => {
-
-        // normalize + add internal id (ביצועים)
-        const rows = res.data
-          .filter(e => (e.Title||e.title||'').trim())
-          .map((e,i) => {
-            const _id = (e.id || e.ID || e.RowId || e.rowId || e.row || '').toString().trim() || String(i);
-            return { ...e, _id };
-          });
-
-        events = rows;
-
-        // index map
-        idxById = new Map(events.map((e,i)=>[e._id, i]));
-
-        // owners extract
-        events.forEach(e => {
-          (e.owner||e.Owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o => {
-            if(!OWNERS.includes(o)) OWNERS.push(o);
-          });
+      // חלץ בעלים מהגיליון
+      events.forEach(e => {
+        (e.owner||e.Owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o => {
+          if(!OWNERS.includes(o)) OWNERS.push(o);
         });
+      });
 
-        fillOwnerSelect();
-        renderAll();
-        hideLoader();
-
-        // נסה לשטוף תור סנכרון אם נשאר משהו
-        try { await flushSyncQueue(); } catch(_) {}
-      }
-    });
-  } catch(e){
-    console.error(e);
-    hideLoader();
-  }
+      fillOwnerSelect();
+      renderAll();
+      hideLoader();
+    }});
+  } catch(e){ console.error(e); hideLoader(); }
 }
 
 function fillOwnerSelect() {
@@ -934,25 +901,24 @@ function fillOwnerSelect() {
   });
 }
 
-function hideLoader(immediate=false) {
+function hideLoader() {
   const l = id('ldr');
-  if(!l) return;
-  if(immediate){
-    l.style.display='none';
-    return;
-  }
   l.style.transition = 'opacity .5s';
   l.style.opacity = '0';
   setTimeout(()=>{ l.style.display='none'; }, 520);
 }
 
 function renderAll() {
-  renderList(); renderCal(); renderTasks(); updateStats(); buildFilter();
+  renderList();
+  renderCal();
+  buildFilter();
+  renderTasks();
+  updateStats();
   lucide.createIcons();
 }
 
 /* ══════════════════════════════════════════
-   STATS
+   STATS (כולל badge לפי משימות פתוחות שלי)
    ══════════════════════════════════════════ */
 function updateStats() {
   id('stT').textContent = events.length;
@@ -961,11 +927,16 @@ function updateStats() {
     const s=e.status||e.Status||'';
     return s.includes('טיפול')||s.includes('חוזים')||s.includes('הזמנה')||s.includes('תהליך');
   }).length;
-
   id('countBadge').textContent = events.length + ' פרויקטים';
 
-  const myOpen = events.filter(e=>(e.owner||e.Owner||'').includes(me) && (e.status||e.Status||'')!=='בוצע').length;
-  id('tbadge').style.display = myOpen>0 ? 'block' : 'none';
+  const myOpenTasks = events.reduce((sum, e) => {
+    const owner = (e.owner||e.Owner||'');
+    if(!owner.includes(me)) return sum;
+    const arr = parseTasks(e.tasks||e.Tasks||'');
+    return sum + arr.filter(t=>!t.done).length;
+  }, 0);
+
+  id('tbadge').style.display = myOpenTasks>0 ? 'block' : 'none';
 }
 
 /* ══════════════════════════════════════════
@@ -978,7 +949,6 @@ function renderList() {
     return;
   }
 
-  // מיון לפי תאריך התחלה (מוקדם ראשון)
   const sorted = [...events].sort((a, b) => {
     const aRaw = a.date || a.Date || '';
     const bRaw = b.date || b.Date || '';
@@ -992,9 +962,7 @@ function renderList() {
 
   const frag = document.createDocumentFragment();
   sorted.forEach((e, loopIdx) => {
-    const origIdx = idxById.get(e._id); // O(1)
-    if(origIdx == null) return;
-
+    const origIdx = events.indexOf(e);
     const title  = e.Title||e.title||'ללא שם';
     const raw    = e.date||e.Date||'';
     const owner  = e.owner||e.Owner||'-';
@@ -1020,10 +988,10 @@ function renderList() {
     const body = document.createElement('div');
     body.className = 'ecard-body';
     body.innerHTML = `
-      <div class="ecard-title">${escapeHTML(title)}</div>
+      <div class="ecard-title">${title}</div>
       <div class="ecard-meta">
-        <span class="${pillClass(status)}">${escapeHTML(status)}</span>
-        <span class="ecard-owner">👤 ${escapeHTML(owner)}${isMine?' · <b style="color:var(--mint)">שלי</b>':''}</span>
+        <span class="${pillClass(status)}">${status}</span>
+        <span class="ecard-owner">👤 ${owner}${isMine?' · <b style="color:var(--mint)">שלי</b>':''}</span>
         ${isRange?`<span class="range-badge"><i data-lucide="calendar-range" style="width:10px;height:10px"></i> טווח</span>`:''}
       </div>`;
     div.appendChild(body);
@@ -1066,7 +1034,7 @@ function renderCal() {
       if(!dateInRange(raw, calY, calM, d)) return;
 
       const isMine = (e.owner||e.Owner||'').includes(me);
-      const { isRange, start } = parseEventDate(raw);
+      const { isRange } = parseEventDate(raw);
 
       const ev = document.createElement('span');
       ev.className = 'cev' + (isMine?' mine':'') + (isRange?' range':'');
@@ -1074,6 +1042,7 @@ function renderCal() {
       ev.onclick = evt => { evt.stopPropagation(); openView(idx); };
       cell.appendChild(ev);
 
+      const { start } = parseEventDate(raw);
       if(isRange && start && !(start.getDate()===d && start.getMonth()===calM && start.getFullYear()===calY)) {
         cell.classList.add('range-day');
       }
@@ -1084,7 +1053,7 @@ function renderCal() {
 }
 
 /* ══════════════════════════════════════════
-   TASKS
+   TASKS FILTER
    ══════════════════════════════════════════ */
 function buildFilter() {
   const sel=id('tFilter'), cur=sel.value;
@@ -1098,69 +1067,99 @@ function buildFilter() {
   });
 }
 
+/* ══════════════════════════════════════════
+   TASKS VIEW (פתוחות + הסתיימו)
+   ══════════════════════════════════════════ */
 function renderTasks() {
-  const c=id('tCards'); c.innerHTML='';
-  const filter=id('tFilter').value;
+  const c = id('tCards');
+  c.innerHTML = '';
 
-  const open=events.filter(e=>{
-    const st=e.status||e.Status||'';
-    if(st==='בוצע') return false;
-    if(filter && !(e.owner||e.Owner||'').includes(filter)) return false;
-    return true;
+  const filter = id('tFilter').value;
+
+  const all = [];
+  events.forEach((e, idx) => {
+    const owner = (e.owner || e.Owner || '').trim();
+    if(filter && !owner.includes(filter)) return;
+
+    const title = e.Title || e.title || '—';
+    const evTasks = parseTasks(e.tasks || e.Tasks || '');
+
+    evTasks.forEach((t, tIdx) => {
+      all.push({ done: t.done, text: t.text, eventIdx: idx, taskIdx: tIdx, title, owner });
+    });
   });
 
-  if(!open.length){
-    c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--muted);font-weight:600">אין משימות פתוחות!</p></div>';
+  const open = all.filter(x => !x.done);
+  const done = all.filter(x => x.done);
+
+  if (!open.length && !done.length) {
+    c.innerHTML = '<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🗂️</div><p style="color:var(--muted);font-weight:600">אין משימות</p></div>';
     return;
   }
 
-  const frag=document.createDocumentFragment();
-  open.forEach(e=>{
-    const idx = idxById.get(e._id);
-    if(idx == null) return;
+  const sec = (name, count) => {
+    const h = document.createElement('div');
+    h.style.cssText = 'padding:0 16px;margin-top:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center';
+    h.innerHTML = `<span class="sec-title">${name}</span><span style="font-size:11px;color:var(--muted);font-weight:700">${count}</span>`;
+    return h;
+  };
 
-    const isMine=(e.owner||e.Owner||'').includes(me);
-    const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
-    const card=document.createElement('div');
-    card.className='ecard';
-    card.style.flexDirection='column';
-    card.style.cursor='default';
+  c.appendChild(sec('משימות בטיפול', open.length));
+  open.forEach(item => c.appendChild(taskCard(item)));
 
-    const top=document.createElement('div');
-    top.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:14px 14px 10px;border-bottom:1px solid var(--border)';
-    top.innerHTML=`
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="ecard-accent ${isMine?'mine':''}" style="width:3px;height:20px;border-radius:2px;flex-shrink:0"></div>
-        <h3 style="font-weight:700;color:var(--ink);font-size:13px">${escapeHTML(e.Title||e.title||'—')}</h3>
+  c.appendChild(sec('הסתיימו', done.length));
+  done.forEach(item => c.appendChild(taskCard(item)));
+
+  function taskCard(item){
+    const e = events[item.eventIdx];
+    const arr = parseTasks(e.tasks || e.Tasks || '');
+
+    const card = document.createElement('div');
+    card.className = 'ecard';
+    card.style.flexDirection = 'column';
+    card.style.cursor = 'default';
+
+    const top = document.createElement('div');
+    top.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border)';
+    top.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+        <div style="font-weight:900;font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.text}</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div>
       </div>
-      <span style="font-size:11px;color:var(--muted);font-weight:600">👤 ${escapeHTML(e.owner||e.Owner||'-')}</span>`;
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">👤 ${item.owner||'-'}</span>
+        <input type="checkbox" ${item.done?'checked':''} style="width:18px;height:18px;accent-color:var(--blue);cursor:pointer">
+      </div>
+    `;
+
+    const cb = top.querySelector('input[type=checkbox]');
+    cb.onchange = () => {
+      arr[item.taskIdx].done = cb.checked;
+
+      const joined = tasksToString(arr);
+      events[item.eventIdx].tasks = joined;
+      events[item.eventIdx].Tasks = joined;
+
+      const theId = evId(events[item.eventIdx]);
+      if(theId) postUpdate({ id: theId, tasks: joined });
+
+      renderTasks();
+      updateStats();
+    };
+
     card.appendChild(top);
 
-    const tw=document.createElement('div'); tw.style.cssText='padding:10px 14px;display:flex;flex-direction:column;gap:7px';
-    if(tasks.length){
-      tasks.forEach(t=>{
-        const row=document.createElement('div'); row.className='tr';
-        const cb=document.createElement('input'); cb.type='checkbox';
-        cb.onchange=()=>row.classList.toggle('done',cb.checked);
-        const sp=document.createElement('span'); sp.style.fontSize='13px'; sp.textContent=t;
-        row.appendChild(cb); row.appendChild(sp); tw.appendChild(row);
-      });
-    } else {
-      tw.innerHTML='<span style="font-size:11px;color:#cbd5e1;padding:4px 0">אין משימות מפורטות</span>';
-    }
-    card.appendChild(tw);
+    const foot = document.createElement('div');
+    foot.style.cssText = 'padding:10px 14px;display:flex;justify-content:flex-end';
+    const ob = document.createElement('button');
+    ob.style.cssText = 'font-size:11px;font-weight:700;color:var(--blue);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:Heebo,sans-serif';
+    ob.textContent = 'פתח פרויקט ←';
+    ob.onclick = () => openView(item.eventIdx);
+    foot.appendChild(ob);
+    card.appendChild(foot);
 
-    const foot=document.createElement('div');
-    foot.style.cssText='padding:8px 14px 12px;display:flex;justify-content:flex-end';
-    const ob=document.createElement('button');
-    ob.style.cssText='font-size:11px;font-weight:700;color:var(--blue);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:Heebo,sans-serif';
-    ob.textContent='פתח פרויקט ←';
-    ob.onclick=()=>openView(idx);
-    foot.appendChild(ob); card.appendChild(foot);
-    frag.appendChild(card);
-  });
-
-  c.appendChild(frag);
+    return card;
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -1180,64 +1179,83 @@ function openView(idx) {
 
   const imgSrc=e.Image||e.image||'';
   if(imgSrc.startsWith('data:image')){
-    id('vImg').src=imgSrc;
-    id('vImg').style.display='block';
-    id('vImgPH').style.display='none';
+    id('vImg').src=imgSrc; id('vImg').style.display='block'; id('vImgPH').style.display='none';
   } else {
-    id('vImg').style.display='none';
-    id('vImgPH').style.display='flex';
+    id('vImg').style.display='none'; id('vImgPH').style.display='flex';
   }
 
-  const tl=id('vtList'); tl.innerHTML='';
-  const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
+  const tl = id('vtList');
+  tl.innerHTML = '';
 
-  if(tasks.length){
-    tasks.forEach((t, taskIdx) => {
-      const row=document.createElement('div');
-      row.className='tr';
+  function renderVTasks(){
+    tl.innerHTML = '';
+    const cur = (events[viewIdx].tasks || events[viewIdx].Tasks || '');
+    const arr = parseTasks(cur);
 
-      const cb=document.createElement('input');
-      cb.type='checkbox';
+    if(!arr.length){
+      tl.innerHTML = '<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
+      return;
+    }
 
-      cb.onchange=()=>{
-        row.classList.toggle('done',cb.checked);
-        if(cb.checked) {
-          setTimeout(() => {
-            if(!cb.checked) return;
-            const confirmDel = confirm('למחוק משימה זו?');
-            if(confirmDel) {
-              const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '')
-                .split('|').filter(x=>x.trim());
-              currentTasks.splice(taskIdx, 1);
+    arr.forEach((t, i) => {
+      const row = document.createElement('div');
+      row.className = 'tr' + (t.done ? ' done' : '');
+      row.style.background = 'white';
 
-              const joined = currentTasks.join('|');
-              events[viewIdx].tasks = joined;
-              events[viewIdx].Tasks = joined;
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = t.done;
 
-              row.remove();
+      cb.onchange = () => {
+        t.done = cb.checked;
+        row.classList.toggle('done', t.done);
 
-              // נסיון סנכרון משימות (דורש תמיכה ב-Apps Script ב-action=updateTasks)
-              syncTasksForViewedEvent();
-            } else {
-              cb.checked = false;
-              row.classList.remove('done');
-            }
-          }, 800);
-        }
+        const joined = tasksToString(arr);
+        events[viewIdx].tasks = joined;
+        events[viewIdx].Tasks = joined;
+
+        const theId = evId(events[viewIdx]);
+        if(theId) postUpdate({ id: theId, tasks: joined });
+
+        renderTasks();
+        updateStats();
       };
 
-      const sp=document.createElement('span');
-      sp.style.fontSize='13px';
-      sp.textContent=t;
+      const sp = document.createElement('span');
+      sp.style.fontSize = '13px';
+      sp.textContent = t.text;
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.style.cssText = 'margin-right:auto;background:none;border:none;cursor:pointer;padding:4px 6px;color:#fca5a5;display:flex;align-items:center;transition:color .15s';
+      del.innerHTML = '<i data-lucide="trash-2" style="width:16px;height:16px"></i>';
+      del.onmouseenter = () => del.style.color = '#dc2626';
+      del.onmouseleave = () => del.style.color = '#fca5a5';
+      del.onclick = () => {
+        arr.splice(i, 1);
+        const joined = tasksToString(arr);
+        events[viewIdx].tasks = joined;
+        events[viewIdx].Tasks = joined;
+
+        const theId = evId(events[viewIdx]);
+        if(theId) postUpdate({ id: theId, tasks: joined });
+
+        renderVTasks();
+        renderTasks();
+        updateStats();
+        lucide.createIcons();
+      };
 
       row.appendChild(cb);
       row.appendChild(sp);
+      row.appendChild(del);
       tl.appendChild(row);
     });
-  } else {
-    tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
+
+    lucide.createIcons();
   }
 
+  renderVTasks();
   showOv('mView');
 }
 
@@ -1246,68 +1264,84 @@ function refreshVSt(st) {
   document.querySelectorAll('.vsb').forEach(b=>{
     b.className='vsb sb'+(b.dataset.v===st?' '+map[b.dataset.v]:'');
   });
-  id('vPill').innerHTML=`<span class="${pillClass(st)}">${escapeHTML(st)}</span>`;
+  id('vPill').innerHTML=`<span class="${pillClass(st)}">${st}</span>`;
 }
 
 function changeSt(st) {
   if(viewIdx<0) return;
 
-  // עדכן מקומית
   events[viewIdx].status=st;
   events[viewIdx].Status=st;
 
-  // עדכן UI
   refreshVSt(st);
   updateStats();
   renderList();
 
-  // הודעת הצלחה קטנה
+  const theId = evId(events[viewIdx]);
+  if(theId) postUpdate({ id: theId, status: st });
+
   const pill = id('vPill');
   const oldHTML = pill.innerHTML;
-  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${escapeHTML(st)}</span>`;
-
-  // שלח עדכון לשרת + תור סנכרון (אמינות)
-  const e = events[viewIdx];
-  const payload = new URLSearchParams({
-    action: 'update',
-    title: e.Title || e.title || '',
-    status: st
-  }).toString();
-
-  queueSync(payload);
-  fetch(POST, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: payload
-  }).then(()=>flushSyncQueue()).catch(()=>{});
-
-  setTimeout(() => { pill.innerHTML = oldHTML; }, 1000);
+  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${st}</span>`;
+  setTimeout(() => { pill.innerHTML = oldHTML; }, 900);
 }
 
-function syncTasksForViewedEvent(){
-  if(viewIdx<0) return;
-  const e = events[viewIdx];
+/* ══════════════════════════════════════════
+   ADD TASK IN VIEW (נשמר מיד)
+   ══════════════════════════════════════════ */
+function addTaskInView(){
+  if(viewIdx < 0) return;
 
-  const payload = new URLSearchParams({
-    action: 'updateTasks', // דורש תמיכה ב-Apps Script
-    title: e.Title || e.title || '',
-    tasks: e.tasks || e.Tasks || ''
-  }).toString();
+  const tl = id('vtList');
+  if(tl.textContent.includes('אין משימות')) tl.innerHTML = '';
 
-  queueSync(payload);
-  fetch(POST, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: payload
-  }).then(()=>flushSyncQueue()).catch(()=>{});
+  const row = document.createElement('div');
+  row.className = 'tr';
+  row.style.background = 'white';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = 'כתוב משימה והקש Enter…';
+  inp.className = 'task-inp';
+  inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
+
+  const commit = () => {
+    const val = inp.value.trim();
+    if(!val){ row.remove(); return; }
+
+    const cur = (events[viewIdx].tasks || events[viewIdx].Tasks || '');
+    const arr = parseTasks(cur);
+    arr.push({ done:false, text: val });
+
+    const joined = tasksToString(arr);
+    events[viewIdx].tasks = joined;
+    events[viewIdx].Tasks = joined;
+
+    const theId = evId(events[viewIdx]);
+    if(theId) postUpdate({ id: theId, tasks: joined });
+
+    // רענון תצוגות
+    openView(viewIdx);
+    renderTasks();
+    updateStats();
+  };
+
+  inp.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); commit(); }
+    if(e.key === 'Escape'){ row.remove(); }
+  });
+
+  row.appendChild(inp);
+  tl.appendChild(row);
+  setTimeout(()=>inp.focus(), 30);
 }
 
 /* ══════════════════════════════════════════
    ADD MODAL
    ══════════════════════════════════════════ */
 function openAdd() { fillOwnerSelect(); showOv('mAdd'); }
+function closeAdd(){ hide('mAdd'); }
+
 function addRow(cid) {
   const c = id(cid);
   const row = document.createElement('div');
@@ -1315,16 +1349,14 @@ function addRow(cid) {
   row.style.background = 'white';
 
   const inp = document.createElement('input');
-  inp.type = 'text';
-  inp.placeholder = 'כתוב משימה...';
+  inp.type = 'text'; inp.placeholder = 'כתוב משימה...';
   inp.className = 'task-inp';
   inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
 
   inp.addEventListener('keydown', e => {
     if(e.key === 'Enter' && inp.value.trim()) {
       e.preventDefault();
-      const btnId = cid === 'tList' ? 'btnAddTask' : 'btnVAddTask';
-      id(btnId).click();
+      id('btnAddTask').click();
     }
   });
 
@@ -1336,10 +1368,8 @@ function addRow(cid) {
   del.onmouseenter = () => { del.style.color = '#dc2626'; };
   del.onmouseleave = () => { del.style.color = '#fca5a5'; };
 
-  row.appendChild(inp);
-  row.appendChild(del);
+  row.appendChild(inp); row.appendChild(del);
   c.appendChild(row);
-
   lucide.createIcons();
   setTimeout(() => inp.focus(), 50);
 }
@@ -1348,15 +1378,10 @@ function handleImg() {
   const f = id('inImg').files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = ev => {
-    if(ev.target.result.length>50000){
-      alert('התמונה גדולה מדי — עד ~37KB');
-      id('inImg').value='';
-      return;
-    }
+    if(ev.target.result.length>50000){ alert('התמונה גדולה מדי — עד ~37KB'); id('inImg').value=''; return; }
     img64 = ev.target.result;
     id('imgSt').textContent='✅ תמונה נבחרה';
-    id('imgPE').src=img64;
-    id('imgPW').style.display='block';
+    id('imgPE').src=img64; id('imgPW').style.display='block';
   };
   r.readAsDataURL(f);
 }
@@ -1368,12 +1393,15 @@ async function save() {
   const owner  = id('inO').value;
   const desc   = id('inDesc').value.trim();
   const status = id('inS').value;
-  const tasks  = [...id('tList').querySelectorAll('.task-inp')]
-                  .map(x=>x.value.trim()).filter(Boolean).join('|');
+
+  // משימות חדשות נשמרות כפתוחות 0:
+  const tasksArr = [...id('tList').querySelectorAll('.task-inp')]
+    .map(x=>x.value.trim()).filter(Boolean)
+    .map(t => ({ done:false, text:t }));
+  const tasks = tasksToString(tasksArr);
 
   if(!title){ alert('נא להזין שם אירוע'); return; }
 
-  // בנה תאריך — אם יש טווח, פורמט: D/M/YYYY-D/M/YYYY
   let dateVal = dStart;
   if(dStart && dEnd) {
     const s = new Date(dStart);
@@ -1387,103 +1415,76 @@ async function save() {
 
   const btn=id('saveBtn'); btn.textContent='שומר...'; btn.disabled=true;
 
-  const payload = new URLSearchParams({
+  const newId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+
+  const body=new URLSearchParams({
+    action: 'create',
+    id: newId,
     title,
-    date:dateVal,
+    date: dateVal,
     owner,
     desc,
     status,
     tasks,
-    image:img64
-  }).toString();
+    image: img64
+  });
 
-  // תור סנכרון + שליחה
-  queueSync(payload);
-  try{
+  try {
     await fetch(POST,{
       method:'POST',
       mode:'no-cors',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:payload
+      body:body.toString()
     });
-    await flushSyncQueue();
-  } catch(e){
-    console.error(e);
-  }
+  } catch(e){ console.error(e); }
 
-  // הוסף מקומית כדי לתת תחושה מיידית
-  const local = {
-    _id: String(Date.now()),
-    Title:title, title,
-    date:dateVal, Date:dateVal,
-    owner, Owner:owner,
-    Description:desc, description:desc,
-    status, Status:status,
-    tasks, Tasks:tasks,
-    Image:img64, image:img64
-  };
-  events.unshift(local);
-  idxById = new Map(events.map((e,i)=>[e._id, i]));
+  events.unshift({
+    ID: newId, id: newId,
+    Title: title, title,
+    date: dateVal, Date: dateVal,
+    owner, Owner: owner,
+    Description: desc, description: desc,
+    status, Status: status,
+    tasks, Tasks: tasks,
+    Image: img64, image: img64
+  });
 
   renderAll();
-  hideOv('mAdd');
+  closeAdd();
   resetForm();
 
-  // רענון אמיתי מהגיליון אחרי כמה שניות
-  setTimeout(()=>loadData(),4000);
+  setTimeout(()=>loadData(), 2500);
 
-  btn.textContent='שמור וסנכרן ←';
-  btn.disabled=false;
+  btn.textContent='שמור וסנכרן ←'; btn.disabled=false;
 }
 
 function resetForm(){
   ['inT','inD','inDEnd','inDesc'].forEach(x=>id(x).value='');
-  id('inO').value='';
-  id('inS').value='חדש';
-  id('tList').innerHTML='';
-  id('inImg').value='';
-  id('imgSt').textContent='הוסף תמונה';
-  id('imgPW').style.display='none';
+  id('inO').value=''; id('inS').value='חדש';
+  id('tList').innerHTML=''; id('inImg').value='';
+  id('imgSt').textContent='הוסף תמונה'; id('imgPW').style.display='none';
   id('sBtns').querySelectorAll('.sb').forEach((b,i)=>{ b.className = i===0?'sb active-n':'sb'; });
   img64='';
 }
 
 /* ══════════════════════════════════════════
-   VIEW SWITCH (תיקון נקי)
+   VIEW SWITCH
    ══════════════════════════════════════════ */
 function sv(name){
-  const views = ['List','Cal','Tasks'];
-  views.forEach(v=>{
+  ['List','Cal','Tasks'].forEach(v=>{
     id('v'+v).style.display='none';
-    id('nb-'+v.toLowerCase()).classList.remove('on');
+    const nb=id('nb-'+v.toLowerCase()); if(nb) nb.classList.remove('on');
   });
   id('v'+name).style.display='block';
-  id('nb-'+name.toLowerCase()).classList.add('on');
+  const nb=id('nb-'+name.toLowerCase()); if(nb) nb.classList.add('on');
+
+  // רענון קטן כשנכנסים למשימות
+  if(name === 'Tasks'){ renderTasks(); updateStats(); }
 }
 
-/* ══════════════════════════════════════════
-   NOTIFICATIONS
-   ══════════════════════════════════════════ */
 function askNotif(){
-  if(!('Notification' in window)){
-    alert('הדפדפן לא תומך בהתראות');
-    return;
-  }
   Notification.requestPermission().then(p=>alert(p==='granted'?'🔔 התראות הופעלו!':'לא אושר'));
 }
-
-/* ══════════════════════════════════════════
-   SAFETY: minimal escaping for dynamic HTML inserts
-   ══════════════════════════════════════════ */
-function escapeHTML(str){
-  return String(str ?? '')
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
-}
 </script>
-
 </body>
 </html>
