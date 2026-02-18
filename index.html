@@ -12,12 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-/* ══════════════════════════════════════════
-   DESIGN DIRECTION: Municipal Bold — עיצוב
-   עריכתי כבד, פסי צבע, קונטרסט חד, 
-   Serif + Heebo, תחושת עיתון ממשלתי יוקרתי
-   ══════════════════════════════════════════ */
-
 :root {
   --ink: #0d1b2a;
   --blue: #0057a8;
@@ -160,22 +154,19 @@ body {
   padding: 0 16px 112px;
 }
 @media (min-width: 768px) {
-  #eCards { 
-    grid-template-columns: repeat(2, 1fr); 
+  #eCards {
+    grid-template-columns: repeat(2, 1fr);
     max-width: 900px;
     margin: 0 auto;
   }
 }
 @media (min-width: 1200px) {
-  #eCards { 
+  #eCards {
     grid-template-columns: repeat(3, 1fr);
     max-width: 1400px;
   }
 }
-.ecard-accent {
-  width: 5px; flex-shrink: 0;
-  background: var(--blue);
-}
+.ecard-accent { width: 5px; flex-shrink: 0; background: var(--blue); }
 .ecard-accent.mine { background: var(--mint); }
 .ecard-accent.done { background: #d1d5db; }
 .ecard-date {
@@ -273,16 +264,14 @@ body {
   box-shadow: 0 -8px 48px rgba(13,27,42,.25);
 }
 @media (min-width: 768px) {
-  .sh { 
-    border-radius: 28px; 
+  .sh {
+    border-radius: 28px;
     max-height: 85vh;
     animation: pop .32s cubic-bezier(.16,1,.3,1);
   }
 }
 .sh-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
-@media (min-width: 768px) {
-  .sh-handle { display: none; }
-}
+@media (min-width: 768px) { .sh-handle { display: none; } }
 .sh-head {
   padding: 16px 20px;
   display: flex; justify-content: space-between; align-items: center;
@@ -292,10 +281,7 @@ body {
 .sh-title { font-size: 18px; font-weight: 900; color: var(--ink); }
 
 /* ── LOGIN ── */
-.lw {
-  position: fixed; inset: 0; background: var(--ink);
-  z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px;
-}
+.lw { position: fixed; inset: 0; background: var(--ink); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; }
 .lb {
   background: white; border-radius: 28px; padding: 36px 28px;
   width: 100%; max-width: 360px; text-align: center;
@@ -360,7 +346,6 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
   border: 1px solid #bfdbfe; border-radius: 20px;
   padding: 2px 8px; font-size: 10px; font-weight: 700; color: var(--blue);
 }
-
 .add-task-btn {
   color: var(--blue); font-size: 12px; font-weight: 700;
   background: #eff6ff; border: none; border-radius: 8px;
@@ -368,12 +353,13 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
   font-family: 'Heebo', sans-serif; transition: background .15s;
 }
 .add-task-btn:hover { background: #dbeafe; }
-
 .badge { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid var(--ink); }
+
 .sh-hide::-webkit-scrollbar { display: none; }
 .sh-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 </head>
+
 <body>
 
 <!-- LOADER -->
@@ -411,7 +397,7 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
           <i data-lucide="chevron-down" style="width:13px;height:13px;opacity:.7"></i>
         </button>
         <div style="display:flex;gap:8px">
-          <button id="btnNotif"  class="glass-ic"><i data-lucide="bell"        style="width:17px;height:17px"></i></button>
+          <button id="btnNotif"  class="glass-ic"><i data-lucide="bell" style="width:17px;height:17px"></i></button>
           <button id="btnRefresh" class="glass-ic"><i data-lucide="refresh-cw" style="width:17px;height:17px"></i></button>
         </div>
       </div>
@@ -441,7 +427,6 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
 
   <!-- CONTENT -->
   <div style="padding:0 0 0">
-
     <!-- LIST VIEW -->
     <div id="vList">
       <div class="sec-head">
@@ -459,8 +444,12 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
           <h2 id="calTit" style="font-size:18px;font-weight:900;color:var(--ink)"></h2>
         </div>
         <div style="display:flex;gap:8px">
-          <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i></button>
-          <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)"><i data-lucide="chevron-left"  style="width:16px;height:16px;color:var(--ink)"></i></button>
+          <button id="calP" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+            <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--ink)"></i>
+          </button>
+          <button id="calN" style="padding:9px;background:var(--card);border-radius:50%;border:1.5px solid var(--border);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+            <i data-lucide="chevron-left" style="width:16px;height:16px;color:var(--ink)"></i>
+          </button>
         </div>
       </div>
       <div class="cal-head"><div>א׳</div><div>ב׳</div><div>ג׳</div><div>ד׳</div><div>ה׳</div><div>ו׳</div><div>ש׳</div></div>
@@ -477,16 +466,15 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
       </div>
       <div id="tCards" style="display:flex;flex-direction:column;gap:10px;padding:0 16px 112px"></div>
     </div>
-
   </div>
 
   <!-- NAV -->
   <div class="nav">
-    <button id="nb-list"  class="nb on"><i data-lucide="home"         style="width:20px;height:20px"></i><span>בית</span></button>
+    <button id="nb-list"  class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
     <button id="nb-tasks" class="nb" style="position:relative"><i data-lucide="check-square" style="width:20px;height:20px"></i><span>משימות</span><span id="tbadge" class="badge" style="display:none"></span></button>
     <button id="nb-add"   class="nadd"><i data-lucide="plus" style="width:26px;height:26px"></i></button>
-    <button id="nb-cal"   class="nb"><i data-lucide="calendar"        style="width:20px;height:20px"></i><span>לוח שנה</span></button>
-    <button id="nb-set"   class="nb"><i data-lucide="user"            style="width:20px;height:20px"></i><span>פרופיל</span></button>
+    <button id="nb-cal"   class="nb"><i data-lucide="calendar" style="width:20px;height:20px"></i><span>לוח שנה</span></button>
+    <button id="nb-set"   class="nb"><i data-lucide="user" style="width:20px;height:20px"></i><span>פרופיל</span></button>
   </div>
 </div>
 
@@ -592,7 +580,6 @@ label.lbl { font-size: 10px; font-weight: 900; color: var(--muted); text-transfo
         <span id="vOwn" style="font-size:12px;font-weight:600;color:var(--muted)"></span>
       </div>
 
-      <!-- View status -->
       <div id="vsBtns" style="display:flex;gap:8px;margin-bottom:18px">
         <button class="vsb sb" data-v="חדש">חדש</button>
         <button class="vsb sb" data-v="בטיפול">בטיפול</button>
@@ -642,7 +629,9 @@ let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','ר�
 /* ══════════════════════════════════════════
    STATE
    ══════════════════════════════════════════ */
-let events = [], me = localStorage.getItem('batyam_user') || '';
+let events = [];
+let idxById = new Map();  // מפת מזהה→אינדקס (ביצועים)
+let me = localStorage.getItem('batyam_user') || '';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let img64 = '', viewIdx = -1;
 
@@ -655,11 +644,11 @@ window.addEventListener('DOMContentLoaded', () => {
   me ? boot() : showLogin();
 });
 
-function showLogin() { hide('ldr'); showFlex('lw'); buildChips('lchips'); }
+function showLogin() { hideLoader(true); showFlex('lw'); buildChips('lchips'); }
 function boot()      { id('uLabel').textContent = me; show('app'); loadData(); }
 
 /* ══════════════════════════════════════════
-   EVENT WIRING — all addEventListener
+   EVENT WIRING
    ══════════════════════════════════════════ */
 function wire() {
   id('lbtn').onclick   = doLogin;
@@ -674,7 +663,7 @@ function wire() {
   id('btnRefresh').onclick = () => loadData(true);
   id('btnNotif').onclick = askNotif;
 
-  id('mAddClose').onclick  = closeAdd;
+  id('mAddClose').onclick  = () => hideOv('mAdd');
   id('btnAddTask').onclick = () => addRow('tList');
   id('saveBtn').onclick    = save;
   id('inImg').onchange     = handleImg;
@@ -687,20 +676,32 @@ function wire() {
     b.className = cls[b.dataset.v] || 'sb';
   };
 
-  id('mViewClose').onclick  = () => hide('mView');
+  id('mViewClose').onclick  = () => hideOv('mView');
   id('btnVAddTask').onclick = () => addRow('vtList');
+
   id('vsBtns').onclick = e => {
-    const b = e.target.closest('.vsb'); if(b) changeSt(b.dataset.v);
+    const b = e.target.closest('.vsb');
+    if(b && b.dataset.v) changeSt(b.dataset.v);
   };
 
-  id('mSetClose').onclick = () => hide('mSet');
+  id('mSetClose').onclick = () => hideOv('mSet');
   id('btnSwitch').onclick = doSwitch;
   id('tFilter').onchange  = renderTasks;
+
   id('calP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCal(); };
   id('calN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renderCal(); };
 
+  // סגירה בלחיצה על הרקע
   ['mAdd','mView','mSet'].forEach(x => {
-    id(x).onclick = e => { if(e.target.id===x) hide(x); };
+    id(x).onclick = e => { if(e.target.id===x) hideOv(x); };
+  });
+
+  // ESC סוגר מודאל פתוח
+  document.addEventListener('keydown', (e) => {
+    if(e.key !== 'Escape') return;
+    ['mAdd','mView','mSet'].forEach(m => {
+      if(id(m).style.display === 'flex') hideOv(m);
+    });
   });
 }
 
@@ -708,15 +709,30 @@ function wire() {
    HELPERS
    ══════════════════════════════════════════ */
 const id = x => document.getElementById(x);
-function show(x)    { id(x).style.display = 'block'; }
-function hide(x)    { id(x).style.display = 'none';  }
-function showFlex(x){ id(x).style.display = 'flex';  }
-function showOv(x)  { id(x).style.display = 'flex'; lucide.createIcons(); }
+function show(x)     { id(x).style.display = 'block'; }
+function hide(x)     { id(x).style.display = 'none';  }
+function showFlex(x) { id(x).style.display = 'flex';  }
+
+function lockScroll(lock){ document.body.style.overflow = lock ? 'hidden' : ''; }
+
+function showOv(x){
+  id(x).style.display = 'flex';
+  lockScroll(true);
+  lucide.createIcons();
+}
+
+function hideOv(x){
+  id(x).style.display = 'none';
+  const anyOpen = ['mAdd','mView','mSet'].some(m => id(m).style.display === 'flex');
+  if(!anyOpen) lockScroll(false);
+}
 
 /* ══════════════════════════════════════════
    DATE UTILS — תומך בתאריכים מתמשכים
    D/M/YYYY, DD/MM/YYYY, YYYY-MM-DD
-   טווח: D/M/YYYY-D/M/YYYY  או  D/M-D/M/YYYY
+   טווח:
+   - מלא: 30/7/2026-3/8/2026
+   - קצר: 26/7-30/7/2026  (start בלי שנה)
    ══════════════════════════════════════════ */
 function parseSingle(s) {
   if(!s) return null; s = s.trim();
@@ -728,15 +744,20 @@ function parseSingle(s) {
 }
 
 function parseEventDate(raw) {
-  // מחזיר: { start: Date, end: Date|null, isRange: bool }
   if(!raw) return { start:null, end:null, isRange:false };
   raw = raw.trim();
 
-  // ניסיון לפצל בטווח: מחפש '-' שמפריד בין שני תאריכים
-  // פורמטים: "30/7/2026-3/8/2026" או "26/7/2026-30/8/2026"
-  const rangeMatch = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
-  if(rangeMatch) {
-    return { start: parseSingle(rangeMatch[1]), end: parseSingle(rangeMatch[2]), isRange: true };
+  // מלא: DD/MM/YYYY - DD/MM/YYYY
+  let m = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
+  if(m) return { start: parseSingle(m[1]), end: parseSingle(m[2]), isRange: true };
+
+  // קצר: D/M - D/M/YYYY
+  m = raw.match(/^(\d{1,2}\/\d{1,2})\s*-\s*(\d{1,2}\/\d{1,2}\/\d{4})$/);
+  if(m){
+    const end = parseSingle(m[2]);
+    if(!end) return { start:null, end:null, isRange:false };
+    const start = parseSingle(`${m[1]}/${end.getFullYear()}`);
+    return { start, end, isRange: true };
   }
 
   // תאריך בודד
@@ -748,9 +769,7 @@ function dateInRange(evRaw, y, m, d) {
   const { start, end, isRange } = parseEventDate(evRaw);
   if(!start) return false;
   const check = new Date(y, m, d);
-  if(isRange && end) {
-    return check >= start && check <= end;
-  }
+  if(isRange && end) return check >= start && check <= end;
   return start.getFullYear()===y && start.getMonth()===m && start.getDate()===d;
 }
 
@@ -769,9 +788,7 @@ function fmtEventDate(raw) {
 function getDisplayDay(raw) {
   const { start, end, isRange } = parseEventDate(raw);
   if(!start) return { day:'?', isRange:false };
-  if(isRange && end) {
-    return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
-  }
+  if(isRange && end) return { day: `${start.getDate()}–${end.getDate()}`, isRange:true };
   return { day: String(start.getDate()), isRange:false };
 }
 
@@ -790,6 +807,35 @@ function pillClass(st) {
   if(st.includes('טיפול') || st.includes('חוזים') || st.includes('הזמנה') || st.includes('תהליך')) return 'pill pill-wip';
   if(st.includes('ממתין') || st.includes('תומחר')) return 'pill pill-wait';
   return 'pill pill-new';
+}
+
+/* ══════════════════════════════════════════
+   SYNC QUEUE (אמינות מול no-cors)
+   NOTE: אם ה-Apps Script לא תומך ב-action מסוים, הוא פשוט יתעלם.
+   ══════════════════════════════════════════ */
+function queueSync(payload){
+  const q = JSON.parse(localStorage.getItem('batyam_syncq')||'[]');
+  q.push({payload, ts: Date.now()});
+  localStorage.setItem('batyam_syncq', JSON.stringify(q));
+}
+
+async function flushSyncQueue(){
+  const q = JSON.parse(localStorage.getItem('batyam_syncq')||'[]');
+  if(!q.length) return;
+  const rest = [];
+  for(const item of q){
+    try{
+      await fetch(POST,{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:item.payload
+      });
+    }catch(e){
+      rest.push(item);
+    }
+  }
+  localStorage.setItem('batyam_syncq', JSON.stringify(rest));
 }
 
 /* ══════════════════════════════════════════
@@ -821,32 +867,60 @@ function doSwitch() {
   if(!n){ alert('בחר שם'); return; }
   localStorage.setItem('batyam_user', n); me = n;
   id('uLabel').textContent = n;
-  renderAll(); hide('mSet');
+  renderAll(); hideOv('mSet');
 }
 
 /* ══════════════════════════════════════════
    DATA
    ══════════════════════════════════════════ */
 async function loadData(manual=false) {
-  if(manual) { id('ldr').style.cssText='position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1'; }
+  if(manual) {
+    id('ldr').style.cssText = 'position:fixed;inset:0;background:var(--ink);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:1';
+    id('ldr').innerHTML = '<div class="ring"></div><p>BAT YAM 100</p>';
+    id('ldr').style.display = 'flex';
+  }
+
   try {
     const r = await fetch(CSV+'&t='+Date.now());
     const t = await r.text();
-    Papa.parse(t, { header:true, skipEmptyLines:true, complete: res => {
-      events = res.data.filter(e => (e.Title||e.title||'').trim());
 
-      // חלץ בעלים מהגיליון
-      events.forEach(e => {
-        (e.owner||e.Owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o => {
-          if(!OWNERS.includes(o)) OWNERS.push(o);
+    Papa.parse(t, {
+      header:true,
+      skipEmptyLines:true,
+      complete: async (res) => {
+
+        // normalize + add internal id (ביצועים)
+        const rows = res.data
+          .filter(e => (e.Title||e.title||'').trim())
+          .map((e,i) => {
+            const _id = (e.id || e.ID || e.RowId || e.rowId || e.row || '').toString().trim() || String(i);
+            return { ...e, _id };
+          });
+
+        events = rows;
+
+        // index map
+        idxById = new Map(events.map((e,i)=>[e._id, i]));
+
+        // owners extract
+        events.forEach(e => {
+          (e.owner||e.Owner||'').split(/[+,]/).map(x=>x.trim()).filter(Boolean).forEach(o => {
+            if(!OWNERS.includes(o)) OWNERS.push(o);
+          });
         });
-      });
 
-      fillOwnerSelect();
-      renderAll();
-      hideLoader();
-    }});
-  } catch(e){ console.error(e); hideLoader(); }
+        fillOwnerSelect();
+        renderAll();
+        hideLoader();
+
+        // נסה לשטוף תור סנכרון אם נשאר משהו
+        try { await flushSyncQueue(); } catch(_) {}
+      }
+    });
+  } catch(e){
+    console.error(e);
+    hideLoader();
+  }
 }
 
 function fillOwnerSelect() {
@@ -860,8 +934,13 @@ function fillOwnerSelect() {
   });
 }
 
-function hideLoader() {
+function hideLoader(immediate=false) {
   const l = id('ldr');
+  if(!l) return;
+  if(immediate){
+    l.style.display='none';
+    return;
+  }
   l.style.transition = 'opacity .5s';
   l.style.opacity = '0';
   setTimeout(()=>{ l.style.display='none'; }, 520);
@@ -878,10 +957,15 @@ function renderAll() {
 function updateStats() {
   id('stT').textContent = events.length;
   id('stM').textContent = events.filter(e=>(e.owner||e.Owner||'').includes(me)).length;
-  id('stA').textContent = events.filter(e=>{const s=e.status||e.Status||''; return s.includes('טיפול')||s.includes('חוזים')||s.includes('הזמנה')||s.includes('תהליך');}).length;
+  id('stA').textContent = events.filter(e=>{
+    const s=e.status||e.Status||'';
+    return s.includes('טיפול')||s.includes('חוזים')||s.includes('הזמנה')||s.includes('תהליך');
+  }).length;
+
   id('countBadge').textContent = events.length + ' פרויקטים';
-  const myOpen = events.filter(e=>(e.owner||e.Owner||'').includes(me)&&(e.status||e.Status||'')!=='בוצע').length;
-  id('tbadge').style.display = myOpen>0?'block':'none';
+
+  const myOpen = events.filter(e=>(e.owner||e.Owner||'').includes(me) && (e.status||e.Status||'')!=='בוצע').length;
+  id('tbadge').style.display = myOpen>0 ? 'block' : 'none';
 }
 
 /* ══════════════════════════════════════════
@@ -889,9 +973,12 @@ function updateStats() {
    ══════════════════════════════════════════ */
 function renderList() {
   const c = id('eCards'); c.innerHTML = '';
-  if(!events.length){ c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>'; return; }
-  
-  // מיון כרונולוגי לפי תאריך (הכי מוקדם ראשון)
+  if(!events.length){
+    c.innerHTML='<p style="text-align:center;color:var(--muted);padding:64px 0;font-weight:600">אין פרויקטים עדיין</p>';
+    return;
+  }
+
+  // מיון לפי תאריך התחלה (מוקדם ראשון)
   const sorted = [...events].sort((a, b) => {
     const aRaw = a.date || a.Date || '';
     const bRaw = b.date || b.Date || '';
@@ -905,7 +992,9 @@ function renderList() {
 
   const frag = document.createDocumentFragment();
   sorted.forEach((e, loopIdx) => {
-    const origIdx = events.indexOf(e); // שמור את האינדקס המקורי
+    const origIdx = idxById.get(e._id); // O(1)
+    if(origIdx == null) return;
+
     const title  = e.Title||e.title||'ללא שם';
     const raw    = e.date||e.Date||'';
     const owner  = e.owner||e.Owner||'-';
@@ -931,22 +1020,24 @@ function renderList() {
     const body = document.createElement('div');
     body.className = 'ecard-body';
     body.innerHTML = `
-      <div class="ecard-title">${title}</div>
+      <div class="ecard-title">${escapeHTML(title)}</div>
       <div class="ecard-meta">
-        <span class="${pillClass(status)}">${status}</span>
-        <span class="ecard-owner">👤 ${owner}${isMine?' · <b style="color:var(--mint)">שלי</b>':''}</span>
+        <span class="${pillClass(status)}">${escapeHTML(status)}</span>
+        <span class="ecard-owner">👤 ${escapeHTML(owner)}${isMine?' · <b style="color:var(--mint)">שלי</b>':''}</span>
         ${isRange?`<span class="range-badge"><i data-lucide="calendar-range" style="width:10px;height:10px"></i> טווח</span>`:''}
       </div>`;
     div.appendChild(body);
+
     div.addEventListener('click', ()=>openView(origIdx));
     frag.appendChild(div);
   });
+
   c.appendChild(frag);
   lucide.createIcons();
 }
 
 /* ══════════════════════════════════════════
-   CALENDAR — תומך בתאריכים מתמשכים
+   CALENDAR
    ══════════════════════════════════════════ */
 function renderCal() {
   const g = id('calG'); g.innerHTML = '';
@@ -970,13 +1061,12 @@ function renderCal() {
     num.textContent = d;
     cell.appendChild(num);
 
-    // בדוק כל אירוע — כולל טווחים
     events.forEach((e, idx) => {
       const raw = e.date||e.Date||'';
       if(!dateInRange(raw, calY, calM, d)) return;
 
       const isMine = (e.owner||e.Owner||'').includes(me);
-      const { isRange } = parseEventDate(raw);
+      const { isRange, start } = parseEventDate(raw);
 
       const ev = document.createElement('span');
       ev.className = 'cev' + (isMine?' mine':'') + (isRange?' range':'');
@@ -984,8 +1074,6 @@ function renderCal() {
       ev.onclick = evt => { evt.stopPropagation(); openView(idx); };
       cell.appendChild(ev);
 
-      // סמן יום כ-range-day אם הוא חלק מטווח (לא רק ראשון)
-      const { start } = parseEventDate(raw);
       if(isRange && start && !(start.getDate()===d && start.getMonth()===calM && start.getFullYear()===calY)) {
         cell.classList.add('range-day');
       }
@@ -1013,19 +1101,25 @@ function buildFilter() {
 function renderTasks() {
   const c=id('tCards'); c.innerHTML='';
   const filter=id('tFilter').value;
+
   const open=events.filter(e=>{
     const st=e.status||e.Status||'';
     if(st==='בוצע') return false;
-    if(filter&&!(e.owner||e.Owner||'').includes(filter)) return false;
+    if(filter && !(e.owner||e.Owner||'').includes(filter)) return false;
     return true;
   });
+
   if(!open.length){
     c.innerHTML='<div style="text-align:center;padding:64px 0"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--muted);font-weight:600">אין משימות פתוחות!</p></div>';
     return;
   }
+
   const frag=document.createDocumentFragment();
   open.forEach(e=>{
-    const idx=events.indexOf(e), isMine=(e.owner||e.Owner||'').includes(me);
+    const idx = idxById.get(e._id);
+    if(idx == null) return;
+
+    const isMine=(e.owner||e.Owner||'').includes(me);
     const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
     const card=document.createElement('div');
     card.className='ecard';
@@ -1037,9 +1131,9 @@ function renderTasks() {
     top.innerHTML=`
       <div style="display:flex;align-items:center;gap:8px">
         <div class="ecard-accent ${isMine?'mine':''}" style="width:3px;height:20px;border-radius:2px;flex-shrink:0"></div>
-        <h3 style="font-weight:700;color:var(--ink);font-size:13px">${e.Title||e.title||'—'}</h3>
+        <h3 style="font-weight:700;color:var(--ink);font-size:13px">${escapeHTML(e.Title||e.title||'—')}</h3>
       </div>
-      <span style="font-size:11px;color:var(--muted);font-weight:600">👤 ${e.owner||e.Owner||'-'}</span>`;
+      <span style="font-size:11px;color:var(--muted);font-weight:600">👤 ${escapeHTML(e.owner||e.Owner||'-')}</span>`;
     card.appendChild(top);
 
     const tw=document.createElement('div'); tw.style.cssText='padding:10px 14px;display:flex;flex-direction:column;gap:7px';
@@ -1065,6 +1159,7 @@ function renderTasks() {
     foot.appendChild(ob); card.appendChild(foot);
     frag.appendChild(card);
   });
+
   c.appendChild(frag);
 }
 
@@ -1074,6 +1169,7 @@ function renderTasks() {
 function openView(idx) {
   const e=events[idx]; if(!e) return;
   viewIdx=idx;
+
   id('vT').textContent   = e.Title||e.title||'';
   id('vDateTxt').textContent = fmtEventDate(e.date||e.Date||'');
   id('vOwn').textContent = '👤 ' + (e.owner||e.Owner||'—');
@@ -1083,53 +1179,65 @@ function openView(idx) {
   refreshVSt(st);
 
   const imgSrc=e.Image||e.image||'';
-  if(imgSrc.startsWith('data:image')){ id('vImg').src=imgSrc; id('vImg').style.display='block'; id('vImgPH').style.display='none'; }
-  else { id('vImg').style.display='none'; id('vImgPH').style.display='flex'; }
+  if(imgSrc.startsWith('data:image')){
+    id('vImg').src=imgSrc;
+    id('vImg').style.display='block';
+    id('vImgPH').style.display='none';
+  } else {
+    id('vImg').style.display='none';
+    id('vImgPH').style.display='flex';
+  }
 
   const tl=id('vtList'); tl.innerHTML='';
   const tasks=(e.tasks||e.Tasks||'').split('|').filter(t=>t.trim());
+
   if(tasks.length){
     tasks.forEach((t, taskIdx) => {
-      const row=document.createElement('div'); 
+      const row=document.createElement('div');
       row.className='tr';
-      row.style.position = 'relative';
-      
-      const cb=document.createElement('input'); 
+
+      const cb=document.createElement('input');
       cb.type='checkbox';
+
       cb.onchange=()=>{
         row.classList.toggle('done',cb.checked);
-        // אם סומן, הצג כפתור מחיקה
         if(cb.checked) {
           setTimeout(() => {
-            const wasChecked = cb.checked;
-            if(wasChecked) {
-              const confirmDel = confirm('למחוק משימה זו?');
-              if(confirmDel) {
-                // מחק מהרשימה
-                const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '').split('|').filter(t=>t.trim());
-                currentTasks.splice(taskIdx, 1);
-                events[viewIdx].tasks = currentTasks.join('|');
-                events[viewIdx].Tasks = currentTasks.join('|');
-                row.remove();
-              } else {
-                cb.checked = false;
-                row.classList.remove('done');
-              }
+            if(!cb.checked) return;
+            const confirmDel = confirm('למחוק משימה זו?');
+            if(confirmDel) {
+              const currentTasks = (events[viewIdx].tasks || events[viewIdx].Tasks || '')
+                .split('|').filter(x=>x.trim());
+              currentTasks.splice(taskIdx, 1);
+
+              const joined = currentTasks.join('|');
+              events[viewIdx].tasks = joined;
+              events[viewIdx].Tasks = joined;
+
+              row.remove();
+
+              // נסיון סנכרון משימות (דורש תמיכה ב-Apps Script ב-action=updateTasks)
+              syncTasksForViewedEvent();
+            } else {
+              cb.checked = false;
+              row.classList.remove('done');
             }
           }, 800);
         }
       };
-      
-      const sp=document.createElement('span'); 
-      sp.style.fontSize='13px'; 
+
+      const sp=document.createElement('span');
+      sp.style.fontSize='13px';
       sp.textContent=t;
-      row.appendChild(cb); 
-      row.appendChild(sp); 
+
+      row.appendChild(cb);
+      row.appendChild(sp);
       tl.appendChild(row);
     });
   } else {
     tl.innerHTML='<span style="font-size:11px;color:#cbd5e1">אין משימות מוגדרות</span>';
   }
+
   showOv('mView');
 }
 
@@ -1138,53 +1246,68 @@ function refreshVSt(st) {
   document.querySelectorAll('.vsb').forEach(b=>{
     b.className='vsb sb'+(b.dataset.v===st?' '+map[b.dataset.v]:'');
   });
-  const pill=id('vPill');
-  pill.innerHTML=`<span class="${pillClass(st)}">${st}</span>`;
+  id('vPill').innerHTML=`<span class="${pillClass(st)}">${escapeHTML(st)}</span>`;
 }
 
 function changeSt(st) {
   if(viewIdx<0) return;
-  
+
   // עדכן מקומית
-  events[viewIdx].status=st; 
+  events[viewIdx].status=st;
   events[viewIdx].Status=st;
-  
+
   // עדכן UI
-  refreshVSt(st); 
-  updateStats(); 
+  refreshVSt(st);
+  updateStats();
   renderList();
-  
-  // הצג הודעת הצלחה קטנה
+
+  // הודעת הצלחה קטנה
   const pill = id('vPill');
   const oldHTML = pill.innerHTML;
-  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${st}</span>`;
-  
-  // שלח עדכון לשרת (fire and forget)
+  pill.innerHTML = `<span class="${pillClass(st)}" style="animation:pop .3s">✓ ${escapeHTML(st)}</span>`;
+
+  // שלח עדכון לשרת + תור סנכרון (אמינות)
   const e = events[viewIdx];
-  const body = new URLSearchParams({
+  const payload = new URLSearchParams({
     action: 'update',
     title: e.Title || e.title || '',
     status: st
-  });
+  }).toString();
+
+  queueSync(payload);
   fetch(POST, {
     method: 'POST',
     mode: 'no-cors',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: body.toString()
-  }).catch(err => console.error('Status update error:', err));
-  
-  // החזר את הפיל למצב רגיל אחרי שנייה
-  setTimeout(() => {
-    pill.innerHTML = oldHTML;
-  }, 1000);
+    body: payload
+  }).then(()=>flushSyncQueue()).catch(()=>{});
+
+  setTimeout(() => { pill.innerHTML = oldHTML; }, 1000);
+}
+
+function syncTasksForViewedEvent(){
+  if(viewIdx<0) return;
+  const e = events[viewIdx];
+
+  const payload = new URLSearchParams({
+    action: 'updateTasks', // דורש תמיכה ב-Apps Script
+    title: e.Title || e.title || '',
+    tasks: e.tasks || e.Tasks || ''
+  }).toString();
+
+  queueSync(payload);
+  fetch(POST, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: payload
+  }).then(()=>flushSyncQueue()).catch(()=>{});
 }
 
 /* ══════════════════════════════════════════
    ADD MODAL
    ══════════════════════════════════════════ */
 function openAdd() { fillOwnerSelect(); showOv('mAdd'); }
-function closeAdd(){ hide('mAdd'); }
-
 function addRow(cid) {
   const c = id(cid);
   const row = document.createElement('div');
@@ -1192,11 +1315,11 @@ function addRow(cid) {
   row.style.background = 'white';
 
   const inp = document.createElement('input');
-  inp.type = 'text'; inp.placeholder = 'כתוב משימה...';
+  inp.type = 'text';
+  inp.placeholder = 'כתוב משימה...';
   inp.className = 'task-inp';
   inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:Heebo,sans-serif;color:var(--ink);min-width:0';
-  
-  // אפשר Enter להוסיף משימה חדשה
+
   inp.addEventListener('keydown', e => {
     if(e.key === 'Enter' && inp.value.trim()) {
       e.preventDefault();
@@ -1213,11 +1336,11 @@ function addRow(cid) {
   del.onmouseenter = () => { del.style.color = '#dc2626'; };
   del.onmouseleave = () => { del.style.color = '#fca5a5'; };
 
-  row.appendChild(inp); row.appendChild(del);
+  row.appendChild(inp);
+  row.appendChild(del);
   c.appendChild(row);
-  lucide.createIcons(); 
-  
-  // מיקוד אוטומטי עם עיכוב קצר כדי לאפשר לאנימציות להסתיים
+
+  lucide.createIcons();
   setTimeout(() => inp.focus(), 50);
 }
 
@@ -1225,10 +1348,15 @@ function handleImg() {
   const f = id('inImg').files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = ev => {
-    if(ev.target.result.length>50000){ alert('התמונה גדולה מדי — עד ~37KB'); id('inImg').value=''; return; }
+    if(ev.target.result.length>50000){
+      alert('התמונה גדולה מדי — עד ~37KB');
+      id('inImg').value='';
+      return;
+    }
     img64 = ev.target.result;
     id('imgSt').textContent='✅ תמונה נבחרה';
-    id('imgPE').src=img64; id('imgPW').style.display='block';
+    id('imgPE').src=img64;
+    id('imgPW').style.display='block';
   };
   r.readAsDataURL(f);
 }
@@ -1241,15 +1369,15 @@ async function save() {
   const desc   = id('inDesc').value.trim();
   const status = id('inS').value;
   const tasks  = [...id('tList').querySelectorAll('.task-inp')]
-                   .map(x=>x.value.trim()).filter(Boolean).join('|');
+                  .map(x=>x.value.trim()).filter(Boolean).join('|');
 
   if(!title){ alert('נא להזין שם אירוע'); return; }
 
   // בנה תאריך — אם יש טווח, פורמט: D/M/YYYY-D/M/YYYY
   let dateVal = dStart;
   if(dStart && dEnd) {
-    const s = parseSingle(dStart.split('-').reverse().join('/')) || new Date(dStart);
-    const e = parseSingle(dEnd.split('-').reverse().join('/'))   || new Date(dEnd);
+    const s = new Date(dStart);
+    const e = new Date(dEnd);
     const fmt = d => `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
     dateVal = `${fmt(s)}-${fmt(e)}`;
   } else if(dStart) {
@@ -1259,40 +1387,103 @@ async function save() {
 
   const btn=id('saveBtn'); btn.textContent='שומר...'; btn.disabled=true;
 
-  const body=new URLSearchParams({title,date:dateVal,owner,desc,status,tasks,image:img64});
-  try { await fetch(POST,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}); }
-  catch(e){ console.error(e); }
+  const payload = new URLSearchParams({
+    title,
+    date:dateVal,
+    owner,
+    desc,
+    status,
+    tasks,
+    image:img64
+  }).toString();
 
-  events.unshift({Title:title,date:dateVal,Date:dateVal,owner,Owner:owner,Description:desc,status,Status:status,tasks,Tasks:tasks,Image:img64});
-  renderAll(); closeAdd(); resetForm();
+  // תור סנכרון + שליחה
+  queueSync(payload);
+  try{
+    await fetch(POST,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:payload
+    });
+    await flushSyncQueue();
+  } catch(e){
+    console.error(e);
+  }
+
+  // הוסף מקומית כדי לתת תחושה מיידית
+  const local = {
+    _id: String(Date.now()),
+    Title:title, title,
+    date:dateVal, Date:dateVal,
+    owner, Owner:owner,
+    Description:desc, description:desc,
+    status, Status:status,
+    tasks, Tasks:tasks,
+    Image:img64, image:img64
+  };
+  events.unshift(local);
+  idxById = new Map(events.map((e,i)=>[e._id, i]));
+
+  renderAll();
+  hideOv('mAdd');
+  resetForm();
+
+  // רענון אמיתי מהגיליון אחרי כמה שניות
   setTimeout(()=>loadData(),4000);
-  btn.textContent='שמור וסנכרן ←'; btn.disabled=false;
+
+  btn.textContent='שמור וסנכרן ←';
+  btn.disabled=false;
 }
 
 function resetForm(){
   ['inT','inD','inDEnd','inDesc'].forEach(x=>id(x).value='');
-  id('inO').value=''; id('inS').value='חדש';
-  id('tList').innerHTML=''; id('inImg').value='';
-  id('imgSt').textContent='הוסף תמונה'; id('imgPW').style.display='none';
+  id('inO').value='';
+  id('inS').value='חדש';
+  id('tList').innerHTML='';
+  id('inImg').value='';
+  id('imgSt').textContent='הוסף תמונה';
+  id('imgPW').style.display='none';
   id('sBtns').querySelectorAll('.sb').forEach((b,i)=>{ b.className = i===0?'sb active-n':'sb'; });
   img64='';
 }
 
 /* ══════════════════════════════════════════
-   VIEW SWITCH
+   VIEW SWITCH (תיקון נקי)
    ══════════════════════════════════════════ */
 function sv(name){
-  ['List','Cal','Tasks'].forEach(v=>{
+  const views = ['List','Cal','Tasks'];
+  views.forEach(v=>{
     id('v'+v).style.display='none';
-    const nb=id('nb-'+v.toLowerCase()); if(nb) nb.classList.remove('on');
+    id('nb-'+v.toLowerCase()).classList.remove('on');
   });
   id('v'+name).style.display='block';
-  const nb=id('nb-'+name.toLowerCase()); if(nb) nb.classList.add('on');
+  id('nb-'+name.toLowerCase()).classList.add('on');
 }
 
+/* ══════════════════════════════════════════
+   NOTIFICATIONS
+   ══════════════════════════════════════════ */
 function askNotif(){
+  if(!('Notification' in window)){
+    alert('הדפדפן לא תומך בהתראות');
+    return;
+  }
   Notification.requestPermission().then(p=>alert(p==='granted'?'🔔 התראות הופעלו!':'לא אושר'));
 }
+
+/* ══════════════════════════════════════════
+   SAFETY: minimal escaping for dynamic HTML inserts
+   ══════════════════════════════════════════ */
+function escapeHTML(str){
+  return String(str ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
 </script>
+
 </body>
 </html>
