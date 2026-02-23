@@ -58,7 +58,7 @@
     }
     #ldr p{color:rgba(255,255,255,.45); font-size:10px; font-weight:800; letter-spacing:.2em; text-transform:uppercase}
 
-    /* ❗️הבאנר והפס הניווט לא “דביקים”: גוללים והם נעלמים */
+    /* הבאנר והפס הניווט לא “דביקים”: גוללים והם נעלמים */
     .topWrap{
       position:relative;
       background:linear-gradient(180deg, rgba(13,27,42,1) 0%, rgba(13,27,42,1) 65%, rgba(13,27,42,.0) 100%);
@@ -191,7 +191,7 @@
     .pill-done{background:#d1fae5;color:#065f46}
     .pill-wait{background:#f3f4f6;color:#4b5563}
 
-    /* ✅ שורת הכפתורים: רקע כהה (יפה גם על לבן) */
+    /* שורת הכפתורים: רקע כהה */
     .navTop{
       margin:6px 14px 0;
       background:rgba(13,27,42,.82);
@@ -343,7 +343,6 @@
       <div class="navTop containerWide">
         <button id="nb-list" class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
 
-        <!-- ✅ כאן האייקון של משימות הוא favicon.png -->
         <button id="nb-tasks" class="nb" style="position:relative">
           <img src="favicon.png" alt="tasks" style="width:20px;height:20px;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))">
           <span>משימות</span>
@@ -420,7 +419,7 @@
     let activeEvent = null;
     let viewTaskMode = 'doing'; // doing | done
 
-    // ✅ דיפולט לוח שנה: יוני 2026
+    // דיפולט לוח שנה: יוני 2026
     let calY = 2026, calM = 5; // 0=Jan, 5=June
 
     const $ = (id) => document.getElementById(id);
@@ -428,7 +427,7 @@
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
 
-      // ✅ PWA: Service Worker register (GitHub Pages over HTTPS)
+      // PWA: Service Worker register (GitHub Pages over HTTPS)
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./sw.js').catch(()=>{});
@@ -610,7 +609,7 @@
       const wrap = $('eCards');
       wrap.innerHTML = '';
 
-      // ✅ מסך פתיחה: סדר כרונולוגי (ללא תאריך בסוף)
+      // מסך פתיחה: סדר כרונולוגי (ללא תאריך בסוף)
       const sorted = [...events].sort((a,b)=>{
         const da = parseDate_(String(a.date||''))?.getTime() ?? 9e15;
         const db = parseDate_(String(b.date||''))?.getTime() ?? 9e15;
@@ -663,19 +662,86 @@
       return { dayTxt:String(day), monTxt:mon, isRange:false };
     }
 
-    function parseDate_(s){
-      if(!s) return null;
+    /* =========================
+       DATE HELPERS (FIXED for calendar alignment + ranges)
+       ========================= */
 
-      let d = new Date(s);
+    // תומך: dd/mm/yyyy | dd.mm.yyyy | yyyy-mm-dd | ISO
+    function parseDate_(s){
+      const raw = String(s || '').trim();
+      if(!raw) return null;
+
+      let d = new Date(raw);
       if(!isNaN(d.getTime())) return d;
 
-      const m = String(s).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      // dd/mm/yyyy
+      let m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
       if(m){
-        const dd = parseInt(m[1],10), mm = parseInt(m[2],10)-1, yy = parseInt(m[3],10);
+        const dd = parseInt(m[1],10);
+        const mm = parseInt(m[2],10)-1;
+        const yy = parseInt(m[3],10);
         d = new Date(yy, mm, dd);
-        if(!isNaN(d.getTime())) return d;
+        return isNaN(d.getTime()) ? null : d;
       }
+
+      // dd.mm.yyyy
+      m = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if(m){
+        const dd = parseInt(m[1],10);
+        const mm = parseInt(m[2],10)-1;
+        const yy = parseInt(m[3],10);
+        d = new Date(yy, mm, dd);
+        return isNaN(d.getTime()) ? null : d;
+      }
+
+      // yyyy-mm-dd
+      m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if(m){
+        const yy = parseInt(m[1],10);
+        const mm = parseInt(m[2],10)-1;
+        const dd = parseInt(m[3],10);
+        d = new Date(yy, mm, dd);
+        return isNaN(d.getTime()) ? null : d;
+      }
+
       return null;
+    }
+
+    // מזהה טווחים: "01/07/2026 - 03/07/2026" (עם/בלי רווחים)
+    function parseDateRange_(s){
+      const raw = String(s || '').trim();
+      if(!raw) return { start:null, end:null, isRange:false };
+
+      const parts = raw.split(/\s*-\s*/);
+      if(parts.length >= 2){
+        const a = parseDate_(parts[0]);
+        const b = parseDate_(parts[1]);
+        if(a && b){
+          const start = (a.getTime() <= b.getTime()) ? a : b;
+          const end   = (a.getTime() <= b.getTime()) ? b : a;
+          return { start, end, isRange:true };
+        }
+      }
+
+      const single = parseDate_(raw);
+      return { start: single, end: single, isRange:false };
+    }
+
+    function startOfDay_(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+    function endOfDay_(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59,999); }
+
+    // האם אירוע נוגע ביום מסוים (גם טווחים)
+    function eventHitsDay_(eventDateCell, y, m, day){
+      const { start, end } = parseDateRange_(eventDateCell);
+      if(!start || !end) return false;
+
+      const cellDay = new Date(y, m, day);
+      const s = startOfDay_(start);
+      const e = endOfDay_(end);
+      const c0 = startOfDay_(cellDay);
+      const c1 = endOfDay_(cellDay);
+
+      return (s.getTime() <= c1.getTime()) && (e.getTime() >= c0.getTime());
     }
 
     /* =========================
@@ -982,7 +1048,7 @@
     }
 
     /* =========================
-       Calendar (shows titles)
+       Calendar (FIXED alignment!)
        ========================= */
     function renderCalendar_(){
       const title = $('calTit');
@@ -993,20 +1059,18 @@
       title.textContent = monthNames[calM] + ' ' + calY;
 
       const first = new Date(calY, calM, 1);
-      const startDay = (first.getDay()+6)%7;
-      const daysInMonth = new Date(calY, calM+1, 0).getDate();
 
+      // ✅ FIX: הכותרות הן א׳..ש׳ (Sunday..Saturday) ולכן:
+      const startDay = first.getDay(); // 0=Sunday
+
+      const daysInMonth = new Date(calY, calM+1, 0).getDate();
       grid.innerHTML='';
 
       for(let i=0;i<startDay;i++){
         grid.appendChild(dayCell_('', false, []));
       }
       for(let d=1; d<=daysInMonth; d++){
-        const hits = events.filter(e=>{
-          const ed = parseDate_(String(e.date||''));
-          if(!ed) return false;
-          return ed.getFullYear()===calY && ed.getMonth()===calM && ed.getDate()===d;
-        });
+        const hits = events.filter(e => eventHitsDay_(String(e.date||''), calY, calM, d));
         grid.appendChild(dayCell_(String(d), true, hits));
       }
     }
@@ -1030,6 +1094,10 @@
       div.appendChild(day);
 
       if(hits && hits.length){
+        const titles = hits.map(x => x.Title).filter(Boolean);
+        const shown = titles.slice(0,2);
+        const more = titles.length - shown.length;
+
         const t = document.createElement('div');
         t.style.marginTop = '4px';
         t.style.fontSize = '9px';
@@ -1040,7 +1108,7 @@
         t.style.webkitBoxOrient = 'vertical';
         t.style.webkitLineClamp = '2';
         t.style.overflow = 'hidden';
-        t.textContent = hits.map(x => x.Title).filter(Boolean).slice(0,2).join(' · ');
+        t.textContent = shown.join(' · ') + (more>0 ? ` · ועוד ${more}` : '');
         div.appendChild(t);
 
         const dot = document.createElement('div');
