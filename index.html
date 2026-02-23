@@ -367,10 +367,12 @@ function ren(){
 function updStat(){
   id('sTot').innerText = events.length;
   id('sMine').innerText = events.filter(e=>val(e,'owner')===me).length;
-  id('sAct').innerText = events.filter(e=>val(e,'status').includes('טיפול')).length;
-  const mo = events.filter(e=>val(e,'owner')===me && !val(e,'status').includes('בוצע')).length;
+  id('sAct').innerText = events.filter(e=>val(e,'status') && !val(e,'status').includes('בוצע') && !val(e,'status').includes('ממתין')).length;
+  const mo = events.filter(e=>val(e,'owner')===me).length;
   id('bdg').style.display = mo>0 ? 'block' : 'none';
- }
+  const cntEl = id('cnt');
+  if(cntEl) cntEl.innerText = events.length + ' פרויקטים';
+}
 
 function renList(){
   const c=id('eCards'); c.innerHTML='';
