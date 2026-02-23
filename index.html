@@ -87,7 +87,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 
 /* TASKS ROW */
 .tr { display:flex; align-items:center; gap:10px; padding:10px; background:white; border:1px solid var(--border); border-radius:10px; margin-bottom:6px; }
-.tr input[type=checkbox] { width:18px; height:18px; accent-color:var(--blue); cursor:pointer; flex-shrink:0; }
+.tr input[type=checkbox] { width:18px; height:18px; accent-color:var(--blue); }
 .tr.done span { text-decoration:line-through; color:var(--muted); opacity:0.7; }
 
 /* CALENDAR */
@@ -261,7 +261,6 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchN
 const SCRIPT = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
 let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
 
-// התיקון הקריטי: לוח השנה ייפתח כברירת מחדל בשנת 2026 כדי להתאים לאירועי המאה
 let events=[], me=localStorage.getItem('user')||'', calM=new Date().getMonth(), calY=2026, img64='', vIdx=-1;
 
 // --- INIT ---
@@ -291,13 +290,11 @@ function wire() {
   id('btnSave').onclick=save;
   id('iaImg').onchange=hImg;
   
-  // התיקון לחצים: ימינה = אחורה (קודם), שמאלה = קדימה (הבא)
   id('cP').onclick=()=>{calM--;if(calM<0){calM=11;calY--}renCal()};
   id('cN').onclick=()=>{calM++;if(calM>11){calM=0;calY++}renCal()};
   
   id('tFil').onchange=renTasks;
   
-  // הוספת משימה תוך כדי צפייה (עובד, שומר ומתעדכן)
   id('btnAddTV').onclick = () => {
     const c = id('ivTL');
     const d = document.createElement('div'); d.className='tr';
@@ -310,13 +307,10 @@ function wire() {
         const tasks = getTasks(events[vIdx]);
         tasks.push(inp.value.trim());
         const str = tasks.join('|');
-        // עדכון מקומי
         events[vIdx].tasks = str;
         events[vIdx].Tasks = str;
         events[vIdx]['משימות'] = str;
-        // עדכון תצוגה
         renViewTasks(events[vIdx]);
-        // עדכון שרת
         const body = new URLSearchParams({action:'update', title:val(events[vIdx],'title'), tasks:str});
         fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
       }
@@ -326,7 +320,6 @@ function wire() {
 
 // --- DATA ---
 function val(e,k){ 
-  // מנוע זיהוי עמודות סופר-חכם עברית/אנגלית
   if(!e) return '';
   if(k==='title') return e.Title||e.title||e['שם האירוע']||e['שם']||'';
   if(k==='date') return e.Date||e.date||e['תאריך']||'';
@@ -341,8 +334,11 @@ function val(e,k){
 async function loadData(manual){
   if(manual) id('ldr').style.opacity=1;
   try {
-    const r=await fetch(CSV_URL+'&t='+Date.now());
+    const r=await fetch(CSV_URL+(CSV_URL.includes('?')?'&':'?')+'t='+Date.now());
+    if(!r.ok) throw new Error("Network Error");
     const t=await r.text();
+    if(t.includes("<html")) throw new Error("HTML Returned");
+    
     Papa.parse(t,{header:true,skipEmptyLines:true,complete:res=>{
       events=res.data.filter(e=>val(e,'title')); 
       events.forEach(e=>{
@@ -356,7 +352,11 @@ async function loadData(manual){
       
       id('ldr').style.opacity=0; setTimeout(()=>{id('ldr').style.display='none'},500);
     }});
-  } catch(e){ alert('שגיאה בטעינה'); id('ldr').style.display='none'; }
+  } catch(e){ 
+      console.error(e); 
+      alert("שגיאה בטעינת הנתונים! וודא שהאקסל הוגדר כ-'פרסם באינטרנט' (.csv)"); 
+      id('ldr').style.display='none'; 
+  }
 }
 
 function ren(){
@@ -378,7 +378,7 @@ function renList(){
   if(!events.length){ c.innerHTML='<div style="text-align:center;color:#94a3b8;padding:40px;width:100%">אין פרויקטים במערכת</div>'; return; }
   
   const s=[...events].sort((a,b)=>{
-    return pDate(val(b,'date')) - pDate(val(a,'date')); // חדש למעלה
+    return pDate(val(b,'date')) - pDate(val(a,'date')); 
   });
 
   s.forEach(e=>{
@@ -410,10 +410,9 @@ function renCal(){
   const g=id('cGrid'); g.innerHTML='';
   id('cTit').innerText = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
   const dim = new Date(calY,calM+1,0).getDate();
-  const fd = new Date(calY,calM,1).getDay(); // יום ראשון בחודש
+  const fd = new Date(calY,calM,1).getDay();
   
-  // תאים ריקים של תחילת החודש
-  for(let i=0;i<fd;i++){
+  for(let i=0;i<fd;i++) {
     const emp = document.createElement('div');
     emp.className = 'cemp';
     g.appendChild(emp);
@@ -425,19 +424,16 @@ function renCal(){
     cell.className='cd'+(isT?' tod':'');
     cell.innerHTML=`<span style="font-weight:900;font-size:10px;color:${isT?'var(--blue)':'#94a3b8'}">${d}</span>`;
     
-    // מנוע חיפוש אירועים חסין כדורים לתאריכים!
     events.forEach((e,ix)=>{
       const date=val(e,'date');
       if(!date) return;
       
-      const parts = date.split(/[-/.]/); // מפרק גם לוכסן, גם מקף, וגם נקודה!
+      const parts = date.split(/[-/.]/); 
       let match=false;
       
       if(parts.length>=3){
         const p0 = parseInt(parts[0]), p1 = parseInt(parts[1]), p2 = parseInt(parts[2]);
-        // אם השנה בסוף: DD/MM/YYYY
         if(p2===calY && p1===(calM+1) && p0===d) match=true;
-        // אם השנה בהתחלה: YYYY-MM-DD
         if(p0===calY && p1===(calM+1) && p2===d) match=true;
       }
       
@@ -536,7 +532,6 @@ function updSt(st){
   ren();
   const body=new URLSearchParams({action:'update',title:val(e,'title'),status:st});
   fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
-  alert('סטטוס עודכן ל: ' + st);
 }
 
 async function save(){
@@ -560,7 +555,6 @@ async function save(){
   id('mAdd').style.display='none';
   btn.innerText='שמור וסנכרן'; btn.disabled=false;
   
-  // ניקוי טופס הוספה
   id('iaT').value=''; id('iaDesc').value=''; id('iaTL').innerHTML=''; id('iaO').value='';
 }
 
@@ -608,7 +602,7 @@ function hImg(){
     const img=new Image(); img.src=e.target.result;
     img.onload=()=>{
       const cv=document.createElement('canvas'); const x=cv.getContext('2d');
-      const s=Math.min(1, 600/img.width); // דחיסה אוטומטית שומרת על איכות ולא קורסת
+      const s=Math.min(1, 600/img.width);
       cv.width=img.width*s; cv.height=img.height*s;
       x.drawImage(img,0,0,cv.width,cv.height);
       img64=cv.toDataURL('image/jpeg',0.7);
