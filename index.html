@@ -56,12 +56,10 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 .p-new { background:#dbeafe; color:#1e40af; }
 .p-wip { background:#fef3c7; color:#92400e; }
 .p-done { background:#d1fae5; color:#065f46; }
-.p-wait { background:#f3e8ff; color:#6b21a8; }
 
 .nav { position:fixed; bottom:20px; left:16px; right:16px; background:var(--ink); padding:8px 12px; border-radius:30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 12px 32px rgba(13,27,42,.4); z-index:50; }
 .nb { background:none; border:none; color:rgba(255,255,255,.4); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9px; font-weight:700; padding:8px 12px; border-radius:16px; transition:all .2s; cursor:pointer; }
 .nb.on { color:white; background:rgba(255,255,255,.15); }
-.nb .ico { font-size:20px; line-height:1; }
 .n-add { background:var(--gold); color:var(--ink); width:52px; height:52px; border-radius:20px; border:4px solid var(--ink); transform:translateY(-20px); box-shadow:0 8px 24px rgba(245,166,35,.4); cursor:pointer; font-size:28px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
 .n-add:active { transform:translateY(-20px) scale(.95); }
 
@@ -69,7 +67,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 .sh { background:var(--card); width:100%; max-width:500px; max-height:92vh; border-radius:28px 28px 0 0; display:flex; flex-direction:column; animation:up .3s cubic-bezier(.16,1,.3,1); box-shadow:0 -10px 40px rgba(0,0,0,.2); }
 .sh-h { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
 .sh-t { font-size:18px; font-weight:900; }
-.cls { width:32px; height:32px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; font-size:16px; }
+.cls { width:32px; height:32px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; }
 .sh-scroll { flex:1; overflow-y:auto; padding:20px; }
 
 .fld { width:100%; padding:12px; background:#f8fafc; border:1.5px solid var(--border); border-radius:12px; outline:none; font-family:'Heebo',sans-serif; font-size:14px; transition:0.2s; }
@@ -78,7 +76,6 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 
 .tr { display:flex; align-items:center; gap:10px; padding:10px; background:white; border:1px solid var(--border); border-radius:10px; margin-bottom:6px; }
 .tr input[type=checkbox] { width:18px; height:18px; accent-color:var(--blue); }
-.tr.done span { text-decoration:line-through; color:var(--muted); opacity:0.7; }
 
 .cal-g { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; padding-bottom:100px; }
 .cd { min-height:70px; background:white; border:1px solid var(--border); border-radius:10px; padding:4px; }
@@ -96,7 +93,16 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 </head>
 <body>
 
-<div id="ldr"><div class="ring"></div><p>טוען נתונים...</p></div>
+<div id="ldr">
+  <div class="ring" id="ldrRing"></div>
+  <p id="ldrTxt">טוען נתונים...</p>
+  <div id="errBox" class="hide" style="background:white;color:var(--ink);padding:20px;border-radius:16px;text-align:center;width:80%;max-width:300px;margin-top:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+    <div style="font-size:30px;margin-bottom:10px">⚠️</div>
+    <h3 style="font-weight:900;margin-bottom:10px;color:#ef4444">שגיאת חיבור לאקסל</h3>
+    <p style="font-size:13px;line-height:1.4;margin-bottom:16px">וודא ששמת בקוד את הקישור הנכון ושבאקסל בחרת בפורמט <b>CSV (ערכים מופרדים בפסיקים)</b> ולא בדף אינטרנט.</p>
+    <button onclick="location.reload()" style="background:var(--blue);color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:bold;cursor:pointer;width:100%">נסה שוב</button>
+  </div>
+</div>
 
 <div id="lw" class="ov" style="z-index:200;align-items:center;padding:20px">
   <div class="sh" style="border-radius:24px;animation:pop .3s">
@@ -116,7 +122,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
     <div class="hero-c">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <button id="uBtn" class="glass-btn"><span style="width:8px;height:8px;background:#4ade80;border-radius:50%"></span><span id="uName">אורח</span></button>
-        <button id="rBtn" class="glass-btn" style="padding:8px;border-radius:50%">🔄</button>
+        <button id="rBtn" class="glass-btn" style="padding:8px;border-radius:50%"><i data-lucide="refresh-cw" style="width:16px"></i></button>
       </div>
       <div>
         <div class="hero-t">BAT YAM<br><span>100</span></div>
@@ -143,8 +149,8 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 id="cTit" style="font-weight:900;font-size:18px"></h2>
       <div style="display:flex;gap:8px">
-        <button id="cP" class="cls">›</button>
-        <button id="cN" class="cls">‹</button>
+        <button id="cP" class="cls"><i data-lucide="chevron-right" style="width:16px"></i></button>
+        <button id="cN" class="cls"><i data-lucide="chevron-left" style="width:16px"></i></button>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:10px;font-weight:800;color:var(--muted);margin-bottom:6px">
@@ -162,17 +168,17 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
   </div>
 
   <div class="nav">
-    <button id="nList" class="nb on"><span class="ico">🏠</span><span>בית</span></button>
-    <button id="nTask" class="nb" style="position:relative"><span class="ico">✅</span><span>משימות</span><span id="bdg" class="badge"></span></button>
-    <button id="nAdd" class="n-add">＋</button>
-    <button id="nCal" class="nb"><span class="ico">📅</span><span>יומן</span></button>
-    <button id="nSet" class="nb"><span class="ico">👤</span><span>פרופיל</span></button>
+    <button id="nList" class="nb on"><i data-lucide="home" style="width:20px"></i><span>בית</span></button>
+    <button id="nTask" class="nb" style="position:relative"><i data-lucide="check-square" style="width:20px"></i><span>משימות</span><span id="bdg" class="badge"></span></button>
+    <button id="nAdd" class="n-add"><i data-lucide="plus" style="width:24px"></i></button>
+    <button id="nCal" class="nb"><i data-lucide="calendar" style="width:20px"></i><span>יומן</span></button>
+    <button id="nSet" class="nb"><i data-lucide="user" style="width:20px"></i><span>פרופיל</span></button>
   </div>
 </div>
 
 <div id="mAdd" class="ov">
   <div class="sh" style="height:90vh">
-    <div class="sh-h"><span class="sh-t">פרויקט חדש</span><button id="cAdd" class="cls">✕</button></div>
+    <div class="sh-h"><span class="sh-t">פרויקט חדש</span><button id="cAdd" class="cls"><i data-lucide="x" style="width:16px"></i></button></div>
     <div class="sh-scroll">
       <div style="display:flex;flex-direction:column;gap:16px">
         <div><label class="lbl">שם האירוע</label><input id="iaT" type="text" class="fld" style="font-weight:700;font-size:16px"></div>
@@ -184,7 +190,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
           <label class="lbl">סטטוס</label>
           <div style="display:flex;gap:8px">
             <button class="fld" id="sBtn1" style="flex:1;text-align:center;font-weight:700;background:#dbeafe;color:#1e40af;border-color:#93c5fd;cursor:pointer" onclick="setS(this,'חדש')">חדש</button>
-            <button class="fld" id="sBtn2" style="flex:1;text-align:center;font-weight:700;color:#94a3b8;cursor:pointer" onclick="setS(this,'בטיפול')">בטיפול</button>
+            <button class="fld" id="sBtn2" style="flex:1;text-align:center;font-weight:700;color:#94a3b8;cursor:pointer" onclick="setS(this,'בתהליך')">בתהליך</button>
             <button class="fld" id="sBtn3" style="flex:1;text-align:center;font-weight:700;color:#94a3b8;cursor:pointer" onclick="setS(this,'בוצע')">בוצע</button>
           </div>
           <input type="hidden" id="iaS" value="חדש">
@@ -197,7 +203,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
         </div>
         <label style="display:flex;align-items:center;gap:10px;padding:12px;border:2px dashed var(--border);border-radius:12px;cursor:pointer">
           <input type="file" id="iaImg" hidden accept="image/*">
-          <span>🖼️</span>
+          <i data-lucide="image" style="color:var(--muted)"></i>
           <span id="iaImgTxt" style="font-size:12px;font-weight:700;color:var(--muted)">הוסף תמונה</span>
         </label>
       </div>
@@ -212,8 +218,8 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
   <div class="sh" style="height:90vh">
     <div style="height:160px;position:relative;background:#e2e8f0;flex-shrink:0;border-radius:28px 28px 0 0;overflow:hidden">
       <img id="ivImg" style="width:100%;height:100%;object-fit:cover;display:none">
-      <div id="ivPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:48px">🖼️</div>
-      <button id="cView" class="cls" style="position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.4);color:white">✕</button>
+      <div id="ivPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i data-lucide="image" style="width:40px;height:40px"></i></div>
+      <button id="cView" class="cls" style="position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.4);color:white"><i data-lucide="x" style="width:16px"></i></button>
       <div id="ivS" style="position:absolute;bottom:16px;right:16px;background:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800"></div>
     </div>
     <div class="sh-scroll">
@@ -224,7 +230,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
       </div>
       <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
         <button onclick="updSt('חדש')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">חדש</button>
-        <button onclick="updSt('בטיפול')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">בטיפול</button>
+        <button onclick="updSt('בתהליך')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">בתהליך</button>
         <button onclick="updSt('בוצע')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">בוצע</button>
       </div>
       <p id="ivDesc" style="font-size:14px;color:#334155;background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:20px;line-height:1.7"></p>
@@ -241,12 +247,13 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
 
 <script>
 // --- CONFIG ---
-// תיקנתי את זה ל- output=csv כדי שהנתונים יישאבו כראוי
+// שים כאן את הקישור שלך (בפורמט CSV) - אם אין כאן קישור שעובד, המערכת תציג שגיאה ברורה
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
 const SCRIPT = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
+
 let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם','דוברות','מטה','תרבות','קהילה','חינוך','גנים ונוף','פיתוח עסקי','אגף החופים','האגף התורני','מרכזים קהילתיים','מועצה דתית'];
 
-// השנה קובעה ל-2026 עבור שנת המאה
+// השנה מקובעת ל-2026 כדי שהיומן יתאים בול!
 let events=[], me=localStorage.getItem('user')||'', calM=new Date().getMonth(), calY=2026, img64='', vIdx=-1;
 
 window.onload = () => {
@@ -279,14 +286,15 @@ function wire() {
   id('cN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renCal(); };
   
   id('tFil').onchange = renTasks;
-  
-  // הוספת משימה תוך כדי צפייה
+
+  // הוספת משימה בתוך האירוע - נשמר מיד בלחיצה על Enter
   id('btnAddTV').onclick = () => {
     const c = id('ivTL');
     const d = document.createElement('div');
     d.className = 'tr';
-    d.innerHTML = `<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="כתוב ולחץ Enter..."><button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()">✕</button>`;
+    d.innerHTML = `<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="כתוב ולחץ Enter..."><button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()"><i data-lucide="x" style="width:16px"></i></button>`;
     c.appendChild(d);
+    lucide.createIcons();
     const inp = d.querySelector('input');
     inp.focus();
     inp.onkeydown = e => {
@@ -294,85 +302,121 @@ function wire() {
         const tasks = getTasks(events[vIdx]);
         tasks.push(inp.value.trim());
         const str = tasks.join('|');
-        // עדכון מקומי כל המפתחות האפשריים כדי שהמערכת תזכור
         events[vIdx].tasks = str;
         events[vIdx].Tasks = str;
         events[vIdx]['משימות'] = str;
-        
         renViewTasks(events[vIdx]);
+        // עדכון אקסל שקט
         fetch(SCRIPT, {method:'POST', mode:'no-cors', body: new URLSearchParams({action:'update', title:val(events[vIdx],'title'), tasks:str})});
       }
     };
   };
 }
 
-function val(e,k) { 
+function val(e, k) { 
   if(!e) return '';
-  if(k==='title')  return e.Title||e.title||e['שם האירוע']||e['שם']||'';
-  if(k==='date')   return e.Date||e.date||e['תאריך']||'';
-  if(k==='owner')  return e.Owner||e.owner||e['אחראי']||'-';
-  if(k==='status') return e.Status||e.status||e['סטטוס']||'חדש';
-  if(k==='desc')   return e.Description||e.description||e['תיאור']||'';
-  if(k==='img')    return e.Image||e.image||e['תמונה']||'';
-  if(k==='tasks')  return e.Tasks||e.tasks||e['משימות']||'';
+  if(k==='title')  return e.Title  || e.title  || e['שם האירוע'] || e['שם'] || '';
+  if(k==='date')   return e.date   || e.Date   || e['תאריך'] || '';
+  if(k==='owner')  return e.owner  || e.Owner  || e['אחראי'] || '-';
+  if(k==='status') return e.status || e.Status || e['סטטוס'] || '';
+  if(k==='desc')   return e.Description || e.description || e['תיאור'] || '';
+  if(k==='img')    return e.image  || e.Image  || e['תמונה'] || '';
+  if(k==='tasks')  return e.tasks  || e.Tasks  || e['משימות'] || '';
   return '';
 }
 
-async function loadData(manual){
-  if(manual) id('ldr').style.opacity=1;
-  try {
-    const r=await fetch(CSV_URL+'&t='+Date.now());
-    const t=await r.text();
-    Papa.parse(t,{header:true,skipEmptyLines:true,complete:res=>{
-      events=res.data.filter(e=>val(e,'title'));
-      events.forEach(e=>{
-        const o=val(e,'owner');
-        if(o && o!=='-' && !OWNERS.includes(o)) OWNERS.push(o);
-      });
-      fillSel();
-      
-      if(me) { id('app').style.display='block'; ren(); }
-      else { id('lw').style.display='flex'; renChips(); }
-      
-      id('ldr').style.opacity=0; setTimeout(()=>{id('ldr').style.display='none'},500);
-    }});
-  } catch(e){ alert('שגיאה בטעינה'); id('ldr').style.display='none'; }
-}
-
-function ren(){
-  id('uName').innerText=me;
-  renList(); renCal(); renTasks(); updStat();
-}
-
-function updStat(){
-  id('sTot').innerText = events.length;
-  id('sMine').innerText = events.filter(e=>val(e,'owner')===me).length;
-  id('sAct').innerText = events.filter(e=>val(e,'status').includes('טיפול')).length;
-  const mo = events.filter(e=>val(e,'owner')===me && !val(e,'status').includes('בוצע')).length;
-  id('bdg').style.display = mo>0 ? 'block' : 'none';
-  id('cnt').innerText = events.length + ' פרויקטים';
-}
-
-function renList(){
-  const c=id('eCards'); c.innerHTML='';
-  if(!events.length){ c.innerHTML='<div style="text-align:center;color:#94a3b8;padding:40px;width:100%">אין פרויקטים במערכת</div>'; return; }
+async function loadData(manual) {
+  if(manual) { id('ldr').style.display='flex'; id('ldr').style.opacity=1; }
   
-  const s=[...events].sort((a,b)=>{
-    return pDate(val(b,'date')) - pDate(val(a,'date'));
-  });
+  // הסתרת שגיאה בטעינה חוזרת
+  id('errBox').classList.add('hide');
+  id('ldrRing').style.display = 'block';
+  id('ldrTxt').innerText = 'טוען נתונים...';
 
-  s.forEach(e=>{
-    const idx=events.indexOf(e);
-    const d=document.createElement('div'); d.className='ecard';
-    const st=val(e,'status');
-    const mine=val(e,'owner')===me;
-    const isDone=st.includes('בוצע');
-    const dt=val(e,'date').split(/[-/.]/);
-    const day=dt[0]||'?';
-    
-    d.innerHTML=`
+  try {
+    const r = await fetch(CSV_URL + (CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now());
+    if(!r.ok) throw new Error('Network Error');
+    const t = await r.text();
+    if(t.includes('<html')) throw new Error('HTML Returned instead of CSV');
+
+    Papa.parse(t, {
+      header: true,
+      skipEmptyLines: true,
+      complete: res => {
+        events = res.data.filter(e => val(e,'title').trim());
+        events.forEach(e => {
+          const o = val(e,'owner');
+          if(o && o!=='-' && !OWNERS.includes(o)) OWNERS.push(o);
+        });
+        fillSel();
+        hideLdr();
+        if(me) { id('app').classList.remove('hide'); id('app').style.display='block'; ren(); }
+        else   { id('lw').style.display='flex'; renChips(); }
+      },
+      error: err => { throw new Error(err); }
+    });
+  } catch(err) {
+    console.error('Fetch error:', err);
+    // מציג הודעת שגיאה במקום מסך לבן!
+    id('ldrRing').style.display = 'none';
+    id('ldrTxt').innerText = '';
+    id('errBox').classList.remove('hide');
+  }
+}
+
+function hideLdr() {
+  id('ldr').style.opacity = 0;
+  setTimeout(() => { id('ldr').style.display = 'none'; }, 500);
+}
+
+function ren() {
+  id('uName').innerText = me;
+  renList();
+  renCal();
+  renTasks();
+  updStat();
+}
+
+function updStat() {
+  id('sTot').innerText  = events.length;
+  id('sMine').innerText = events.filter(e => val(e,'owner') === me).length;
+  id('sAct').innerText  = events.filter(e => val(e,'status').includes('תהליך') || val(e,'status').includes('טיפול')).length;
+
+  const mo = events.filter(e => val(e,'owner') === me && !(val(e,'status').includes('בוצע'))).length;
+  id('bdg').style.display = mo > 0 ? 'block' : 'none';
+  const lbl = id('cnt');
+  if(lbl) lbl.innerText = events.length + ' פרויקטים';
+}
+
+function renList() {
+  const c = id('eCards'); c.innerHTML = '';
+
+  let list = [...events];
+  list.sort((a,b) => pDate(val(b,'date')) - pDate(val(a,'date')));
+
+  if(!list.length) {
+    c.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:40px;width:100%">אין פרויקטים להצגה</div>';
+    return;
+  }
+
+  list.forEach(e => {
+    const idx = events.indexOf(e);
+    const st  = val(e,'status') || 'חדש';
+    const mine = val(e,'owner') === me;
+    const isDone = st.includes('בוצע') || st.includes('הושלם');
+    const dateStr = val(e,'date');
+    const parts = dateStr ? dateStr.split(/[-/.]/) : [];
+    const day = parts[0] || '—';
+    const mon = parts.length > 1 ? monthName(parseInt(parts[1])) : '';
+
+    const d = document.createElement('div');
+    d.className = 'ecard';
+    d.innerHTML = `
       <div class="bar ${mine?'mine':''} ${isDone?'done':''}"></div>
-      <div class="date-box"><span class="d-big">${day}</span><span class="d-mon">חודש</span></div>
+      <div class="date-box">
+        <span class="d-big">${day}</span>
+        <span class="d-mon">${mon}</span>
+      </div>
       <div class="body">
         <div class="tit">${val(e,'title')}</div>
         <div class="meta">
@@ -381,251 +425,277 @@ function renList(){
         </div>
       </div>
     `;
-    d.onclick=()=>openV(idx);
+    d.onclick = () => openV(idx);
     c.appendChild(d);
   });
 }
 
-function renCal(){
-  const g=id('cGrid'); g.innerHTML='';
-  id('cTit').innerText = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
-  const dim = new Date(calY,calM+1,0).getDate();
-  const fd = new Date(calY,calM,1).getDay();
-  
-  for(let i=0;i<fd;i++) {
+function renCal() {
+  const g = id('cGrid'); g.innerHTML = '';
+  id('cTit').innerText = new Date(calY, calM, 1).toLocaleDateString('he-IL', {month:'long', year:'numeric'});
+  const dim = new Date(calY, calM+1, 0).getDate();
+  const fd  = new Date(calY, calM, 1).getDay();
+
+  for(let i=0; i<fd; i++) {
     const emp = document.createElement('div');
     emp.className = 'cemp';
     g.appendChild(emp);
   }
-  
-  for(let d=1;d<=dim;d++){
-    const cell=document.createElement('div');
-    const isT=d===new Date().getDate() && calM===new Date().getMonth() && calY===new Date().getFullYear();
-    cell.className='cd'+(isT?' tod':'');
-    cell.innerHTML=`<span style="font-weight:900;font-size:10px;color:${isT?'var(--blue)':'#94a3b8'}">${d}</span>`;
-    
-    events.forEach((e,ix)=>{
-      const date=val(e,'date');
+
+  for(let d=1; d<=dim; d++) {
+    const cell = document.createElement('div');
+    const isT  = d===new Date().getDate() && calM===new Date().getMonth() && calY===new Date().getFullYear();
+    cell.className = 'cd' + (isT ? ' tod' : '');
+    cell.innerHTML = `<span style="font-weight:900;font-size:10px;color:${isT?'var(--blue)':'#94a3b8'}">${d}</span>`;
+
+    events.forEach((e, ix) => {
+      const date = val(e,'date');
       if(!date) return;
-      
-      const parts = date.split(/[-/.]/); 
-      let match=false;
-      
-      if(parts.length>=3){
-        const p0 = parseInt(parts[0]), p1 = parseInt(parts[1]), p2 = parseInt(parts[2]);
-        if(p2===calY && p1===(calM+1) && p0===d) match=true;
-        if(p0===calY && p1===(calM+1) && p2===d) match=true;
-      }
-      
-      if(match){
-        const sp=document.createElement('div');
-        sp.className='cev'+(val(e,'owner')===me?' mine':'');
-        sp.innerText=val(e,'title');
-        sp.onclick=(x)=>{x.stopPropagation();openV(ix)};
-        cell.appendChild(sp);
-      }
+      const p = date.split(/[-/.]/);
+      if(p.length < 3) return;
+      const p0=parseInt(p[0]), p1=parseInt(p[1]), p2=parseInt(p[2]);
+      if(p2===calY && p1===(calM+1) && p0===d) appendCalEvent(cell, e, ix);
+      if(p0===calY && p1===(calM+1) && p2===d) appendCalEvent(cell, e, ix);
     });
     g.appendChild(cell);
   }
 }
 
-function renTasks(){
-  const c=id('tListMain'); c.innerHTML='';
-  const f=id('tFil').value;
-  const op=events.filter(e=>{
-    const st=val(e,'status');
-    if(st.includes('בוצע')) return false;
-    if(f && val(e,'owner')!==f) return false;
+function appendCalEvent(cell, e, ix) {
+  const sp = document.createElement('div');
+  sp.className = 'cev' + (val(e,'owner')===me ? ' mine' : '');
+  sp.innerText = val(e,'title');
+  sp.onclick = x => { x.stopPropagation(); openV(ix); };
+  cell.appendChild(sp);
+}
+
+function renTasks() {
+  const c = id('tListMain'); c.innerHTML = '';
+  const f = id('tFil').value;
+  const op = events.filter(e => {
+    const st = val(e,'status');
+    if(st.includes('בוצע') || st.includes('הושלם')) return false;
+    if(f && val(e,'owner') !== f) return false;
     return true;
   });
-  
-  if(!op.length){ c.innerHTML='<div style="text-align:center;color:#cbd5e1;margin-top:40px;width:100%">אין משימות פתוחות</div>'; return; }
-  
-  op.forEach(e=>{
-    const ts=getTasks(e);
+
+  if(!op.length) {
+    c.innerHTML = '<div style="text-align:center;color:#cbd5e1;margin-top:40px;width:100%">אין משימות פתוחות</div>';
+    return;
+  }
+
+  op.forEach(e => {
+    const ts = getTasks(e);
     if(!ts.length) return;
-    const card=document.createElement('div');
-    card.style.cssText='background:white;padding:14px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.03);border:1px solid var(--border)';
-    card.innerHTML=`
+    const card = document.createElement('div');
+    card.style.cssText = 'background:white;padding:14px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.03);border:1px solid var(--border)';
+    card.innerHTML = `
       <div style="display:flex;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #f1f5f9;padding-bottom:10px">
         <div style="font-weight:800;font-size:14px;color:var(--ink)">${val(e,'title')}</div>
         <div style="font-size:11px;color:var(--muted);font-weight:700">👤 ${val(e,'owner')}</div>
       </div>
     `;
-    ts.forEach(t=>{
-      card.innerHTML+=`<div style="font-size:13px;padding:5px 0;color:#334155;display:flex;gap:6px"><span style="color:var(--blue)">▪</span>${t}</div>`;
+    ts.forEach(t => {
+      card.innerHTML += `<div style="font-size:13px;padding:5px 0;color:#334155;display:flex;gap:6px"><span style="color:var(--blue)">▪</span>${t}</div>`;
     });
-    const b=document.createElement('button');
-    b.innerText='פתח פרויקט ←'; b.style.cssText='font-size:12px;color:var(--blue);font-weight:800;margin-top:10px;background:none;border:none;cursor:pointer';
-    b.onclick=()=>openV(events.indexOf(e));
+    const b = document.createElement('button');
+    b.innerText = 'פתח פרויקט ←';
+    b.style.cssText = 'font-size:12px;color:var(--blue);font-weight:800;margin-top:10px;background:none;border:none;cursor:pointer';
+    b.onclick = () => openV(events.indexOf(e));
     card.appendChild(b);
     c.appendChild(card);
   });
 }
 
-function openV(idx){
-  const e=events[idx]; if(!e)return;
-  vIdx=idx;
-  id('ivT').innerText=val(e,'title');
-  id('ivD').innerText=val(e,'date');
-  id('ivO').innerText='👤 ' + val(e,'owner');
-  id('ivDesc').innerText=val(e,'desc') || 'אין תיאור לפרויקט זה.';
-  id('ivS').innerText=val(e,'status');
-  
-  const im=val(e,'img');
-  if(im && im.length>50) { id('ivImg').src=im; id('ivImg').style.display='block'; id('ivPH').style.display='none'; }
-  else { id('ivImg').style.display='none'; id('ivPH').style.display='flex'; }
-  
+function openV(idx) {
+  const e = events[idx];
+  if(!e) return;
+  vIdx = idx;
+  id('ivT').innerText    = val(e,'title');
+  id('ivD').innerText    = val(e,'date') || 'ללא תאריך';
+  id('ivO').innerText    = '👤 ' + val(e,'owner');
+  id('ivDesc').innerText = val(e,'desc') || 'אין תיאור.';
+  id('ivS').innerText    = val(e,'status') || 'חדש';
+
+  const im = val(e,'img');
+  if(im && im.length > 50) {
+    id('ivImg').src = im;
+    id('ivImg').style.display = 'block';
+    id('ivPH').style.display = 'none';
+  } else {
+    id('ivImg').style.display = 'none';
+    id('ivPH').style.display = 'flex';
+  }
+
   renViewTasks(e);
-  id('mView').style.display='flex';
+  id('mView').style.display = 'flex';
+  lucide.createIcons();
 }
 
-function renViewTasks(e){
-  const c=id('ivTL'); c.innerHTML='';
-  const ts=getTasks(e);
-  if(!ts.length){ c.innerHTML='<div style="color:#94a3b8;font-size:13px;text-align:center;padding:8px">אין משימות לפרויקט זה</div>'; return; }
-  
-  ts.forEach((t,i)=>{
-    const d=document.createElement('div'); d.className='tr';
-    d.innerHTML=`<input type="checkbox"> <span style="flex:1;font-size:13px">${t}</span>`;
-    d.querySelector('input').onchange=function(){
-      if(this.checked){
-        setTimeout(()=>{
-          if(this.checked && confirm('האם סיימת את המשימה ורוצה למחוק אותה?')){
-            ts.splice(i,1);
-            const str=ts.join('|');
-            e.tasks=str; e.Tasks=str; e['משימות']=str;
-            fetch(SCRIPT,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'update',title:val(e,'title'),tasks:str})});
+function renViewTasks(e) {
+  const c = id('ivTL'); c.innerHTML = '';
+  const ts = getTasks(e);
+  if(!ts.length) {
+    c.innerHTML = '<div style="color:#94a3b8;font-size:13px;text-align:center;padding:8px">אין משימות לפרויקט זה</div>';
+    return;
+  }
+  ts.forEach((t, i) => {
+    const d = document.createElement('div');
+    d.className = 'tr';
+    d.innerHTML = `<input type="checkbox"> <span style="flex:1;font-size:13px">${t}</span>`;
+    d.querySelector('input').onchange = function() {
+      if(this.checked) {
+        setTimeout(() => {
+          if(this.checked && confirm('סיימת את המשימה? לחץ OK כדי למחוק.')) {
+            ts.splice(i, 1);
+            const str = ts.join('|');
+            e.tasks = str;
+            e.Tasks = str;
+            e['משימות'] = str;
+            fetch(SCRIPT, {method:'POST', mode:'no-cors', body: new URLSearchParams({action:'update', title:val(e,'title'), tasks:str})});
             renViewTasks(e);
-          } else { this.checked=false; }
-        }, 500);
+          } else { this.checked = false; }
+        }, 300);
       }
     };
     c.appendChild(d);
   });
 }
 
-function updSt(st){
-  if(vIdx<0)return;
-  const e=events[vIdx];
-  e.status=st; e.Status=st; e['סטטוס']=st;
-  id('ivS').innerText=st;
+function updSt(st) {
+  if(vIdx < 0) return;
+  const e = events[vIdx];
+  e.status = st; e.Status = st; e['סטטוס'] = st;
+  id('ivS').innerText = st;
   ren();
-  fetch(SCRIPT,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'update',title:val(e,'title'),status:st})});
+  fetch(SCRIPT, {method:'POST', mode:'no-cors', body: new URLSearchParams({action:'update', title:val(e,'title'), status:st})});
 }
 
-async function save(){
-  const t=id('iaT').value.trim(); if(!t)return alert('חובה להזין את שם האירוע!');
-  const d=id('iaD').value;
-  const o=id('iaO').value;
-  const s=id('iaS').value;
-  const desc=id('iaDesc').value;
-  // איסוף משימות נכון רק מתוך input שהם מסוג טקסט
-  const tasks=[...id('iaTL').querySelectorAll('input[type="text"]')].map(x=>x.value).filter(x=>x).join('|');
-  
-  const btn=id('btnSave'); btn.innerText='שומר נתונים...'; btn.disabled=true;
-  
-  const body=new URLSearchParams({
-    action:'create', title:t, date:d, owner:o, status:s, desc:desc, tasks:tasks, image:img64
-  });
-  
-  await fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
-  
-  events.unshift({Title:t, Date:d, Owner:o, Status:s, Description:desc, Tasks:tasks, Image:img64});
+async function save() {
+  const t = id('iaT').value.trim();
+  if(!t) return alert('חובה להזין את שם האירוע!');
+  const d    = id('iaD').value;
+  const o    = id('iaO').value;
+  const s    = id('iaS').value;
+  const desc = id('iaDesc').value;
+  const tasks = [...id('iaTL').querySelectorAll('input[type=text]')].map(x=>x.value).filter(x=>x).join('|');
+
+  const btn = id('btnSave');
+  btn.innerText = 'שומר נתונים...'; btn.disabled = true;
+
+  const body = new URLSearchParams({action:'create', title:t, date:d, owner:o, status:s, desc, tasks, image:img64});
+  await fetch(SCRIPT, {method:'POST', mode:'no-cors', body});
+
+  events.unshift({Title:t, date:d, owner:o, status:s, Description:desc, tasks, image:img64});
   ren();
-  id('mAdd').style.display='none';
-  btn.innerText='שמור וסנכרן'; btn.disabled=false;
-  
-  id('iaT').value=''; id('iaDesc').value=''; id('iaTL').innerHTML=''; id('iaO').value='';
+  id('mAdd').style.display = 'none';
+  btn.innerText = 'שמור וסנכרן'; btn.disabled = false;
+  id('iaT').value=''; id('iaDesc').value=''; id('iaTL').innerHTML=''; img64='';
+  id('iaImgTxt').innerText='הוסף תמונה'; id('iaImgTxt').style.color='var(--muted)';
 }
 
 /* UTILS */
-function id(x){return document.getElementById(x)}
-function show(x){id(x).style.display='flex';lucide.createIcons()}
-function sv(x){
-  ['List','Cal','Tasks'].forEach(v=>{id('v'+v).classList.add('hide');id('n'+v).classList.remove('on')});
-  id('v'+x).classList.remove('hide'); id('n'+x).classList.add('on');
+function id(x) { return document.getElementById(x); }
+function show(x) { id(x).style.display='flex'; lucide.createIcons(); }
+function sv(x) {
+  ['List','Cal','Tasks'].forEach(v => { id('v'+v).classList.add('hide'); id('n'+v).classList.remove('on'); });
+  id('v'+x).classList.remove('hide');
+  id('n'+x).classList.add('on');
 }
-function renChips(){
-  const c=id('lchips'); c.innerHTML='';
-  OWNERS.forEach(o=>{
-    const b=document.createElement('button'); b.className='chip'; b.innerText=o;
-    if(o===me) b.classList.add('sel');
-    b.onclick=()=>{
-      c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); 
-      b.classList.add('sel'); 
-      id('lname').value=o;
+function renChips() {
+  const c = id('lchips'); c.innerHTML = '';
+  OWNERS.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.innerText = o;
+    if(o === me) b.classList.add('sel');
+    b.onclick = () => {
+      c.querySelectorAll('.chip').forEach(x => x.classList.remove('sel'));
+      b.classList.add('sel');
+      id('lname').value = o;
     };
     c.appendChild(b);
   });
 }
-function login(){
-  const sel=document.querySelector('.chip.sel');
-  const n=id('lname').value.trim()||(sel?sel.innerText:'');
+function login() {
+  const sel = document.querySelector('.chip.sel');
+  const n = id('lname').value.trim() || (sel ? sel.innerText : '');
   if(!n) return alert('אנא בחר שם כדי להיכנס');
-  me=n; localStorage.setItem('user',n);
-  id('lw').style.display='none'; id('app').classList.remove('hide'); ren();
+  me = n; localStorage.setItem('user', n);
+  id('lw').style.display = 'none';
+  id('app').classList.remove('hide');
+  id('app').style.display = 'block';
+  ren();
+  lucide.createIcons();
 }
-function addTR(cid){
-  const c=id(cid);
-  const d=document.createElement('div'); d.className='tr';
-  d.innerHTML=`<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="משימה...">
-               <button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()">✕</button>`;
+function addTR(cid) {
+  const c = id(cid);
+  const d = document.createElement('div');
+  d.className = 'tr';
+  d.innerHTML = `<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="משימה...">
+                 <button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()"><i data-lucide="x" style="width:16px"></i></button>`;
   c.appendChild(d);
-  const inp=d.querySelector('input');
+  lucide.createIcons();
+  const inp = d.querySelector('input');
   inp.focus();
-  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();id('btnAddT').click();}};
+  inp.onkeydown = e => { if(e.key==='Enter') { e.preventDefault(); id('btnAddT').click(); } };
 }
-function hImg(){
-  const f=id('iaImg').files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    const img=new Image(); img.src=e.target.result;
-    img.onload=()=>{
-      const cv=document.createElement('canvas'); const x=cv.getContext('2d');
-      const s=Math.min(1, 600/img.width);
-      cv.width=img.width*s; cv.height=img.height*s;
-      x.drawImage(img,0,0,cv.width,cv.height);
-      img64=cv.toDataURL('image/jpeg',0.7);
-      id('iaImgTxt').innerText='✅ תמונה מוכנה';
-      id('iaImgTxt').style.color='var(--mint)';
-    }
+function hImg() {
+  const f = id('iaImg').files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image(); img.src = e.target.result;
+    img.onload = () => {
+      const cv = document.createElement('canvas');
+      const x  = cv.getContext('2d');
+      const s  = Math.min(1, 600/img.width);
+      cv.width = img.width*s; cv.height = img.height*s;
+      x.drawImage(img, 0, 0, cv.width, cv.height);
+      img64 = cv.toDataURL('image/jpeg', 0.7);
+      id('iaImgTxt').innerText = '✅ תמונה מוכנה';
+      id('iaImgTxt').style.color = 'var(--mint)';
+    };
   };
   r.readAsDataURL(f);
 }
-function fillSel(){
-  const s=id('iaO'); s.innerHTML='<option value="">בחר...</option>';
-  const f=id('tFil'); f.innerHTML='<option value="">כולם</option>';
-  OWNERS.forEach(o=>{
-    s.innerHTML+=`<option>${o}</option>`;
-    f.innerHTML+=`<option>${o}</option>`;
+function fillSel() {
+  const s = id('iaO'); s.innerHTML = '<option value="">בחר...</option>';
+  const f = id('tFil'); f.innerHTML = '<option value="">כולם</option>';
+  OWNERS.forEach(o => {
+    s.innerHTML += `<option>${o}</option>`;
+    f.innerHTML += `<option>${o}</option>`;
   });
 }
-function setS(b,v){
-  id('iaS').value=v;
-  ['sBtn1','sBtn2','sBtn3'].forEach(x=>{
+function setS(b, v) {
+  id('iaS').value = v;
+  ['sBtn1','sBtn2','sBtn3'].forEach(x => {
     id(x).style.background='white'; id(x).style.color='#94a3b8'; id(x).style.borderColor='transparent';
   });
-  const c={חדש:'#dbeafe',בטיפול:'#fef3c7',בוצע:'#d1fae5'};
-  const t={חדש:'#1e40af',בטיפול:'#92400e',בוצע:'#065f46'};
-  b.style.background=c[v]; b.style.color=t[v]; b.style.borderColor=t[v];
+  const c = {חדש:'#dbeafe', בתהליך:'#fef3c7', בוצע:'#d1fae5'};
+  const t = {חדש:'#1e40af', בתהליך:'#92400e', בוצע:'#065f46'};
+  b.style.background = c[v]; b.style.color = t[v]; b.style.borderColor = t[v];
 }
-function cls(s){
-  if(s.includes('בוצע'))return 'p-done';
-  if(s.includes('טיפול') || s.includes('תהליך'))return 'p-wip';
+function cls(s) {
+  if(!s) return 'p-new';
+  if(s.includes('בוצע') || s.includes('הושלם')) return 'p-done';
+  if(s.includes('תהליך') || s.includes('טיפול') || s.includes('הקמה') || s.includes('בניית')) return 'p-wip';
+  if(s.includes('ממתין') || s.includes('תואם') || s.includes('תומחר')) return 'p-wait';
   return 'p-new';
 }
-function getTasks(e){
-  const t=val(e,'tasks');
-  return t?t.split('|').filter(x=>x.trim()):[];
+function getTasks(e) {
+  const t = val(e,'tasks');
+  return t ? t.split('|').map(x=>x.trim()).filter(x=>x) : [];
 }
-function pDate(s){
-  if(!s)return 0;
-  const p=s.split(/[-/.]/);
-  if(p.length<3) return 0;
-  if(p[0].length===4) return new Date(p[0],p[1]-1,p[2]).getTime();
-  return new Date(p[2],p[1]-1,p[0]).getTime();
+function pDate(s) {
+  if(!s) return 0;
+  const p = s.split(/[-/.]/);
+  if(p.length < 3) return 0;
+  if(p[0].length === 4) return new Date(p[0], p[1]-1, p[2]).getTime();
+  return new Date(p[2], p[1]-1, p[0]).getTime();
+}
+function monthName(m) {
+  const names = ['','ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
+  return names[m] || '';
 }
 </script>
 </body>
