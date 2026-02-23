@@ -16,90 +16,92 @@
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110px; overscroll-behavior-y:none; color:var(--ink); }
 
+/* ANIMATIONS */
 @keyframes spin{to{transform:rotate(360deg)}} 
 @keyframes up{from{transform:translateY(110%)}to{transform:translateY(0)}} 
 @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 
+/* LOADER */
 #ldr { position:fixed; inset:0; background:var(--ink); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .4s; }
 #ldr .ring { width:50px; height:50px; border:3px solid rgba(255,255,255,.15); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:15px; }
-#ldr p { color:rgba(255,255,255,.5); font-size:10px; font-weight:900; letter-spacing:.2em; text-transform:uppercase; }
+#ldr p { color:rgba(255,255,255,.5); font-size:10px; font-weight:900; letter-spacing:.2em; }
 
+/* LAYOUT */
 .hero { position:relative; height:240px; border-radius:0 0 32px 32px; overflow:hidden; background:var(--ink); box-shadow:0 20px 40px -12px rgba(13,27,42,.5); }
 .hero-bg { background-image:url('baner.jpg'); background-size:cover; background-position:center; position:absolute; inset:0; opacity:.6; }
 .hero-c { position:relative; z-index:2; padding:22px 20px; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
 .hero-t { font-family:'Frank Ruhl Libre',serif; font-size:42px; font-weight:900; color:white; line-height:.9; letter-spacing:-1px; text-shadow:0 4px 20px rgba(0,0,0,.5); }
 .hero-t span { color:var(--gold); }
-.glass-btn { background:rgba(255,255,255,.15); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.25); color:white; border-radius:30px; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; font-weight:700; transition:all .2s; cursor:pointer; }
+
+.glass-btn { background:rgba(255,255,255,.15); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.25); color:white; border-radius:30px; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; font-weight:700; transition:all .2s; }
 .glass-btn:active { transform:scale(.95); background:rgba(255,255,255,.25); }
 
+/* STATS */
 .stats { display:flex; gap:10px; padding:0 16px; margin:-24px 0 24px; position:relative; z-index:10; }
 .stat { flex:1; background:var(--card); border-radius:16px; padding:12px; box-shadow:0 8px 24px rgba(0,0,0,.06); border-top:3px solid transparent; text-align:center; }
 .stat:nth-child(1){border-color:var(--blue)} .stat:nth-child(2){border-color:var(--mint)} .stat:nth-child(3){border-color:var(--gold)}
 .sn { font-size:28px; font-weight:900; line-height:1; color:var(--ink); }
 .sl { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-top:4px; }
 
-.sec-head { display:flex; justify-content:space-between; align-items:center; padding:0 16px 12px; }
+/* CARDS */
 #eCards { display:grid; gap:12px; padding:0 16px 100px; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); }
-.ecard { background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.04); overflow:hidden; display:flex; min-height:90px; transition:transform .15s; cursor:pointer; }
+.ecard { background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.04); overflow:hidden; display:flex; min-height:90px; transition:transform .15s; }
 .ecard:active { transform:scale(.98); }
 .bar { width:5px; flex-shrink:0; background:var(--blue); }
 .bar.mine { background:var(--mint); } .bar.done { background:#cbd5e1; }
 .date-box { width:56px; background:#f8fafc; border-left:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; }
-.d-big { font-size:20px; font-weight:900; line-height:1; }
-.d-mon { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+.d-big { font-size:24px; font-weight:900; line-height:1; }
+.d-mon { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-top:2px; }
 .body { flex:1; padding:12px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
 .tit { font-size:15px; font-weight:700; color:var(--ink); line-height:1.3; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .own { font-size:11px; font-weight:600; color:var(--muted); }
 
+/* PILLS */
 .pill { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:800; }
 .p-new { background:#dbeafe; color:#1e40af; }
 .p-wip { background:#fef3c7; color:#92400e; }
 .p-done { background:#d1fae5; color:#065f46; }
-.p-wait { background:#f3e8ff; color:#6b21a8; }
 
+/* NAV */
 .nav { position:fixed; bottom:20px; left:16px; right:16px; background:var(--ink); padding:8px 12px; border-radius:30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 12px 32px rgba(13,27,42,.4); z-index:50; }
-.nb { background:none; border:none; color:rgba(255,255,255,.4); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9px; font-weight:700; padding:8px 12px; border-radius:16px; transition:all .2s; cursor:pointer; }
+.nb { background:none; border:none; color:rgba(255,255,255,.4); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9px; font-weight:700; padding:8px 12px; border-radius:16px; transition:all .2s; }
 .nb.on { color:white; background:rgba(255,255,255,.15); }
-.n-add { background:var(--gold); color:var(--ink); padding:14px; border-radius:20px; border:4px solid var(--ink); transform:translateY(-20px); box-shadow:0 8px 24px rgba(245,166,35,.4); cursor:pointer; transition:all .15s; }
+.n-add { background:var(--gold); color:var(--ink); padding:14px; border-radius:20px; border:4px solid var(--ink); transform:translateY(-20px); box-shadow:0 8px 24px rgba(245,166,35,.4); }
 .n-add:active { transform:translateY(-20px) scale(.95); }
 
+/* MODALS */
 .ov { position:fixed; inset:0; background:rgba(13,27,42,.7); z-index:100; display:none; align-items:flex-end; justify-content:center; backdrop-filter:blur(4px); }
 .sh { background:var(--card); width:100%; max-width:500px; max-height:92vh; border-radius:28px 28px 0 0; display:flex; flex-direction:column; animation:up .3s cubic-bezier(.16,1,.3,1); box-shadow:0 -10px 40px rgba(0,0,0,.2); }
-.sh-h { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+.sh-h { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
 .sh-t { font-size:18px; font-weight:900; }
-.cls { width:32px; height:32px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; }
-.sh-scroll { flex:1; overflow-y:auto; padding:20px; }
+.cls { width:32px; height:32px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:none; }
 
 .fld { width:100%; padding:12px; background:#f8fafc; border:1.5px solid var(--border); border-radius:12px; outline:none; font-family:'Heebo',sans-serif; font-size:14px; transition:0.2s; }
 .fld:focus { border-color:var(--blue); background:white; }
 .lbl { font-size:10px; font-weight:900; color:var(--muted); text-transform:uppercase; margin-bottom:5px; display:block; }
 
+/* TASKS ROW */
 .tr { display:flex; align-items:center; gap:10px; padding:10px; background:white; border:1px solid var(--border); border-radius:10px; margin-bottom:6px; }
 .tr input[type=checkbox] { width:18px; height:18px; accent-color:var(--blue); }
+.tr.done span { text-decoration:line-through; color:var(--muted); opacity:0.7; }
 
+/* CALENDAR */
 .cal-g { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; padding-bottom:100px; }
 .cd { min-height:70px; background:white; border:1px solid var(--border); border-radius:10px; padding:4px; }
 .cd.tod { border:2px solid var(--blue); background:#eff6ff; }
-.cemp { min-height:70px; background:rgba(241,245,249,0.5); border-radius:10px; border:1px dashed #cbd5e1; }
-.cev { background:var(--blue); color:white; padding:2px 4px; border-radius:4px; font-size:9px; margin-top:2px; white-space:nowrap; overflow:hidden; font-weight:700; cursor:pointer; }
+.cev { background:var(--blue); color:white; padding:2px 4px; border-radius:4px; font-size:9px; margin-top:2px; white-space:nowrap; overflow:hidden; font-weight:700; }
 .cev.mine { background:var(--mint); }
 
+/* HELPERS */
 .badge { position:absolute; top:6px; right:6px; width:8px; height:8px; background:#ef4444; border-radius:50%; border:2px solid var(--ink); display:none; }
+.sh-scroll { flex:1; overflow-y:auto; padding:20px; }
 .hide { display:none!important; }
-
-.chip { padding:8px 16px; border-radius:30px; border:2px solid var(--border); cursor:pointer; font-weight:700; font-size:14px; background:white; transition:all .15s; font-family:'Heebo',sans-serif; }
-.chip:hover, .chip.sel { border-color:var(--blue); background:#eff6ff; color:var(--blue); }
-
-.search-bar { margin:0 16px 16px; position:relative; }
-.search-bar input { width:100%; padding:10px 16px 10px 40px; background:white; border:1.5px solid var(--border); border-radius:14px; font-family:'Heebo',sans-serif; font-size:14px; outline:none; }
-.search-bar input:focus { border-color:var(--blue); }
-.search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
 </style>
 </head>
 <body>
 
-<div id="ldr"><div class="ring"></div><p id="ldrTxt">טוען נתונים...</p></div>
+<div id="ldr"><div class="ring"></div><p>טוען נתונים...</p></div>
 
 <div id="lw" class="ov" style="z-index:200;align-items:center;padding:20px">
   <div class="sh" style="border-radius:24px;max-height:auto;animation:pop .3s">
@@ -107,8 +109,8 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
       <div style="font-size:40px;margin-bottom:10px">👋</div>
       <h2 style="font-size:22px;font-weight:900;margin-bottom:6px">מי מתחבר?</h2>
       <div id="lchips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0"></div>
-      <input id="lname" type="text" class="fld" style="text-align:center;margin-bottom:12px" placeholder="או הקלד שם חדש...">
-      <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;border:none">כניסה למערכת</button>
+      <input id="lname" type="text" class="fld" style="text-align:center;margin-bottom:12px" placeholder="או הקלד שם...">
+      <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800">כניסה למערכת</button>
     </div>
   </div>
 </div>
@@ -119,11 +121,11 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
     <div class="hero-c">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <button id="uBtn" class="glass-btn"><span style="width:8px;height:8px;background:#4ade80;border-radius:50%"></span><span id="uName">אורח</span></button>
-        <button id="rBtn" class="glass-btn" style="padding:8px;border-radius:50%"><i data-lucide="refresh-cw" style="width:16px"></i></button>
+        <button id="rBtn" class="glass-btn" style="padding:8px"><i data-lucide="refresh-cw" style="width:16px"></i></button>
       </div>
       <div>
         <div class="hero-t">BAT YAM<br><span>100</span></div>
-        <div style="color:rgba(255,255,255,.8);font-size:13px;font-weight:500;margin-top:4px">ניהול פרויקטים ואירועים</div>
+        <div style="color:rgba(255,255,255,.7);font-size:13px;font-weight:500;margin-top:4px">ניהול פרויקטים 2026</div>
       </div>
     </div>
   </div>
@@ -135,13 +137,9 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
   </div>
 
   <div id="vList">
-    <div class="sec-head">
-      <span style="font-size:13px;font-weight:900">כל הפרויקטים</span>
-      <span id="cntLbl" style="font-size:12px;color:var(--muted)"></span>
-    </div>
-    <div class="search-bar">
-      <i data-lucide="search" class="search-icon" style="width:16px;height:16px"></i>
-      <input id="srch" type="text" placeholder="חיפוש פרויקט...">
+    <div style="padding:0 16px 12px;display:flex;justify-content:space-between;align-items:center">
+      <span class="lbl" style="margin:0;font-size:12px;color:var(--ink)">כל הפרויקטים</span>
+      <span id="cnt" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
     </div>
     <div id="eCards"></div>
   </div>
@@ -163,7 +161,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
   <div id="vTasks" class="hide" style="padding:0 16px">
     <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
       <h2 style="font-weight:900;font-size:18px">משימות פתוחות</h2>
-      <select id="tFil" style="background:white;border:1px solid var(--border);border-radius:8px;font-size:12px;padding:4px;outline:none"><option value="">כולם</option></select>
+      <select id="tFil" style="background:white;border:1px solid var(--border);border-radius:8px;font-size:12px;padding:4px"><option value="">כולם</option></select>
     </div>
     <div id="tListMain" style="padding-bottom:100px;display:flex;flex-direction:column;gap:10px"></div>
   </div>
@@ -191,7 +189,7 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
           <label class="lbl">סטטוס</label>
           <div style="display:flex;gap:8px">
             <button class="fld" style="flex:1;text-align:center;font-weight:700;background:#dbeafe;color:#1e40af;border-color:#93c5fd" onclick="setS(this,'חדש')">חדש</button>
-            <button class="fld" style="flex:1;text-align:center;font-weight:700;color:#94a3b8" onclick="setS(this,'בתהליך')">בתהליך</button>
+            <button class="fld" style="flex:1;text-align:center;font-weight:700;color:#94a3b8" onclick="setS(this,'בטיפול')">בטיפול</button>
             <button class="fld" style="flex:1;text-align:center;font-weight:700;color:#94a3b8" onclick="setS(this,'בוצע')">בוצע</button>
           </div>
           <input type="hidden" id="iaS" value="חדש">
@@ -201,10 +199,10 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
         <div style="background:#f1f5f9;padding:12px;border-radius:12px">
           <label class="lbl">משימות</label>
           <div id="iaTL" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
-          <button id="btnAddT" style="font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer">+ הוסף משימה</button>
+          <button id="btnAddT" style="font-size:12px;font-weight:700;color:var(--blue)">+ הוסף משימה</button>
         </div>
 
-        <label style="display:flex;align-items:center;gap:10px;padding:12px;border:2px dashed var(--border);border-radius:12px;cursor:pointer">
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;border:2px dashed var(--border);border-radius:12px">
           <input type="file" id="iaImg" hidden accept="image/*">
           <i data-lucide="image" style="color:var(--muted)"></i>
           <span id="iaImgTxt" style="font-size:12px;font-weight:700;color:var(--muted)">הוסף תמונה</span>
@@ -212,14 +210,14 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
       </div>
     </div>
     <div style="padding:16px;border-top:1px solid var(--border)">
-      <button id="btnSave" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800;font-size:15px;border:none;cursor:pointer">שמור וסנכרן</button>
+      <button id="btnSave" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800">שמור וסנכרן</button>
     </div>
   </div>
 </div>
 
 <div id="mView" class="ov">
   <div class="sh" style="height:90vh">
-    <div style="height:160px;position:relative;background:#e2e8f0;flex-shrink:0;border-radius:28px 28px 0 0;overflow:hidden">
+    <div style="height:160px;position:relative;background:#e2e8f0">
       <img id="ivImg" style="width:100%;height:100%;object-fit:cover;display:none">
       <div id="ivPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8"><i data-lucide="image" style="width:40px;height:40px"></i></div>
       <button id="cView" class="cls" style="position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.4);color:white"><i data-lucide="x" style="width:16px"></i></button>
@@ -227,39 +225,40 @@ body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110p
     </div>
     <div class="sh-scroll">
       <h2 id="ivT" style="font-size:22px;font-weight:900;line-height:1.2;margin-bottom:8px"></h2>
-      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="display:flex;gap:10px;margin-bottom:20px">
         <span id="ivD" style="background:#eff6ff;color:var(--blue);font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px"></span>
         <span id="ivO" style="font-size:12px;font-weight:600;color:var(--muted);align-self:center"></span>
       </div>
       
-      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
-        <button onclick="updSt('חדש')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">חדש</button>
-        <button onclick="updSt('בתהליך')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">בתהליך</button>
-        <button onclick="updSt('בוצע')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer;min-width:70px">בוצע</button>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button onclick="updSt('חדש')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700">חדש</button>
+        <button onclick="updSt('בטיפול')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700">בטיפול</button>
+        <button onclick="updSt('בוצע')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700">בוצע</button>
       </div>
 
-      <p id="ivDesc" style="font-size:14px;color:#334155;background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:20px;line-height:1.7"></p>
-      
+      <p id="ivDesc" style="font-size:14px;color:#334155;background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:20px"></p>
+
       <div style="background:#f1f5f9;padding:14px;border-radius:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <span class="lbl" style="margin:0">משימות</span>
-          <button id="btnAddTV" style="font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer">+ הוסף</button>
+          <button id="btnAddTV" class="add-task-btn">+ הוסף</button>
         </div>
         <div id="ivTL" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div id="ivNewT" style="margin-top:8px"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// --- CONFIGURATION ---
-// ⚠️ החלף את הקישור הזה בקישור שנגמר ב- output=csv
+// --- CONFIG ---
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=csv";
 const SCRIPT = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
-let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם','דוברות','מטה','תרבות','קהילה','חינוך','גנים ונוף','פיתוח עסקי','אגף החופים','האגף התורני','מרכזים קהילתיים','מועצה דתית'];
+let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
 
-let events=[], me=localStorage.getItem('user')||'', calM=new Date().getMonth(), calY=2026, img64='', vIdx=-1;
+let events=[], me=localStorage.getItem('user')||'', calM=new Date().getMonth(), calY=new Date().getFullYear(), img64='', vIdx=-1;
 
+// --- INIT ---
 window.onload = () => {
   lucide.createIcons();
   wire();
@@ -267,60 +266,343 @@ window.onload = () => {
 };
 
 function wire() {
-  id('lbtn').onclick = login;
-  id('lname').onkeydown = e => { if(e.key==='Enter') login(); };
+  id('lbtn').onclick=login;
+  id('lname').onkeydown=e=>{if(e.key==='Enter')login()};
   
-  id('nList').onclick = () => sv('List');
-  id('nCal').onclick  = () => sv('Cal');
-  id('nTask').onclick = () => sv('Tasks');
-  id('nAdd').onclick  = () => show('mAdd');
-  id('nSet').onclick  = () => { id('lw').style.display='flex'; renChips(); };
-  id('uBtn').onclick  = () => { id('lw').style.display='flex'; renChips(); };
+  id('nList').onclick=()=>sv('List');
+  id('nCal').onclick=()=>sv('Cal');
+  id('nTask').onclick=()=>sv('Tasks');
+  id('nAdd').onclick=()=>show('mAdd');
+  id('nSet').onclick=()=>{id('lw').style.display='flex'};
   
-  id('cAdd').onclick  = () => { id('mAdd').style.display='none'; };
-  id('cView').onclick = () => { id('mView').style.display='none'; };
+  id('cAdd').onclick=()=>{id('mAdd').style.display='none'};
+  id('cView').onclick=()=>{id('mView').style.display='none'};
   
-  id('rBtn').onclick  = () => loadData(true);
+  id('rBtn').onclick=()=>loadData(true);
   
-  id('btnAddT').onclick = () => addTR('iaTL');
-  id('btnSave').onclick = save;
-  id('iaImg').onchange  = hImg;
+  id('btnAddT').onclick=()=>addTR('iaTL');
+  id('btnSave').onclick=save;
+  id('iaImg').onchange=hImg;
   
-  id('cP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renCal(); };
-  id('cN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renCal(); };
+  id('calP').onclick=()=>{calM--;if(calM<0){calM=11;calY--}renCal()};
+  id('calN').onclick=()=>{calM++;if(calM>11){calM=0;calY++}renCal()};
   
-  id('tFil').onchange = renTasks;
-  id('srch').oninput = renList;
-
+  id('tFil').onchange=renTasks;
+  
+  // Quick Add Task in View
   id('btnAddTV').onclick = () => {
     const c = id('ivTL');
-    const d = document.createElement('div');
-    d.className = 'tr';
-    d.innerHTML = `<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="כתוב ולחץ Enter..."><button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()">✕</button>`;
+    const d = document.createElement('div'); d.className='tr';
+    d.innerHTML = `<input type="text" style="flex:1;outline:none;font-size:13px" placeholder="כתוב ולחץ Enter..."><button onclick="this.parentElement.remove()">✕</button>`;
     c.appendChild(d);
     const inp = d.querySelector('input');
     inp.focus();
-    inp.onkeydown = e => {
-      if(e.key==='Enter' && inp.value.trim()) {
+    inp.onkeydown = (e) => {
+      if(e.key==='Enter' && inp.value.trim()){
         const tasks = getTasks(events[vIdx]);
         tasks.push(inp.value.trim());
         const str = tasks.join('|');
+        // Update local
         events[vIdx].tasks = str;
+        events[vIdx].Tasks = str;
+        events[vIdx]['משימות'] = str;
+        // Update UI
         renViewTasks(events[vIdx]);
-        fetch(SCRIPT, {method:'POST', mode:'no-cors', body: new URLSearchParams({action:'update', title:val(events[vIdx],'title'), tasks:str})});
-        d.remove();
-        renViewTasks(events[vIdx]);
+        // Send
+        const body = new URLSearchParams({action:'update', title:val(events[vIdx],'title'), tasks:str});
+        fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
       }
-    };
+    }
   };
 }
 
-function val(e, k) { 
+// --- DATA ---
+function val(e,k){ 
+  // Super Mapper: מנרמל שמות עמודות
   if(!e) return '';
-  if(k==='title')  return e.Title  || e.title  || e['שם האירוע'] || e['שם'] || '';
-  if(k==='date')   return e.date   || e.Date   || e['תאריך'] || '';
-  if(k==='owner')  return e.owner  || e.Owner  || e['אחראי'] || '-';
-  if(k==='status') return e.status || e.Status || e['סטטוס'] || '';
-  if(k==='desc')   return e.Description || e.description || e['תיאור'] || '';
-  if(k==='img')    return e.image  || e.Image  || e['תמונה'] || '';
-  if(k==='tasks')  return e.tasks  || e.Tasks  || e['משימות
+  if(k==='title') return e.Title||e.title||e['שם האירוע']||e['שם']||'';
+  if(k==='date') return e.Date||e.date||e['תאריך']||'';
+  if(k==='owner') return e.Owner||e.owner||e['אחראי']||'-';
+  if(k==='status') return e.Status||e.status||e['סטטוס']||'חדש';
+  if(k==='desc') return e.Description||e.description||e['תיאור']||'';
+  if(k==='img') return e.Image||e.image||e['תמונה']||'';
+  if(k==='tasks') return e.Tasks||e.tasks||e['משימות']||'';
+  return '';
+}
+
+async function loadData(manual){
+  if(manual) id('ldr').style.opacity=1;
+  try {
+    const r=await fetch(CSV_URL+'&t='+Date.now());
+    const t=await r.text();
+    Papa.parse(t,{header:true,skipEmptyLines:true,complete:res=>{
+      events=res.data.filter(e=>val(e,'title')); // מסנן שורות ריקות
+      // חילוץ אחראים
+      events.forEach(e=>{
+        const o=val(e,'owner');
+        if(o && !OWNERS.includes(o)) OWNERS.push(o);
+      });
+      fillSel();
+      
+      if(me) { id('app').style.display='block'; ren(); }
+      else { id('lw').style.display='flex'; renChips(); }
+      
+      id('ldr').style.opacity=0; setTimeout(()=>{id('ldr').style.display='none'},500);
+    }});
+  } catch(e){ alert('שגיאה בטעינה'); id('ldr').style.display='none'; }
+}
+
+function ren(){
+  renList(); renCal(); renTasks(); updStat();
+}
+
+function renList(){
+  const c=id('eCards'); c.innerHTML='';
+  if(!events.length){ c.innerHTML='<div style="text-align:center;color:#94a3b8;padding:40px">אין אירועים</div>'; return; }
+  
+  // מיון לפי תאריך
+  const s=[...events].sort((a,b)=>{
+    const d1=pDate(val(a,'date')), d2=pDate(val(b,'date'));
+    return d2-d1; // הכי חדש למעלה
+  });
+
+  s.forEach(e=>{
+    const idx=events.indexOf(e);
+    const d=document.createElement('div'); d.className='ecard';
+    const st=val(e,'status');
+    const mine=val(e,'owner')===me;
+    const isDone=st.includes('בוצע');
+    const dt=val(e,'date').split(/[-/]/);
+    const day=dt[0]||'?';
+    
+    d.innerHTML=`
+      <div class="bar ${mine?'mine':''} ${isDone?'done':''}"></div>
+      <div class="date-box"><span class="d-big">${day}</span><span class="d-mon">חודש</span></div>
+      <div class="body">
+        <div class="tit">${val(e,'title')}</div>
+        <div class="meta">
+          <span class="pill ${cls(st)}">${st}</span>
+          <span class="own">👤 ${val(e,'owner')}</span>
+        </div>
+      </div>
+    `;
+    d.onclick=()=>openV(idx);
+    c.appendChild(d);
+  });
+}
+
+function renCal(){
+  const g=id('cGrid'); g.innerHTML='';
+  id('cTit').innerText = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  const dim = new Date(calY,calM+1,0).getDate();
+  const fd = new Date(calY,calM,1).getDay();
+  
+  for(let i=0;i<fd;i++) g.appendChild(document.createElement('div'));
+  
+  for(let d=1;d<=dim;d++){
+    const cell=document.createElement('div');
+    const isT=d===new Date().getDate() && calM===new Date().getMonth();
+    cell.className='cd'+(isT?' tod':'');
+    cell.innerHTML=`<span style="font-weight:900;font-size:10px;color:${isT?'var(--blue)':'#94a3b8'}">${d}</span>`;
+    
+    // חיפוש אירועים ביום הזה (תמיכה בכל הפורמטים)
+    events.forEach((e,ix)=>{
+      const date=val(e,'date');
+      const parts=date.split(/[-/]/);
+      let match=false;
+      // DD/MM/YYYY
+      if(parts.length>=3 && parseInt(parts[0])===d && parseInt(parts[1])===(calM+1) && parseInt(parts[2])===calY) match=true;
+      // YYYY-MM-DD
+      if(parts.length>=3 && parseInt(parts[2])===d && parseInt(parts[1])===(calM+1) && parseInt(parts[0])===calY) match=true;
+      
+      if(match){
+        const sp=document.createElement('div');
+        sp.className='cev'+(val(e,'owner')===me?' mine':'');
+        sp.innerText=val(e,'title');
+        sp.onclick=(x)=>{x.stopPropagation();openV(ix)};
+        cell.appendChild(sp);
+      }
+    });
+    g.appendChild(cell);
+  }
+}
+
+function renTasks(){
+  const c=id('tListMain'); c.innerHTML='';
+  const f=id('tFil').value;
+  const op=events.filter(e=>{
+    const st=val(e,'status');
+    if(st==='בוצע') return false;
+    if(f && val(e,'owner')!==f) return false;
+    return true;
+  });
+  
+  if(!op.length) c.innerHTML='<div style="text-align:center;color:#cbd5e1;margin-top:40px">אין משימות</div>';
+  
+  op.forEach(e=>{
+    const ts=getTasks(e);
+    if(!ts.length) return;
+    const card=document.createElement('div');
+    card.style.cssText='background:white;padding:12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.03)';
+    card.innerHTML=`<div style="font-weight:700;font-size:13px;margin-bottom:6px">${val(e,'title')}</div>`;
+    ts.forEach(t=>{
+      card.innerHTML+=`<div style="font-size:12px;padding:4px 0;border-top:1px solid #f1f5f9">▪ ${t}</div>`;
+    });
+    const b=document.createElement('button');
+    b.innerText='פתח'; b.style.cssText='font-size:11px;color:var(--blue);font-weight:700;margin-top:6px';
+    b.onclick=()=>openV(events.indexOf(e));
+    card.appendChild(b);
+    c.appendChild(card);
+  });
+}
+
+function openV(idx){
+  const e=events[idx]; if(!e)return;
+  vIdx=idx;
+  id('ivT').innerText=val(e,'title');
+  id('ivD').innerText=val(e,'date');
+  id('ivO').innerText=val(e,'owner');
+  id('ivDesc').innerText=val(e,'desc');
+  id('ivS').innerText=val(e,'status');
+  
+  const im=val(e,'img');
+  if(im && im.length>50) { id('ivImg').src=im; id('ivImg').style.display='block'; id('ivPH').style.display='none'; }
+  else { id('ivImg').style.display='none'; id('ivPH').style.display='flex'; }
+  
+  renViewTasks(e);
+  id('mView').style.display='flex';
+}
+
+function renViewTasks(e){
+  const c=id('ivTL'); c.innerHTML='';
+  const ts=getTasks(e);
+  ts.forEach((t,i)=>{
+    const d=document.createElement('div'); d.className='tr';
+    d.innerHTML=`<input type="checkbox"> <span style="flex:1;font-size:13px">${t}</span>`;
+    d.querySelector('input').onchange=function(){
+      if(this.checked){
+        if(confirm('למחוק משימה?')){
+          ts.splice(i,1);
+          const str=ts.join('|');
+          e.tasks=str; e.Tasks=str; e['משימות']=str;
+          const body=new URLSearchParams({action:'update',title:val(e,'title'),tasks:str});
+          fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
+          renViewTasks(e);
+        } else this.checked=false;
+      }
+    };
+    c.appendChild(d);
+  });
+}
+
+function updSt(st){
+  if(vIdx<0)return;
+  const e=events[vIdx];
+  e.status=st; e.Status=st; e['סטטוס']=st;
+  id('ivS').innerText=st;
+  ren();
+  const body=new URLSearchParams({action:'update',title:val(e,'title'),status:st});
+  fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
+}
+
+async function save(){
+  const t=id('iaT').value; if(!t)return alert('חסר שם');
+  const d=id('iaD').value;
+  const o=id('iaO').value;
+  const s=id('iaS').value;
+  const desc=id('iaDesc').value;
+  const tasks=[...id('iaTL').querySelectorAll('input')].map(x=>x.value).filter(x=>x).join('|');
+  
+  const btn=id('btnSave'); btn.innerText='שומר...';
+  
+  const body=new URLSearchParams({
+    action:'create', title:t, date:d, owner:o, status:s, desc:desc, tasks:tasks, image:img64
+  });
+  
+  await fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
+  
+  events.unshift({Title:t, Date:d, Owner:o, Status:s, Description:desc, Tasks:tasks, Image:img64});
+  ren();
+  id('mAdd').style.display='none';
+  btn.innerText='שמור וסנכרן';
+  // Reset
+  id('iaT').value=''; id('iaDesc').value=''; id('iaTL').innerHTML='';
+}
+
+/* UTILS */
+function id(x){return document.getElementById(x)}
+function sv(x){
+  ['List','Cal','Tasks'].forEach(v=>{id('v'+v).classList.add('hide');id('n'+v).classList.remove('on')});
+  id('v'+x).classList.remove('hide'); id('n'+x).classList.add('on');
+}
+function renChips(){
+  const c=id('lchips'); c.innerHTML='';
+  OWNERS.forEach(o=>{
+    const b=document.createElement('button'); b.className='glass-btn'; b.style.color='var(--ink)'; b.style.border='1px solid var(--border)';
+    b.innerText=o; b.onclick=()=>{id('lname').value=o};
+    c.appendChild(b);
+  });
+}
+function login(){
+  const n=id('lname').value; if(!n)return;
+  me=n; localStorage.setItem('user',n);
+  id('lw').style.display='none'; id('app').style.display='block';
+  id('uName').innerText=n;
+  ren();
+}
+function addTR(cid){
+  const c=id(cid);
+  const d=document.createElement('div'); d.className='tr';
+  d.innerHTML=`<input style="flex:1;outline:none" placeholder="משימה...">`;
+  c.appendChild(d);
+}
+function hImg(){
+  const f=id('iaImg').files[0];
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=new Image(); img.src=e.target.result;
+    img.onload=()=>{
+      const cv=document.createElement('canvas'); const x=cv.getContext('2d');
+      const s=500/img.width; cv.width=500; cv.height=img.height*s;
+      x.drawImage(img,0,0,500,cv.height);
+      img64=cv.toDataURL('image/jpeg',0.6);
+      id('iaImgTxt').innerText='תמונה מוכנה';
+    }
+  };
+  r.readAsDataURL(f);
+}
+function fillSel(){
+  const s=id('iaO'); s.innerHTML='<option value="">בחר...</option>';
+  const f=id('tFil'); f.innerHTML='<option value="">כולם</option>';
+  OWNERS.forEach(o=>{
+    s.innerHTML+=`<option>${o}</option>`;
+    f.innerHTML+=`<option>${o}</option>`;
+  });
+}
+function setS(b,v){
+  id('iaS').value=v;
+  b.parentElement.querySelectorAll('button').forEach(x=>{
+    x.style.background='white'; x.style.color='#94a3b8'; x.style.borderColor='transparent';
+  });
+  const c={חדש:'#dbeafe',בטיפול:'#fef3c7',בוצע:'#d1fae5'};
+  const t={חדש:'#1e40af',בטיפול:'#92400e',בוצע:'#065f46'};
+  b.style.background=c[v]; b.style.color=t[v]; b.style.borderColor=t[v];
+}
+function cls(s){
+  if(s.includes('בוצע'))return 'p-done';
+  if(s.includes('טיפול'))return 'p-wip';
+  return 'p-new';
+}
+function getTasks(e){
+  const t=val(e,'tasks');
+  return t?t.split('|').filter(x=>x.trim()):[];
+}
+function pDate(s){
+  if(!s)return 0;
+  const p=s.split(/[-/]/);
+  if(p[0].length===4) return new Date(p[0],p[1]-1,p[2]); // YYYY-MM-DD
+  return new Date(p[2],p[1]-1,p[0]); // DD/MM/YYYY
+}
+</script>
+</body>
+</html>
