@@ -370,8 +370,7 @@ function updStat(){
   id('sAct').innerText = events.filter(e=>val(e,'status').includes('טיפול')).length;
   const mo = events.filter(e=>val(e,'owner')===me && !val(e,'status').includes('בוצע')).length;
   id('bdg').style.display = mo>0 ? 'block' : 'none';
-  id('cnt').innerText = events.length + ' פרויקטים';
-}
+ }
 
 function renList(){
   const c=id('eCards'); c.innerHTML='';
