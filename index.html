@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -6,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Bat Yam 100</title>
 
-  <!-- Favicon + PWA -->
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <meta name="theme-color" content="#0d1b2a" />
@@ -18,7 +16,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;600;800;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -57,6 +54,26 @@
       animation:spin 1s linear infinite; margin-bottom:18px;
     }
     #ldr p{color:rgba(255,255,255,.45); font-size:10px; font-weight:800; letter-spacing:.2em; text-transform:uppercase}
+
+    /* LOGIN MODAL */
+    #loginModal {
+      position: fixed; inset: 0; background: var(--bg); z-index: 9000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: var(--card); padding: 30px; border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.1); width: 90%; max-width: 400px;
+      text-align: center; animation: pop .3s ease;
+    }
+    .login-title { font-family: 'Frank Ruhl Libre', serif; font-size: 28px; font-weight: 900; color: var(--ink); margin-bottom: 10px; }
+    .login-select {
+      width: 100%; padding: 12px; margin-bottom: 20px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-family: 'Heebo', sans-serif; font-size: 16px; outline: none;
+    }
+    .login-btn {
+      width: 100%; background: var(--blue); color: white; padding: 14px;
+      border-radius: 12px; font-weight: 900; font-size: 16px; border: none; cursor: pointer;
+    }
 
     /* הבאנר והפס הניווט לא “דביקים”: גוללים והם נעלמים */
     .topWrap{
@@ -316,6 +333,17 @@
     <p>BAT YAM 100</p>
   </div>
 
+  <div id="loginModal" style="display:none">
+    <div class="login-box">
+      <div class="login-title">BAT YAM 100</div>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">אנא בחר יחידה כדי להמשיך</p>
+      <select id="loginSelect" class="login-select">
+        <option value="" disabled selected>טוען יחידות...</option>
+      </select>
+      <button id="loginBtn" class="login-btn">כניסה</button>
+    </div>
+  </div>
+
   <div id="app" style="display:none">
     <div class="topWrap">
 
@@ -344,7 +372,7 @@
         <button id="nb-list" class="nb on"><i data-lucide="home" style="width:20px;height:20px"></i><span>בית</span></button>
 
         <button id="nb-tasks" class="nb" style="position:relative">
-          <img src="favicon.png" alt="tasks" style="width:20px;height:20px;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))">
+          <i data-lucide="check-square" style="width:20px;height:20px"></i>
           <span>משימות</span>
           <span id="tbadge" class="badge" style="display:none"></span>
         </button>
@@ -434,8 +462,6 @@
         });
       }
 
-      $('uLabel').textContent = me || 'אורח';
-
       bindNav_();
       bindCal_();
       $('btnRefresh').addEventListener('click', () => loadAll_(true));
@@ -444,8 +470,18 @@
       $('tabDone').addEventListener('click', () => { viewTaskMode='done'; setTabs_(); renderTasksHub_(); });
 
       await loadAll_(false);
+      
+      // אכלוס הרשימה הנפתחת למסך הפתיחה
+      populateLoginSelect_();
+
       hideLoader_();
-      $('app').style.display = 'block';
+
+      if (!me) {
+        showLoginModal_();
+      } else {
+        $('uLabel').textContent = me;
+        $('app').style.display = 'block';
+      }
     });
 
     function toast_(msg){
@@ -460,6 +496,43 @@
       const l=$('ldr');
       l.style.opacity='0';
       setTimeout(()=>{ l.style.display='none'; }, 450);
+    }
+
+    // -- LOGIN LOGIC --
+    function populateLoginSelect_() {
+      const select = $('loginSelect');
+      const owners = new Set(OWNER_PRESET);
+      events.forEach(e => {
+        const o = (e.owner || '').trim();
+        if(o) owners.add(o);
+      });
+      
+      select.innerHTML = '<option value="" disabled selected>בחר יחידה...</option>';
+      Array.from(owners).sort((a,b)=>a.localeCompare(b,'he')).forEach(owner => {
+        const option = document.createElement('option');
+        option.value = owner;
+        option.textContent = owner;
+        select.appendChild(option);
+      });
+    }
+
+    function showLoginModal_() {
+      $('loginModal').style.display = 'flex';
+      $('loginBtn').addEventListener('click', handleLogin_);
+    }
+
+    function handleLogin_() {
+      const select = $('loginSelect');
+      if(select.value) {
+        me = select.value;
+        localStorage.setItem('batyam_user', me);
+        $('uLabel').textContent = me;
+        $('loginModal').style.display = 'none';
+        $('app').style.display = 'block';
+        renderAll_();
+      } else {
+        toast_('אנא בחר יחידה כדי להמשיך');
+      }
     }
 
     function bindNav_(){
@@ -477,21 +550,19 @@
       $('nb-cal').addEventListener('click', ()=> { show('cal'); renderCalendar_(); });
       $('nb-tasks').addEventListener('click', ()=> { show('tasks'); renderTasksHub_(); });
 
+      // Profile settings open login modal again to switch user
       $('btnUser').addEventListener('click', () => {
-        const name = prompt('שם משתמש (למשל: בן / גלית / רינת):', me || '');
-        if(name !== null){
-          me = String(name).trim();
-          localStorage.setItem('batyam_user', me);
-          $('uLabel').textContent = me || 'אורח';
-          renderAll_();
-        }
+          populateLoginSelect_();
+          showLoginModal_();
+      });
+      $('nb-set').addEventListener('click', () => {
+          populateLoginSelect_();
+          showLoginModal_();
       });
 
       $('nb-add').addEventListener('click', () => {
         toast_('הוספת פרויקט נעשית מהשיט (בינתיים). אפשר להוסיף גם דרך API אם תרצה.');
       });
-
-      $('nb-set').addEventListener('click', () => toast_('פרופיל: לחץ על הכפתור עם השם למעלה לשינוי משתמש.'));
     }
 
     function bindCal_(){
@@ -777,7 +848,7 @@
             <button class="close-btn" id="xClose"><i data-lucide="x" style="width:16px;height:16px"></i></button>
           </div>
 
-          <div style="padding:14px 14px 0">
+          <div style="padding:14px 14px 0; overflow-y:auto; flex:1;">
             <div style="display:flex;gap:10px;flex-wrap:wrap">
               <div style="flex:1;min-width:160px">
                 <label class="lbl">סטטוס</label>
@@ -795,7 +866,7 @@
             </div>
 
             <div style="margin-top:10px">
-              <label class="lbl">Target Audience</label>
+              <label class="lbl">קהל יעד</label>
               <input id="fTA" class="fld" value="${escapeAttr_(e.targetAudience||'')}" placeholder="כולם / נוער /..." />
             </div>
 
@@ -816,7 +887,7 @@
             </div>
 
             <div style="display:flex;gap:10px;margin:0 0 18px">
-              <button id="btnSaveFields" class="btnMini">שמור שדות (סטטוס/אחראי/תיאור/קהל)</button>
+              <button id="btnSaveFields" class="btnMini">שמור שדות</button>
               <button id="btnReload" class="btnMini">רענון מהשיט</button>
             </div>
           </div>
