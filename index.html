@@ -2,76 +2,524 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Bat Yam 100</title>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="mobile-web-app-capable" content="yes">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Heebo',sans-serif; background:#f4f6f9; direction:rtl; }
-#ldr { position:fixed; inset:0; background:#0d1b2a; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; }
-.ring { width:50px; height:50px; border:3px solid rgba(255,255,255,.15); border-top-color:#f5a623; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:15px; }
-@keyframes spin { to { transform:rotate(360deg); } }
-#ldr p { color:rgba(255,255,255,.5); font-size:11px; letter-spacing:.2em; }
-#app { display:none; padding:20px; max-width:600px; margin:0 auto; }
-.card { background:white; border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:0 2px 10px rgba(0,0,0,.06); border-right:4px solid #0057a8; }
-.card h3 { font-size:15px; font-weight:700; margin-bottom:6px; }
-.badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; }
+:root { --ink:#0d1b2a; --blue:#0057a8; --gold:#f5a623; --mint:#00b89c; --bg:#f4f6f9; --card:#ffffff; --border:#e4e9f0; --muted:#7a8899; }
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { background:var(--bg); font-family:'Heebo',sans-serif; padding-bottom:110px; overscroll-behavior-y:none; color:var(--ink); }
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes up{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+#ldr { position:fixed; inset:0; background:var(--ink); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .4s; }
+#ldr .ring { width:50px; height:50px; border:3px solid rgba(255,255,255,.15); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:15px; }
+#ldr p { color:rgba(255,255,255,.5); font-size:10px; font-weight:900; letter-spacing:.2em; }
+.hero { position:relative; height:240px; border-radius:0 0 32px 32px; overflow:hidden; background:var(--ink); box-shadow:0 20px 40px -12px rgba(13,27,42,.5); }
+.hero-bg { background-image:url('baner.jpg'); background-size:cover; background-position:center; position:absolute; inset:0; opacity:.6; }
+.hero-c { position:relative; z-index:2; padding:22px 20px; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
+.hero-t { font-family:'Frank Ruhl Libre',serif; font-size:42px; font-weight:900; color:white; line-height:.9; letter-spacing:-1px; text-shadow:0 4px 20px rgba(0,0,0,.5); }
+.hero-t span { color:var(--gold); }
+.glass-btn { background:rgba(255,255,255,.15); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.25); color:white; border-radius:30px; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; font-weight:700; transition:all .2s; cursor:pointer; }
+.glass-btn:active { transform:scale(.95); }
+.stats { display:flex; gap:10px; padding:0 16px; margin:-24px 0 24px; position:relative; z-index:10; }
+.stat { flex:1; background:var(--card); border-radius:16px; padding:12px; box-shadow:0 8px 24px rgba(0,0,0,.06); border-top:3px solid transparent; text-align:center; }
+.stat:nth-child(1){border-color:var(--blue)} .stat:nth-child(2){border-color:var(--mint)} .stat:nth-child(3){border-color:var(--gold)}
+.sn { font-size:28px; font-weight:900; line-height:1; color:var(--ink); }
+.sl { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-top:4px; }
+#eCards { display:grid; gap:12px; padding:0 16px 100px; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); }
+.ecard { background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.04); overflow:hidden; display:flex; min-height:90px; transition:transform .15s; cursor:pointer; }
+.ecard:active { transform:scale(.98); }
+.bar { width:5px; flex-shrink:0; background:var(--blue); }
+.bar.mine { background:var(--mint); } .bar.done { background:#cbd5e1; }
+.date-box { width:56px; background:#f8fafc; border-left:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; }
+.d-big { font-size:22px; font-weight:900; line-height:1; }
+.d-mon { font-size:9px; font-weight:700; color:var(--muted); margin-top:2px; }
+.body { flex:1; padding:12px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+.tit { font-size:15px; font-weight:700; color:var(--ink); line-height:1.3; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.own { font-size:11px; font-weight:600; color:var(--muted); }
+.pill { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:800; }
+.p-new { background:#dbeafe; color:#1e40af; }
+.p-wip { background:#fef3c7; color:#92400e; }
+.p-done { background:#d1fae5; color:#065f46; }
+.p-wait { background:#f3e8ff; color:#6b21a8; }
+.nav { position:fixed; bottom:20px; left:16px; right:16px; background:var(--ink); padding:8px 12px; border-radius:30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 12px 32px rgba(13,27,42,.4); z-index:50; }
+.nb { background:none; border:none; color:rgba(255,255,255,.4); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9px; font-weight:700; padding:8px 12px; border-radius:16px; transition:all .2s; cursor:pointer; }
+.nb.on { color:white; background:rgba(255,255,255,.15); }
+.nb .ico { font-size:20px; line-height:1; }
+.n-add { background:var(--gold); color:var(--ink); width:52px; height:52px; border-radius:20px; border:4px solid var(--ink); transform:translateY(-20px); box-shadow:0 8px 24px rgba(245,166,35,.4); cursor:pointer; font-size:28px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.n-add:active { transform:translateY(-20px) scale(.95); }
+.ov { position:fixed; inset:0; background:rgba(13,27,42,.7); z-index:100; display:none; align-items:flex-end; justify-content:center; backdrop-filter:blur(4px); }
+.sh { background:var(--card); width:100%; max-width:500px; max-height:92vh; border-radius:28px 28px 0 0; display:flex; flex-direction:column; animation:up .3s cubic-bezier(.16,1,.3,1); box-shadow:0 -10px 40px rgba(0,0,0,.2); }
+.sh-h { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+.sh-t { font-size:18px; font-weight:900; }
+.cls { width:32px; height:32px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; font-size:16px; }
+.sh-scroll { flex:1; overflow-y:auto; padding:20px; }
+.fld { width:100%; padding:12px; background:#f8fafc; border:1.5px solid var(--border); border-radius:12px; outline:none; font-family:'Heebo',sans-serif; font-size:14px; transition:0.2s; }
+.fld:focus { border-color:var(--blue); background:white; }
+.lbl { font-size:10px; font-weight:900; color:var(--muted); text-transform:uppercase; margin-bottom:5px; display:block; }
+.tr { display:flex; align-items:center; gap:10px; padding:10px; background:white; border:1px solid var(--border); border-radius:10px; margin-bottom:6px; }
+.tr input[type=checkbox] { width:18px; height:18px; accent-color:var(--blue); }
+.cal-g { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; padding-bottom:100px; }
+.cd { min-height:70px; background:white; border:1px solid var(--border); border-radius:10px; padding:4px; }
+.cd.tod { border:2px solid var(--blue); background:#eff6ff; }
+.cemp { min-height:70px; border-radius:10px; }
+.cev { background:var(--blue); color:white; padding:2px 4px; border-radius:4px; font-size:9px; margin-top:2px; white-space:nowrap; overflow:hidden; font-weight:700; cursor:pointer; }
+.cev.mine { background:var(--mint); }
+.badge { position:absolute; top:6px; right:6px; width:8px; height:8px; background:#ef4444; border-radius:50%; border:2px solid var(--ink); display:none; }
+.hide { display:none!important; }
+.chip { padding:8px 16px; border-radius:30px; border:2px solid var(--border); cursor:pointer; font-weight:700; font-size:14px; background:white; transition:all .15s; font-family:'Heebo',sans-serif; }
+.chip.sel, .chip:hover { border-color:var(--blue); background:#eff6ff; color:var(--blue); }
 </style>
 </head>
 <body>
+
 <div id="ldr"><div class="ring"></div><p>טוען נתונים...</p></div>
-<div id="app">
-  <h1 style="font-size:28px;font-weight:900;margin-bottom:4px">BAT YAM <span style="color:#f5a623">100</span></h1>
-  <p id="subtitle" style="color:#7a8899;font-size:13px;margin-bottom:20px"></p>
-  <div id="cards"></div>
+
+<div id="lw" class="ov" style="z-index:200;align-items:center;padding:20px">
+  <div class="sh" style="border-radius:24px;animation:pop .3s">
+    <div style="padding:32px 24px;text-align:center">
+      <div style="font-size:40px;margin-bottom:10px">👋</div>
+      <h2 style="font-size:22px;font-weight:900;margin-bottom:6px">מי מתחבר?</h2>
+      <div id="lchips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0"></div>
+      <input id="lname" type="text" class="fld" style="text-align:center;margin-bottom:12px" placeholder="או הקלד שם...">
+      <button id="lbtn" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800;font-size:16px;border:none;cursor:pointer">כניסה למערכת</button>
+    </div>
+  </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<div id="app" class="hide" style="max-width:480px;margin:0 auto">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-c">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button id="uBtn" class="glass-btn"><span style="width:8px;height:8px;background:#4ade80;border-radius:50%"></span><span id="uName">אורח</span></button>
+        <button id="rBtn" class="glass-btn" style="padding:8px;border-radius:50%">🔄</button>
+      </div>
+      <div>
+        <div class="hero-t">BAT YAM<br><span>100</span></div>
+        <div style="color:rgba(255,255,255,.7);font-size:13px;font-weight:500;margin-top:4px">ניהול פרויקטים 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div id="sTot" class="sn">0</div><div class="sl">פרויקטים</div></div>
+    <div class="stat"><div id="sMine" class="sn">0</div><div class="sl">שלי</div></div>
+    <div class="stat"><div id="sAct" class="sn">0</div><div class="sl">בטיפול</div></div>
+  </div>
+
+  <div id="vList">
+    <div style="padding:0 16px 12px;display:flex;justify-content:space-between;align-items:center">
+      <span class="lbl" style="margin:0;font-size:12px;color:var(--ink)">כל הפרויקטים</span>
+      <span id="cnt" style="font-size:11px;font-weight:700;color:var(--muted)"></span>
+    </div>
+    <div id="eCards"></div>
+  </div>
+
+  <div id="vCal" class="hide" style="padding:0 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 id="cTit" style="font-weight:900;font-size:18px"></h2>
+      <div style="display:flex;gap:8px">
+        <button id="cP" class="cls">›</button>
+        <button id="cN" class="cls">‹</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:10px;font-weight:800;color:var(--muted);margin-bottom:6px">
+      <div>א</div><div>ב</div><div>ג</div><div>ד</div><div>ה</div><div>ו</div><div>ש</div>
+    </div>
+    <div id="cGrid" class="cal-g"></div>
+  </div>
+
+  <div id="vTasks" class="hide" style="padding:0 16px">
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <h2 style="font-weight:900;font-size:18px">משימות פתוחות</h2>
+      <select id="tFil" style="background:white;border:1px solid var(--border);border-radius:8px;font-size:12px;padding:4px;outline:none"><option value="">כולם</option></select>
+    </div>
+    <div id="tListMain" style="padding-bottom:100px;display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <div class="nav">
+    <button id="nList" class="nb on"><span class="ico">🏠</span><span>בית</span></button>
+    <button id="nTask" class="nb" style="position:relative"><span class="ico">✅</span><span>משימות</span><span id="bdg" class="badge"></span></button>
+    <button id="nAdd" class="n-add">＋</button>
+    <button id="nCal" class="nb"><span class="ico">📅</span><span>יומן</span></button>
+    <button id="nSet" class="nb"><span class="ico">👤</span><span>פרופיל</span></button>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div id="mAdd" class="ov">
+  <div class="sh" style="height:90vh">
+    <div class="sh-h"><span class="sh-t">פרויקט חדש</span><button id="cAdd" class="cls">✕</button></div>
+    <div class="sh-scroll">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div><label class="lbl">שם האירוע</label><input id="iaT" type="text" class="fld" style="font-weight:700;font-size:16px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="lbl">תאריך</label><input id="iaD" type="date" class="fld"></div>
+          <div><label class="lbl">אחראי</label><select id="iaO" class="fld"><option value="">בחר...</option></select></div>
+        </div>
+        <div>
+          <label class="lbl">סטטוס</label>
+          <div style="display:flex;gap:8px">
+            <button class="fld" id="sBtn1" style="flex:1;text-align:center;font-weight:700;background:#dbeafe;color:#1e40af;border-color:#93c5fd;cursor:pointer" onclick="setS(this,'חדש')">חדש</button>
+            <button class="fld" id="sBtn2" style="flex:1;text-align:center;font-weight:700;color:#94a3b8;cursor:pointer" onclick="setS(this,'בתהליך')">בתהליך</button>
+            <button class="fld" id="sBtn3" style="flex:1;text-align:center;font-weight:700;color:#94a3b8;cursor:pointer" onclick="setS(this,'בוצע')">בוצע</button>
+          </div>
+          <input type="hidden" id="iaS" value="חדש">
+        </div>
+        <div><label class="lbl">תיאור</label><textarea id="iaDesc" rows="3" class="fld"></textarea></div>
+        <div style="background:#f1f5f9;padding:12px;border-radius:12px">
+          <label class="lbl">משימות</label>
+          <div id="iaTL" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
+          <button id="btnAddT" style="font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer">+ הוסף משימה</button>
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;border:2px dashed var(--border);border-radius:12px;cursor:pointer">
+          <input type="file" id="iaImg" hidden accept="image/*">
+          <span>🖼️</span>
+          <span id="iaImgTxt" style="font-size:12px;font-weight:700;color:var(--muted)">הוסף תמונה</span>
+        </label>
+      </div>
+    </div>
+    <div style="padding:16px;border-top:1px solid var(--border)">
+      <button id="btnSave" style="width:100%;background:var(--ink);color:white;padding:14px;border-radius:12px;font-weight:800;font-size:15px;border:none;cursor:pointer">שמור וסנכרן</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div id="mView" class="ov">
+  <div class="sh" style="height:90vh">
+    <div style="height:160px;position:relative;background:#e2e8f0;flex-shrink:0;border-radius:28px 28px 0 0;overflow:hidden">
+      <img id="ivImg" style="width:100%;height:100%;object-fit:cover;display:none">
+      <div id="ivPH" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:48px">🖼️</div>
+      <button id="cView" class="cls" style="position:absolute;top:16px;left:16px;background:rgba(0,0,0,0.4);color:white">✕</button>
+      <div id="ivS" style="position:absolute;bottom:16px;right:16px;background:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800"></div>
+    </div>
+    <div class="sh-scroll">
+      <h2 id="ivT" style="font-size:22px;font-weight:900;line-height:1.2;margin-bottom:8px"></h2>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <span id="ivD" style="background:#eff6ff;color:var(--blue);font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px"></span>
+        <span id="ivO" style="font-size:12px;font-weight:600;color:var(--muted);align-self:center"></span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button onclick="updSt('חדש')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer">חדש</button>
+        <button onclick="updSt('בתהליך')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer">בתהליך</button>
+        <button onclick="updSt('בוצע')" class="fld" style="flex:1;text-align:center;padding:8px;font-size:12px;font-weight:700;cursor:pointer">בוצע</button>
+      </div>
+      <p id="ivDesc" style="font-size:14px;color:#334155;background:#f8fafc;padding:12px;border-radius:10px;margin-bottom:20px;line-height:1.6"></p>
+      <div style="background:#f1f5f9;padding:14px;border-radius:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span class="lbl" style="margin:0">משימות</span>
+          <button id="btnAddTV" style="font-size:12px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer">+ הוסף</button>
+        </div>
+        <div id="ivTL" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ02cU8av1KtchNykwq-QxjU6LiLZx-CSp5B28BxAgnsvJjlTwMMW1QO8qNylEYC78qDQFT_S3-fzUA/pub?output=tsv";
+const SCRIPT  = "https://script.google.com/macros/s/AKfycbxpdgCT9MgQGJbGRJupmNpEZOxSlWBi99GrAznCFVUM7NsMKytt4gjquKR333sTb62vbg/exec";
+let OWNERS = ['בן','רינת','גלית','אבישי','מור','יוסי','רותם'];
+let events=[], me=localStorage.getItem('user')||'', calM=new Date().getMonth(), calY=new Date().getFullYear(), img64='', vIdx=-1;
 
-function getColor(s) {
-  if(!s) return {bg:'#e2e8f0',color:'#475569'};
-  if(s.includes('תהליך') || s.includes('חוזים')) return {bg:'#d1fae5',color:'#065f46'};
-  if(s.includes('ממתין')) return {bg:'#f3e8ff',color:'#6b21a8'};
-  if(s.includes('תמחור') || s.includes('תומחר')) return {bg:'#fee2e2',color:'#991b1b'};
-  if(s.includes('תואם')) return {bg:'#dbeafe',color:'#1e40af'};
-  return {bg:'#fef3c7',color:'#92400e'};
+window.onload = () => { wire(); loadData(); };
+
+function wire() {
+  id('lbtn').onclick = login;
+  id('lname').onkeydown = e => { if(e.key==='Enter') login(); };
+  id('nList').onclick = () => sv('List');
+  id('nCal').onclick  = () => sv('Cal');
+  id('nTask').onclick = () => sv('Tasks');
+  id('nAdd').onclick  = () => { id('mAdd').style.display='flex'; };
+  id('nSet').onclick  = () => { id('lw').style.display='flex'; renChips(); };
+  id('uBtn').onclick  = () => { id('lw').style.display='flex'; renChips(); };
+  id('cAdd').onclick  = () => { id('mAdd').style.display='none'; };
+  id('cView').onclick = () => { id('mView').style.display='none'; };
+  id('rBtn').onclick  = () => loadData(true);
+  id('btnAddT').onclick = () => addTR('iaTL');
+  id('btnSave').onclick = save;
+  id('iaImg').onchange  = hImg;
+  id('cP').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renCal(); };
+  id('cN').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renCal(); };
+  id('tFil').onchange = renTasks;
+
+  id('btnAddTV').onclick = () => {
+    const c = id('ivTL');
+    const d = document.createElement('div'); d.className='tr';
+    d.innerHTML = '<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="כתוב ולחץ Enter..."><button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()">✕</button>';
+    c.appendChild(d);
+    const inp = d.querySelector('input');
+    inp.focus();
+    inp.onkeydown = e => {
+      if(e.key==='Enter' && inp.value.trim()) {
+        const tasks = getTasks(events[vIdx]);
+        tasks.push(inp.value.trim());
+        const str = tasks.join('|');
+        events[vIdx].tasks = str;
+        renViewTasks(events[vIdx]);
+        fetch(SCRIPT,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'update',title:val(events[vIdx],'title'),tasks:str})});
+        d.remove();
+      }
+    };
+  };
 }
 
-async function load() {
+function val(e,k) {
+  if(!e) return '';
+  if(k==='title')  return e.Title||e.title||e['שם האירוע']||e['שם']||'';
+  if(k==='date')   return e.date||e.Date||e['תאריך']||'';
+  if(k==='owner')  return e.owner||e.Owner||e['אחראי']||'-';
+  if(k==='status') return e.status||e.Status||e['סטטוס']||'';
+  if(k==='desc')   return e.Description||e.description||e['תיאור']||'';
+  if(k==='img')    return e.image||e.Image||e['תמונה']||'';
+  if(k==='tasks')  return e.tasks||e.Tasks||e['משימות']||'';
+  if(k==='notes')  return e.notes||e.Notes||e['הערות']||'';
+  return '';
+}
+
+async function loadData(manual) {
+  if(manual) { id('ldr').style.display='flex'; id('ldr').style.opacity='1'; }
   try {
-    const res = await fetch(CSV_URL + '&t=' + Date.now());
-    const text = await res.text();
-    Papa.parse(text, {
-      header: true, delimiter: '\t', skipEmptyLines: true,
-      complete: function(result) {
-        const data = result.data.filter(r => (r.Title || '').trim());
-        document.getElementById('subtitle').innerText = data.length + ' פרויקטים';
-        const cards = document.getElementById('cards');
-        data.forEach(row => {
-          const c = getColor(row.status || '');
-          const tasks = (row.tasks || '').split('|').filter(t=>t.trim());
-          const div = document.createElement('div');
-          div.className = 'card';
-          div.innerHTML =
-            '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
-              '<h3>' + (row.Title||'') + '</h3>' +
-              '<span class="badge" style="background:' + c.bg + ';color:' + c.color + '">' + (row.status||'') + '</span>' +
-            '</div>' +
-            '<p style="font-size:12px;color:#7a8899;margin-top:4px">📅 ' + (row.date||'ללא תאריך') + ' | 👤 ' + (row.owner||'-') + '</p>' +
-            (row.notes ? '<p style="font-size:12px;color:#334155;margin-top:6px;line-height:1.5">' + row.notes + '</p>' : '') +
-            (tasks.length ? '<div style="margin-top:8px">' + tasks.map(t=>'<div style="font-size:12px;color:#334155;padding:2px 0">▪ ' + t + '</div>').join('') + '</div>' : '');
-          cards.appendChild(div);
-        });
-        document.getElementById('ldr').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
+    const r = await fetch(CSV_URL + '&t=' + Date.now());
+    const t = await r.text();
+    if(t.includes('<html')) throw new Error('HTML returned');
+    Papa.parse(t, {
+      header:true, delimiter:'\t', skipEmptyLines:true,
+      complete: res => {
+        events = res.data.filter(e => val(e,'title').trim());
+        events.forEach(e => { const o=val(e,'owner'); if(o&&o!=='-'&&!OWNERS.includes(o)) OWNERS.push(o); });
+        fillSel();
+        id('ldr').style.opacity='0';
+        setTimeout(()=>{ id('ldr').style.display='none'; },500);
+        if(me) { id('app').classList.remove('hide'); ren(); }
+        else   { id('lw').style.display='flex'; renChips(); }
       }
     });
-  } catch(e) {
-    document.getElementById('ldr').innerHTML = '<p style="color:red;padding:20px">שגיאה: ' + e.message + '</p>';
+  } catch(err) {
+    console.error(err);
+    id('ldr').style.display='none';
+    id('lw').style.display='flex'; renChips();
   }
 }
-load();
+
+function ren() {
+  id('uName').innerText = me;
+  renList(); renCal(); renTasks(); updStat();
+}
+
+function updStat() {
+  id('sTot').innerText  = events.length;
+  id('sMine').innerText = events.filter(e=>val(e,'owner')===me).length;
+  id('sAct').innerText  = events.filter(e=>val(e,'status').includes('תהליך')).length;
+  const mo = events.filter(e=>val(e,'owner')===me).length;
+  id('bdg').style.display = mo>0 ? 'block' : 'none';
+  id('cnt').innerText = events.length + ' פרויקטים';
+}
+
+function renList() {
+  const c = id('eCards'); c.innerHTML='';
+  if(!events.length){ c.innerHTML='<div style="text-align:center;color:#94a3b8;padding:40px">אין פרויקטים</div>'; return; }
+  const s = [...events].sort((a,b)=>pDate(val(b,'date'))-pDate(val(a,'date')));
+  s.forEach(e => {
+    const idx = events.indexOf(e);
+    const st  = val(e,'status');
+    const mine = val(e,'owner')===me;
+    const isDone = st.includes('בוצע')||st.includes('הושלם');
+    const parts = val(e,'date').split(/[-/.]/);
+    const day = parts[0]||'—';
+    const mon = parts.length>1 ? mName(parseInt(parts[1])) : '';
+    const d = document.createElement('div'); d.className='ecard';
+    d.innerHTML =
+      '<div class="bar '+(mine?'mine':'')+' '+(isDone?'done':'')+'"></div>'+
+      '<div class="date-box"><span class="d-big">'+day+'</span><span class="d-mon">'+mon+'</span></div>'+
+      '<div class="body">'+
+        '<div class="tit">'+val(e,'title')+'</div>'+
+        '<div class="meta">'+
+          '<span class="pill '+cls(st)+'">'+st+'</span>'+
+          '<span class="own">👤 '+val(e,'owner')+'</span>'+
+        '</div>'+
+        (val(e,'notes')?'<div style="font-size:11px;color:var(--muted);margin-top:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">📝 '+val(e,'notes')+'</div>':'')+
+      '</div>';
+    d.onclick = () => openV(idx);
+    c.appendChild(d);
+  });
+}
+
+function renCal() {
+  const g = id('cGrid'); g.innerHTML='';
+  id('cTit').innerText = new Date(calY,calM,1).toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  const dim = new Date(calY,calM+1,0).getDate();
+  const fd  = new Date(calY,calM,1).getDay();
+  for(let i=0;i<fd;i++){ const e=document.createElement('div'); e.className='cemp'; g.appendChild(e); }
+  for(let d=1;d<=dim;d++) {
+    const cell = document.createElement('div');
+    const isT  = d===new Date().getDate()&&calM===new Date().getMonth()&&calY===new Date().getFullYear();
+    cell.className = 'cd'+(isT?' tod':'');
+    cell.innerHTML = '<span style="font-weight:900;font-size:10px;color:'+(isT?'var(--blue)':'#94a3b8')+'">'+d+'</span>';
+    events.forEach((e,ix)=>{
+      const p=val(e,'date').split(/[-/.]/); if(p.length<3)return;
+      const p0=parseInt(p[0]),p1=parseInt(p[1]),p2=parseInt(p[2]);
+      const match=(p2===calY&&p1===(calM+1)&&p0===d)||(p0===calY&&p1===(calM+1)&&p2===d);
+      if(match){
+        const sp=document.createElement('div');
+        sp.className='cev'+(val(e,'owner')===me?' mine':'');
+        sp.innerText=val(e,'title');
+        sp.onclick=x=>{x.stopPropagation();openV(ix)};
+        cell.appendChild(sp);
+      }
+    });
+    g.appendChild(cell);
+  }
+}
+
+function renTasks() {
+  const c=id('tListMain'); c.innerHTML='';
+  const f=id('tFil').value;
+  const op=events.filter(e=>{
+    const st=val(e,'status');
+    if(st.includes('בוצע')||st.includes('הושלם')) return false;
+    if(f&&val(e,'owner')!==f) return false;
+    return true;
+  });
+  if(!op.length){ c.innerHTML='<div style="text-align:center;color:#cbd5e1;margin-top:40px">אין משימות פתוחות</div>'; return; }
+  op.forEach(e=>{
+    const ts=getTasks(e); if(!ts.length)return;
+    const card=document.createElement('div');
+    card.style.cssText='background:white;padding:14px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.03);border:1px solid var(--border)';
+    card.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #f1f5f9;padding-bottom:10px"><div style="font-weight:800;font-size:14px">'+val(e,'title')+'</div><div style="font-size:11px;color:var(--muted)">👤 '+val(e,'owner')+'</div></div>';
+    ts.forEach(t=>{ card.innerHTML+='<div style="font-size:13px;padding:5px 0;color:#334155;display:flex;gap:6px"><span style="color:var(--blue)">▪</span>'+t+'</div>'; });
+    const b=document.createElement('button');
+    b.innerText='פתח פרויקט ←'; b.style.cssText='font-size:12px;color:var(--blue);font-weight:800;margin-top:10px;background:none;border:none;cursor:pointer';
+    b.onclick=()=>openV(events.indexOf(e));
+    card.appendChild(b); c.appendChild(card);
+  });
+}
+
+function openV(idx) {
+  const e=events[idx]; if(!e)return;
+  vIdx=idx;
+  id('ivT').innerText    = val(e,'title');
+  id('ivD').innerText    = val(e,'date')||'ללא תאריך';
+  id('ivO').innerText    = '👤 '+val(e,'owner');
+  id('ivDesc').innerText = val(e,'desc')||val(e,'notes')||'אין תיאור.';
+  id('ivS').innerText    = val(e,'status');
+  const im=val(e,'img');
+  if(im&&im.length>50){ id('ivImg').src=im; id('ivImg').style.display='block'; id('ivPH').style.display='none'; }
+  else { id('ivImg').style.display='none'; id('ivPH').style.display='flex'; }
+  renViewTasks(e);
+  id('mView').style.display='flex';
+}
+
+function renViewTasks(e) {
+  const c=id('ivTL'); c.innerHTML='';
+  const ts=getTasks(e);
+  if(!ts.length){ c.innerHTML='<div style="color:#94a3b8;font-size:13px;text-align:center;padding:8px">אין משימות</div>'; return; }
+  ts.forEach((t,i)=>{
+    const d=document.createElement('div'); d.className='tr';
+    d.innerHTML='<input type="checkbox"> <span style="flex:1;font-size:13px">'+t+'</span>';
+    d.querySelector('input').onchange=function(){
+      if(this.checked){
+        setTimeout(()=>{
+          if(this.checked&&confirm('למחוק משימה זו?')){
+            ts.splice(i,1); const str=ts.join('|');
+            e.tasks=str;
+            fetch(SCRIPT,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'update',title:val(e,'title'),tasks:str})});
+            renViewTasks(e);
+          } else this.checked=false;
+        },400);
+      }
+    };
+    c.appendChild(d);
+  });
+}
+
+function updSt(st) {
+  if(vIdx<0)return;
+  const e=events[vIdx];
+  e.status=st; e.Status=st;
+  id('ivS').innerText=st;
+  ren();
+  fetch(SCRIPT,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'update',title:val(e,'title'),status:st})});
+}
+
+async function save() {
+  const t=id('iaT').value.trim(); if(!t)return alert('חובה להזין שם!');
+  const btn=id('btnSave'); btn.innerText='שומר...'; btn.disabled=true;
+  const body=new URLSearchParams({
+    action:'create', title:t, date:id('iaD').value, owner:id('iaO').value,
+    status:id('iaS').value, desc:id('iaDesc').value,
+    tasks:[...id('iaTL').querySelectorAll('input[type=text]')].map(x=>x.value).filter(x=>x).join('|'),
+    image:img64
+  });
+  await fetch(SCRIPT,{method:'POST',mode:'no-cors',body});
+  events.unshift({Title:t,date:id('iaD').value,owner:id('iaO').value,status:id('iaS').value,Description:id('iaDesc').value,tasks:body.get('tasks'),image:img64});
+  ren(); id('mAdd').style.display='none';
+  btn.innerText='שמור וסנכרן'; btn.disabled=false;
+  id('iaT').value=''; id('iaDesc').value=''; id('iaTL').innerHTML=''; img64='';
+  id('iaImgTxt').innerText='הוסף תמונה';
+}
+
+function id(x){return document.getElementById(x)}
+function sv(x){
+  ['List','Cal','Tasks'].forEach(v=>{id('v'+v).classList.add('hide');id('n'+v).classList.remove('on')});
+  id('v'+x).classList.remove('hide'); id('n'+x).classList.add('on');
+}
+function renChips(){
+  const c=id('lchips'); c.innerHTML='';
+  OWNERS.forEach(o=>{
+    const b=document.createElement('button'); b.className='chip'; b.innerText=o;
+    if(o===me) b.classList.add('sel');
+    b.onclick=()=>{ c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); id('lname').value=o; };
+    c.appendChild(b);
+  });
+}
+function login(){
+  const sel=document.querySelector('.chip.sel');
+  const n=id('lname').value.trim()||(sel?sel.innerText:'');
+  if(!n)return alert('אנא בחר שם');
+  me=n; localStorage.setItem('user',n);
+  id('lw').style.display='none'; id('app').classList.remove('hide'); ren();
+}
+function addTR(cid){
+  const c=id(cid);
+  const d=document.createElement('div'); d.className='tr';
+  d.innerHTML='<input type="text" style="flex:1;outline:none;font-size:13px;border:none;background:transparent" placeholder="משימה..."><button style="background:none;border:none;cursor:pointer;color:#ef4444" onclick="this.parentElement.remove()">✕</button>';
+  c.appendChild(d); d.querySelector('input').focus();
+}
+function hImg(){
+  const f=id('iaImg').files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{ const img=new Image(); img.src=e.target.result; img.onload=()=>{ const cv=document.createElement('canvas'),x=cv.getContext('2d'),s=Math.min(1,600/img.width); cv.width=img.width*s; cv.height=img.height*s; x.drawImage(img,0,0,cv.width,cv.height); img64=cv.toDataURL('image/jpeg',.7); id('iaImgTxt').innerText='✅ תמונה מוכנה'; }; };
+  r.readAsDataURL(f);
+}
+function fillSel(){
+  const s=id('iaO'); s.innerHTML='<option value="">בחר...</option>';
+  const f=id('tFil'); f.innerHTML='<option value="">כולם</option>';
+  OWNERS.forEach(o=>{ s.innerHTML+=`<option>${o}</option>`; f.innerHTML+=`<option>${o}</option>`; });
+}
+function setS(b,v){
+  id('iaS').value=v;
+  ['sBtn1','sBtn2','sBtn3'].forEach(x=>{ id(x).style.background='white'; id(x).style.color='#94a3b8'; id(x).style.borderColor='transparent'; });
+  const c={חדש:'#dbeafe',בתהליך:'#fef3c7',בוצע:'#d1fae5'};
+  const t={חדש:'#1e40af',בתהליך:'#92400e',בוצע:'#065f46'};
+  b.style.background=c[v]; b.style.color=t[v]; b.style.borderColor=t[v];
+}
+function cls(s){
+  if(!s)return 'p-new';
+  if(s.includes('בוצע')||s.includes('הושלם'))return 'p-done';
+  if(s.includes('תהליך')||s.includes('חוזים')||s.includes('הקמה')||s.includes('בניית'))return 'p-wip';
+  if(s.includes('ממתין')||s.includes('תואם')||s.includes('תומחר')||s.includes('תמחור'))return 'p-wait';
+  return 'p-new';
+}
+function getTasks(e){ const t=val(e,'tasks'); return t?t.split('|').map(x=>x.trim()).filter(x=>x):[]; }
+function pDate(s){ if(!s)return 0; const p=s.split(/[-/.]/); if(p.length<3)return 0; if(p[0].length===4)return new Date(p[0],p[1]-1,p[2]).getTime(); return new Date(p[2],p[1]-1,p[0]).getTime(); }
+function mName(m){ return ['','ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'][m]||''; }
 </script>
 </body>
 </html>
